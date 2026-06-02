@@ -15,11 +15,11 @@ export default function VideoMuteButton({
     <button
       type="button"
       onClick={onClick}
-      className={`cursor-pointer rounded-full border border-white/15 bg-black/45 p-1.5 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/65 ${className}`}
+      className={`cursor-pointer rounded-full border border-white/25 bg-black/60 p-2 text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-black/75 ${className}`}
       aria-label={isMuted ? "Unmute video" : "Mute video"}
     >
       {isMuted ? (
-        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -34,7 +34,7 @@ export default function VideoMuteButton({
           />
         </svg>
       ) : (
-        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

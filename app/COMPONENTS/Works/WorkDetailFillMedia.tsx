@@ -17,6 +17,15 @@ type WorkDetailFillMediaProps = {
   mediaType?: "image" | "video";
 };
 
+function isVideoMedia(
+  src: string,
+  mediaType?: "image" | "video"
+): boolean {
+  if (mediaType === "video") return true;
+  if (mediaType === "image") return false;
+  return isWorkVideoSrc(src);
+}
+
 export default function WorkDetailFillMedia({
   mediaId,
   src,
@@ -29,13 +38,12 @@ export default function WorkDetailFillMedia({
   const [loaded, setLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audio = useWorkDetailVideoAudio();
-  const isVideo = mediaType === "video" || isWorkVideoSrc(src);
+  const isVideo = isVideoMedia(src, mediaType);
   const isMuted = audio ? audio.unmutedId !== mediaId : true;
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !isVideo) return;
-
     video.muted = isMuted;
     if (!isMuted) {
       void video.play().catch(() => undefined);
@@ -45,7 +53,6 @@ export default function WorkDetailFillMedia({
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !isVideo) return;
-
     video.muted = true;
     video.playsInline = true;
     void video.play().catch(() => undefined);
@@ -53,16 +60,18 @@ export default function WorkDetailFillMedia({
 
   const toggleMute = () => {
     const video = videoRef.current;
-    if (!video || !audio || !isVideo) return;
+    if (!video || !isVideo) return;
 
     const nextMuted = !isMuted;
     video.muted = nextMuted;
 
-    if (nextMuted) {
-      audio.setUnmutedId(null);
-    } else {
-      audio.setUnmutedId(mediaId);
-      void video.play().catch(() => undefined);
+    if (audio) {
+      if (nextMuted) {
+        audio.setUnmutedId(null);
+      } else {
+        audio.setUnmutedId(mediaId);
+        void video.play().catch(() => undefined);
+      }
     }
   };
 
@@ -72,35 +81,28 @@ export default function WorkDetailFillMedia({
     >
       <div className="relative aspect-4/5 w-full min-h-[58vh] max-md:min-h-[420px] md:aspect-3/4 md:min-h-0">
         {!loaded && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-100/80">
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-zinc-100/80">
             <LoadingSpinner label="Loading" />
           </div>
         )}
 
         {isVideo ? (
-          <>
-            <video
-              ref={videoRef}
-              src={src}
-              poster={poster ?? undefined}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-                loaded ? "opacity-100" : "opacity-0"
-              }`}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              onLoadedData={() => setLoaded(true)}
-              onCanPlay={() => setLoaded(true)}
-              onError={() => setLoaded(true)}
-            />
-            <VideoMuteButton
-              isMuted={isMuted}
-              onClick={toggleMute}
-              className="absolute bottom-4 left-4 z-30"
-            />
-          </>
+          <video
+            ref={videoRef}
+            src={src}
+            poster={poster ?? undefined}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+              loaded ? "opacity-100" : "opacity-0"
+            }`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onLoadedData={() => setLoaded(true)}
+            onCanPlay={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
+          />
         ) : (
           <Image
             src={src}
@@ -119,6 +121,14 @@ export default function WorkDetailFillMedia({
           />
         )}
       </div>
+
+      {isVideo ? (
+        <VideoMuteButton
+          isMuted={isMuted}
+          onClick={toggleMute}
+          className="absolute bottom-4 left-4 z-50"
+        />
+      ) : null}
     </div>
   );
 }

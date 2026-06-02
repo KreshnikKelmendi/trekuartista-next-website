@@ -10,7 +10,7 @@ type WorkListVideoProps = {
 export function isWorkVideoSrc(src?: string) {
   if (!src) return false;
   return (
-    /\.(mp4|webm|mov)(\?|$)/i.test(src) ||
+    /\.(mp4|webm|mov)(\?|#|$)/i.test(src) ||
     src.includes("/video/upload") ||
     src.includes("/videos/")
   );

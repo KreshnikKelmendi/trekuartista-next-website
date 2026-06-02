@@ -143,7 +143,8 @@ function legacyDescriptionFromRow(row: WorkRow): WorkDescriptionItem[] {
 function legacyMediaFromRow(row: WorkRow): WorkMediaItem[] {
   if (!row.work_image) return [];
   const isVideo =
-    /\.(mp4|webm|mov)(\?|$)/i.test(row.work_image) ||
+    /\.(mp4|webm|mov)(\?|#|$)/i.test(row.work_image) ||
+    row.work_image.includes("/video/upload") ||
     row.work_image.includes("/videos/");
   return [
     {
