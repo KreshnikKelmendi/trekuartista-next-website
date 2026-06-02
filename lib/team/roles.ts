@@ -1,0 +1,12 @@
+export const TEAM_ROLES = [
+  "CEO FOUNDER",
+  "OPERATION MANAGER",
+  "FINANCE MANAGER",
+  "SOCIAL MEDIA MANAGER",
+  "GRAPHIC DESIGNER",
+  "UI/UX DESIGNER",
+  "WEB DEVELOPER",
+  "3D ARTIST & MOTION DESIGNER",
+] as const;
+
+export type TeamRole = (typeof TEAM_ROLES)[number];

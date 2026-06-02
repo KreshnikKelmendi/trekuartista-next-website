@@ -1,0 +1,32 @@
+{
+  "__meta": {
+    "instructions": "Copy this block into data/works.json \"works\" array, or use as a template. Paste Cloudinary Copy URL links."
+  },
+  "featuredIds": ["my-new-project"],
+  "filterCategories": ["Brand Identity", "Unassigned"],
+  "works": [
+    {
+      "id": "my-new-project",
+      "workName": "MY PROJECT",
+      "specialCategory": "Brand Strategy",
+      "category": "Logo / Animation",
+      "cover": "https://res.cloudinary.com/YOUR_CLOUD/image/upload/v1234567890/sample.jpg",
+      "thumbnail": "https://res.cloudinary.com/YOUR_CLOUD/image/upload/v1234567890/sample-poster.jpg",
+      "media": [
+        "https://res.cloudinary.com/YOUR_CLOUD/image/upload/v1234567890/hero-1.jpg",
+        "https://res.cloudinary.com/YOUR_CLOUD/image/upload/v1234567890/hero-2.jpg",
+        "https://res.cloudinary.com/YOUR_CLOUD/image/upload/v1234567890/hero-3.jpg",
+        {
+          "url": "https://res.cloudinary.com/YOUR_CLOUD/video/upload/v1234567890/reel.mp4",
+          "thumbnail": "https://res.cloudinary.com/YOUR_CLOUD/image/upload/v1234567890/reel-poster.jpg"
+        }
+      ],
+      "descriptions": [
+        "First paragraph — shows in the page header.",
+        "Second paragraph — shows beside images 4–5 on desktop.",
+        "Optional third paragraph."
+      ],
+      "createdAt": "2026-05-28T00:00:00.000Z"
+    }
+  ]
+}

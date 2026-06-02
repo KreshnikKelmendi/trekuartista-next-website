@@ -1,0 +1,914 @@
+{
+  "__meta": {
+    "instructions": "Paste full Cloudinary delivery URLs (Copy URL) into cover, thumbnail, and each media string. Leave \"\" to skip an asset. Videos can use { \"url\": \"https://...mp4\", \"thumbnail\": \"https://...jpg\" }. Re-run scripts/gen-work-data.py only to reset from Assets paths — otherwise edit this file by hand."
+  },
+  "featuredIds": [
+    "zone-club-latest-ad-campaign",
+    38,
+    "ysabel-advertising",
+    27,
+    26,
+    86,
+    39,
+    6
+  ],
+  "filterCategories": [
+    "Brand Identity",
+    "Social Media",
+    "Campaigns",
+    "Video Production",
+    "Web / UI-UX",
+    "3D / Motion",
+    "Unassigned"
+  ],
+  "works": [
+    {
+      "id": 40,
+      "workName": "The circle your ZØNE",
+      "specialCategory": "Brand Strategy",
+      "category": "Logo / Rebranding / Animation / Marketing Strategy",
+      "workDescription": "Logo / 3D / Animation / Marketing Strategy",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387239/zone-1_bl5sfq.webp",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387239/zone-1_bl5sfq.webp",
+      "media": [
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387239/zone-1_bl5sfq.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387140/zone-2_myppke.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387309/zone-3_bcwvqf.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387309/zone-4_ovmuoh.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387308/zone-5_kcmzrf.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387417/zone-6_gex2tg.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387416/zone-7_teewub.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387415/zone-8_bq9qsf.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387415/zone-9_eqrsir.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387414/zone-10_mdemvp.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387615/zone-11_qt5tkz.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780387761/zone-12_nmh2g9.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387878/zone-13_oldkn4.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387877/zone-14_irrszl.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387876/zone-15_xo7p86.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387993/zone-16_glehjl.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780387992/zone-17_fczhev.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780388029/zone-18_dxm1zu.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780388195/zone-19_mn3lma.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780388196/zone-20_c9q3tg.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780388232/zone-21_hotbvt.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780388242/zone-22_smtomm.mp4"
+      ],
+      "createdAt": "2026-01-10T00:00:00.000Z",
+      "descriptions": [
+        "For Zone Club, we built a rebrand around one powerful idea: the circle. A symbol of rhythm, energy, connection, and the people who come together through music.",
+        "From the streets to the screen, a brand made to move. A visual system that lives across outdoor and social media, all built around one idea: the circle.",
+        "A visual system that lives across outdoor and social media, all built around one idea: the circle. Identity that performs."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": "zone-club-latest-ad-campaign",
+      "workName": "Enter the Circle - AD campaign for Zone Club",
+      "specialCategory": "TV AD",
+      "category": "Brand Strategy",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780323058/Enter_the_Circle_-_Latest_AD_campaign_for_Zone_Club_igfftk.mp4",
+      "thumbnail": "trekuartista/works/zone/zone-latest/zone-8.jpg",
+      "media": [],
+      "createdAt": "2026-01-08T00:00:00.000Z",
+      "workDescription": "Video Advertising / Production",
+      "descriptions": [
+        "Introducing our latest campaign for Zone Club. A visual direction built on identity, energy, and rhythm — centered around “the circle. your zøne.” It’s about turning space into a feeling, where sound, design, and atmosphere move together as one."
+      ],
+      "youtubeLink": "https://www.youtube.com/watch?v=XjY2fr3BSAg",
+      "filterCategory": "Unassigned",
+      "youtubeOnly": true
+    },
+    {
+      "id": 38,
+      "workName": "YSABEL SOCIETY Brand",
+      "specialCategory": "Brand Strategy",
+      "category": "Logo / 3D / Animation / Marketing Strategy / UI & UX / Web Development",
+      "workDescription": "Logo / 3D / Animation / Marketing Strategy / UI & UX / Web Development",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780319588/1-1_klsxyx.mp4",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780319919/3-3_d1m0at.mp4",
+      "media": [
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780319588/1-1_klsxyx.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780319873/2_re9noq.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780319919/3-3_d1m0at.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780320116/5_uwaxpv.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780320117/4-4_fijk7y.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780320251/6_df0c8t.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780320275/7-7_eepo9k.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780320293/8-8_mbm394.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780320314/9_ry5bar.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780320438/10_bm0kfb.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780320461/11_jlzlmv.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780320482/12_xxovlv.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321151/12Version2_clhiod.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321193/14_duswjr.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321192/13_navrm0.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321194/15_mkgkds.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321270/16_wphreg.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321271/17_zdt823.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321349/ins-1_uniee2.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321351/ins-2_amutal.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321352/ins-3_ggcoyj.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321353/ins-4_qzfhap.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321355/ins-5_a4cfor.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321356/ins-6_zw7yic.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321358/ins-7_i02qrf.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321359/ins-8_ojf3yq.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321360/ins-9_wldudv.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321362/ins-10_mt59uc.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321363/ins-11_lsttgh.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321365/ins-12_ohxonu.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780321366/ins-13_g9rwse.jpg"
+      ],
+      "createdAt": "2026-01-05T00:00:00.000Z",
+      "descriptions": [
+        "We’ve developed a refined visual identity for Ysabel Society — a seamless blend of logo design, typography, and visual language inspired by modern minimalism and timeless elegance. Every element reflects the brand’s essence: confident, graceful, and unapologetically sophisticated.",
+        "The visual system flows effortlessly across all touchpoints — from digital presence to print and packaging — creating a cohesive and elevated Ysabel Society experience. A world where style, identity, and detail come together.",
+        "A curated visual journey: imagery defined by subtle contrast, motion guided by intention, and design shaped by emotion. Every detail tells a story — a celebration of identity, refinement, and modern femininity."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": "ysabel-advertising",
+      "workName": "ysabel society ad",
+      "specialCategory": "TV AD",
+      "category": "Brand Strategy",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780343346/ysabel-ad_cjkazq.mp4",
+      "media": [],
+      "createdAt": "2026-01-03T00:00:00.000Z",
+      "workDescription": "Video Advertising / Production",
+      "descriptions": [],
+      "youtubeVideos": [
+        {
+          "url": "https://www.youtube.com/watch?v=mlekOyrX194",
+          "title": "ZYRATH — The Guardian of Ysabel",
+          "description": "He doesn’t speak. He watches. He guards the castle of Ysabel. And still... you’ve seen nothing yet."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=pEJFk1l38R4",
+          "title": "YLARISSE — The White Soul of Ysabel",
+          "description": "She carries light within darkness and what was hidden learns to fly. The white dove takes flight and Ysabel is set free."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=FUng0ELz9D8",
+          "title": "DARVYON — The Visionary of Ysabel",
+          "description": "Born from her thought, he builds what she dreams. Through his creativity, Ysabel becomes real."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=cOdFiPKrVOc",
+          "title": "MIYU — The Ancient Mystic of the East",
+          "description": "She plays with the air, writing what eyes cannot see. Then it burns, and from her silence Ysabel speaks."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=2bptC2ZU5zk",
+          "title": "KORVYAN — The Time Traveler of Ysabel",
+          "description": "Between two worlds he walks. Through him, Ysabel saw the future, and began to build her castle of time."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=TpdvkUTRXgM",
+          "title": "ELYRIA - The First Light of Ysabel",
+          "description": "She carries the essence of welcome, where fragrance becomes emotion."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=4VHxtF0aXLc",
+          "title": "YSABEL - is our creation",
+          "description": "At Trekuartista, true impact is born where strategy meets soul. It's been a true pleasure to be able to imagine, create, and bring to life this beautiful project."
+        }
+      ],
+      "filterCategory": "Unassigned",
+      "youtubeOnly": true
+    },
+    {
+      "id": 27,
+      "workName": "ZONE CLUB 15",
+      "specialCategory": "Brand Strategy",
+      "category": "Logo / 3D / Animation / Marketing",
+      "workDescription": "Logo / 3D / Animation / Marketing",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780385815/zone-1-1_irmjnf.mp4",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780385970/zone-8_s0xogx.png",
+      "media": [
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780385815/zone-1-1_irmjnf.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780385873/zone-2_p5xodf.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780385873/zone-3-3_muhwtk.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780385873/zone-3-3_muhwtk.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780385918/zone-5_gabifa.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780385938/zone-6_ov8taj.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780385940/zone-7-7_tnigrt.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780385970/zone-8_s0xogx.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780385989/zone-9-9_lhdxaj.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386005/zone-10_ecb0gm.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780386025/zone-12-12_i1lpmn.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386102/zone-13_eaawc3.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386124/zone-14_yusti2.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386169/zone-15_jdfl8i.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386189/zone-16_adsloo.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386190/zone-17_tlbpke.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386225/zone-19_w4ou1t.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386304/zone-20_zhpqpu.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386306/zone-21_ix19uh.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386313/zone-22_kyq5dd.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780386395/zone-23_ka6inn.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780386400/zone-24-24_d3yfpq.mp4"
+      ],
+      "createdAt": "2025-12-20T00:00:00.000Z",
+      "descriptions": [
+        "We’ve crafted a new visual identity for Zone Club 15th Anniversary: logo, typography, and visuals inspired by pixel art and glitch aesthetics. From bold colors to nostalgic elements, every detail is designed to capture the club’s vibe – playful, unconventional, and full of rhythm.",
+        "The new visual system and logo flows into everything – from posters to merch – making the Zone Club experience more beautiful and truly unique. 15 Years of ZONE CLUB",
+        "A season of visuals: posters alive with color, videos pulsing with rhythm, icons born from play. Every frame, every detail, a celebration of 15 years of Zone Club."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 26,
+      "workName": "EEC25 Championship",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy / Logo / 3D /  Animation / UI & UX / Web Development",
+      "workDescription": "Brand Strategy / Logo / 3D /  Animation / UI & UX / Web Development",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780398536/esport-1-1_lqxspp.mp4",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399236/esport-13_kdzocx.png",
+      "media": [
+        "trekuartista/works/esports-assets/esport-1-1.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780398552/esport-2-2_krzitc.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780398628/esport-3-3_em051k.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780398649/esport-4-4_xwqffh.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780398672/esport-5-5_vl8egm.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780398699/esport-6-6_mrsgvq.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780398719/esport-7-7_w6qds4.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399152/esport-8-8_dxawjs.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399181/esport-9-9_mshafi.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399204/esport-10_w4ger4.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399229/esport-11_zgy3hi.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399233/esport-12_jp08mq.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399236/esport-13_kdzocx.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399288/esport-14-14_ixgfsf.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399291/esport-15-15_mo3smy.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399294/esport-16_utazdu.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399298/esport-17-17_mbrfn0.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399316/esport-19-19_hormwp.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399308/esport-20_b6trcu.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399441/esport-21_u5nym3.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399443/esport-22_ubxta2.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399447/esport-23_m5evmg.png"
+      ],
+      "createdAt": "2025-12-15T00:00:00.000Z",
+      "descriptions": [
+        "We’re proud to have brought the European Esports Championship 2025 brand to life - from the bold, competitive logo design to the full visual identity that fuels the hype. Our work spans across official merchandise, social media visuals, and event branding, all crafted to capture the energy, precision, and passion of Europe’s biggest esports stage. This is more than just design, it’s the heartbeat of a championship.",
+        "This year’s EEC was more than just a competition, it was a full experience. Trekuartista was behind the design that brought it all together.",
+        "We didn’t just design. We created symbols of victory, community, and energy that made the event unforgettable. Seeing our work come alive on stage, in the crowd, and in the hands of the winners is what keeps us pushing the limits of creativity."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 86,
+      "workName": "EEC25 Championship AD",
+      "specialCategory": "TV AD",
+      "category": "Brand Strategy",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780388633/esports-11_nwetjp.mp4",
+      "thumbnail": "trekuartista/works/esports-assets/esport-10.png",
+      "media": [],
+      "createdAt": "2025-12-12T00:00:00.000Z",
+      "workDescription": "Video Advertising / Production",
+      "descriptions": [
+        "A Choice Driven by Expertise. When a Medical Doctor and Wellness Coach chooses Emona, it speaks to the power of quality and consistency. At Trekuartista, we are thrilled to have facilitated this collaboration, highlighting how mindful choices shape our long-term wellbeing. Because every sip is an investment in yourself. A Trekuartista production."
+      ],
+      "youtubeLink": "https://www.youtube.com/watch?v=R2uDS3PzpGk",
+      "filterCategory": "Unassigned",
+      "youtubeOnly": true
+    },
+    {
+      "id": 39,
+      "workName": "EMONA BRAND AD",
+      "specialCategory": "TV AD",
+      "category": "Brand Strategy",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780388833/emonabrand_online_ierqbb.mp4",
+      "thumbnail": "trekuartista/works/emona/EMONA.jpg",
+      "media": [],
+      "createdAt": "2025-12-10T00:00:00.000Z",
+      "workDescription": "Video Advertising / Production",
+      "descriptions": [
+        "Collection of Trekuartista video productions for Emona Brand AD. Each concept focuses on a different storytelling angle while keeping one consistent brand emotion."
+      ],
+      "youtubeVideos": [
+        {
+          "url": "https://www.youtube.com/watch?v=PfFkVYfmIcU",
+          "title": "Rita Parashumti & Emona Brand",
+          "description": "A Choice Driven by Expertise. When a Medical Doctor and Wellness Coach chooses Emona, it speaks to the power of quality and consistency."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=D2VwUSkkbZM",
+          "title": "Holiday Campaign Story",
+          "description": "A special holiday story with Emona’s Çaji i Zemrës."
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=mDO-VaL35Kw",
+          "title": "Moments with \"Çaji i Zemrës\"",
+          "description": "With Çaji i Zemrës by Emona, every moment becomes warmer."
+        }
+      ],
+      "filterCategory": "Unassigned",
+      "youtubeOnly": true
+    },
+    {
+      "id": 25,
+      "workName": "ALIM GRUP",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy / Logo /  UI & UX / Animation / Marketing",
+      "workDescription": "Brand Strategy / Logo /  UI & UX / Animation / Marketing",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389188/ALIM-1_uit4v6.webp",
+      "media": [
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389188/ALIM-1_uit4v6.webp",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389269/ALIM-2_bmsvgi.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780389397/ALIM-3-3_ctghly.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389430/ALIM-4_yvp2oz.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389431/ALIM-5_gsinen.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389521/ALIM-77_vzfdrg.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389611/ALIM-7_ha0alo.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389685/ALIM-6_r8wgfm.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389709/ALIM-8_pq9imv.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389734/ALIM-10_rejbku.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780389116/ALIM-11-11_qkr0tm.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389956/ALIM-12_dew53x.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389957/ALIM-13_wnlcbt.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780389960/ALIM-16_faifen.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780390076/ALIM-17-17_yonf8y.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780390077/ALIM-18_woleoi.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780390079/ALIM-19_brmiym.webp",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780390081/ALIM-20-20_zvyy6d.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780390083/ALIM-21-21_engewn.mp4"
+      ],
+      "createdAt": "2025-11-28T00:00:00.000Z",
+      "descriptions": [
+        "Inspired by Nature, Built for Impact. We proudly brings a fresh visual identity rebranding ALIM GRUP, based in Turkey - a leader in wood-based panels, from MDF to laminate flooring.",
+        "From bold outdoor signage to clean digital feeds, the new ALIM GRUP identity adapts effortlessly across every platform.",
+        "Whether it’s on a billboard in the city or a scroll on your screen, the re-branding Trekuartista did, speaks with clarity, strength, and consistency."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 24,
+      "workName": "DataJet",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy / Logo /  UI & UX / Animation / Marketing / eSIM",
+      "workDescription": "Brand Strategy / Logo /  UI & UX / Animation / Marketing / eSIM",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780390507/datajet-post-1_go0me0.png",
+      "media": [
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780390507/datajet-post-1_go0me0.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780390734/datajet-post-2-2_l3zujw.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780392572/datajet-post-3-3_zm58gn.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780392618/datajet-post-4-4_o7sh3d.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393138/datajet-post-5_hpwzcn.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393251/datajet-post-6-6_yqaziq.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393294/datajet-post-7-7_vhcg4j.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393341/datajet-post-8_xulbun.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393344/datajet-post-9_nnyqjb.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393441/datajet-post-10-10_vs6wnt.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393443/datajet-post-11-11_enfcxp.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393509/datajet-post-12_krvhrk.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393512/datajet-post-13_mi24bd.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393514/datajet-post-14_wj2ujs.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393517/datajet-post-15_gva0lq.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393519/datajet-post-16-16_la5p44.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393522/datajet-post-17-17_yuw0pf.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393525/datajet-post-18-18_qpjypo.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393527/datajet-post-19_mwumpc.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780393529/datajet-post-20_qfl9tg.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393708/datajet-post-21-21_ajel1v.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780393711/datajet-post-22-22_ua4apl.mp4"
+      ],
+      "createdAt": "2025-11-20T00:00:00.000Z",
+      "descriptions": [
+        "Introducing the new face of connectivity: DataJet, reimagined by Trekuartista. For DataJet , we created a bold, fluid, and future-ready brand that mirrors its mission: effortless, borderless connection.",
+        "From the spark of the idea to the final pixel, our team at Trekuartista led the creative journey — blending movement, tech, and trust into a clean visual language. This is branding that travels.",
+        "More than icons — it’s identity in motion. Each destination, each data package is represented through shapes born from the DataJet logo."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 23,
+      "workName": "47",
+      "specialCategory": "Brand Strategy",
+      "category": "Design Brand Strategy / Logo /  Animation / Web Development",
+      "workDescription": "Design Brand Strategy / Logo /  Animation / Web Development",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399936/47-3-3_kx4bg0.mp4",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399936/47-3-3_kx4bg0.mp4",
+      "media": [
+        "trekuartista/works/47/47-1-1.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399921/47-1-1_dfvzfb.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780399940/47-4_bt8vuz.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780399944/47-47_cc0fmq.mp4"
+      ],
+      "createdAt": "2025-11-10T00:00:00.000Z",
+      "descriptions": [
+        "Some numbers hold power, and 47 is one of them. When we designed the \"47\" logo, we wanted something unstoppable. Rotate it 180°—you still get 47!",
+        "We took 47 from the creative stage to the street. From billboards to merch, digital screens to real-life impact, the 47 mindset is everywhere."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 22,
+      "workName": "LEMONITA",
+      "specialCategory": "Brand Strategy",
+      "category": "Design Brand Strategy / Animation / 3D",
+      "workDescription": "Design Brand Strategy / Animation / 3D",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400433/lemonita-1-1_mb3ztb.mp4",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780400519/lemonita-11_zgijre.jpg",
+      "media": [
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400472/lemonita-3-3_avrt1i.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400478/lemonita-4-4_ysmy2w.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400481/lemonita-5-5_s41m2q.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400486/lemonita-6-6_y3yqmf.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400490/lemonita-7-7_umtgw6.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400496/lemonita-8-8_b5vhtl.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400499/lemonita-9-9_lpc97u.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780400514/lemonita-10_mooqqt.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780400519/lemonita-11_zgijre.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400531/lemonita-12-12_cfvdiv.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780400547/lemonita-13_kctsin.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780400553/lemonita-14-14_zoozul.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780400573/lemonita-15_sy3ula.jpg"
+      ],
+      "createdAt": "2025-10-25T00:00:00.000Z",
+      "descriptions": [
+        "Lemonita a refreshing drink brand designed by us to radiate energy and vitality.",
+        "Lemonita’s bottle label design speaks volumes. Crafted by Trekuartista, this label combines the energy of lemons with a sleek and modern look.",
+        "Inspired by waves of freshness and natural elements, every detail showcases creativity and passion."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 2,
+      "workName": "GJELBËR",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Design Brand Strategy / Web Design / Web Development",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401145/gjelber-1-1_jhxtvr.mp4",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401176/gjelber-06_1_d8wj7x.png",
+      "media": [
+        "trekuartista/works/gjelber/gjelber-1-1.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401149/gjelber-2-2_ns1hib.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401158/gjelber-3-3_l9c17k.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401176/gjelber-06_1_d8wj7x.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401163/gjelber-4-4_hbffrw.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401171/gjelber-5-5_kfetja.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401181/gjelber-6-6_qrt6rl.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401190/gjelber-7-7_d9gvwh.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401195/gjelber-8-8_osutlf.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401204/gjelber-9-9_zksua9.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401209/gjelber-10-10_nh9a3u.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401213/gjelber-11_1_hejvka.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401218/gjelber-11_t5x2hj.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401223/gjelber-12_1_yidl4i.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401236/gjelber-13_kl16tt.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401242/gjelber-14_1_c9iga1.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401246/gjelber-15_vlncbz.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401261/gjelber-16_yyijc4.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401289/gjelber-17_gifq60.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401331/gjelber-21_vpwne4.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780401335/gjelber-22_fa5mrg.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780401340/Post_2_1_-1_mel3sd.mp4"
+      ],
+      "createdAt": "2025-10-01T00:00:00.000Z",
+      "descriptions": [
+        "For Gjelber, we created a brand that highlights their commitment to environmental sustainability and habitat preservation.",
+        "We also designed engaging content to promote Gjelber’s initiatives, focusing on informative social media posts and brochures that inspire community involvement.",
+        "Additionally, we provided a range of creative assets, including graphics and promotional materials, to support Gjelber’s outreach efforts."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 10,
+      "workName": "FLOIL - LATEST CAMPAIGN",
+      "specialCategory": "Brand Strategy",
+      "category": "Campaign / Advertising / Shija e gatimeve të nënës",
+      "workDescription": "Campaign / Advertising / Shija e gatimeve të nënës",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780403393/floil-5_vn9ypz.mp4",
+      "media": [
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403379/floil-1_jqqepg.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403383/floil-2_dve2az.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403388/floil-3_inb03t.png",
+        "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780403397/floil-6_rqcqjt.mp4",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403402/floil-7_yt6akk.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403407/floil-8_ibbsro.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403412/floil-9_dhwysu.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403417/floil-10_py5y4d.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403422/floil-11_kxw3hx.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403426/floil-12_fqjokg.png",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403431/floil-13_vhaucy.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403436/floil-14_bab8rx.jpg",
+        "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780403441/floil-15_qecb2a.jpg"
+      ],
+      "createdAt": "2025-09-20T00:00:00.000Z",
+      "hoverText": "Campaign / Advertising / Shija e gatimeve të nënës",
+      "color": "#1E1E1E",
+      "buttonTextColor": "white",
+      "descriptions": [
+        "From a spark of inspiration to bringing characters to life we brought Floil with a unique twist!",
+        "We went from the creative stage to the streets! Take a look at our outdoor ad placements, bringing our campaign beyond screens.",
+        "From a spark of inspiration to bringing characters to life we brought Floil with a unique twist!"
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": "floil-advertising",
+      "workName": "Floil Advertising",
+      "specialCategory": "TV AD",
+      "category": "Brand Strategy",
+      "cover": "https://res.cloudinary.com/dmzjjud3z/video/upload/v1780402879/floil-mix-1_bdqgld.mp4",
+      "thumbnail": "https://res.cloudinary.com/dmzjjud3z/image/upload/v1780402954/Screenshot_6_dtdnwt.png",
+      "media": [],
+      "createdAt": "2025-09-15T00:00:00.000Z",
+      "workDescription": "Video Advertising / Production",
+      "descriptions": [],
+      "youtubeVideos": [
+        {
+          "url": "https://www.youtube.com/watch?v=Y33q9Pqowa0",
+          "title": "Floil! Shija e gatimeve të nënës",
+          "description": "A warm and emotional TV commercial created for Floil."
+        }
+      ],
+      "filterCategory": "Unassigned",
+      "youtubeOnly": true
+    },
+    {
+      "id": 9,
+      "workName": "AS TRAVEL - 15",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Logo / Branding / Marketing Strategy / PR / Animation & 3D",
+      "cover": "trekuartista/works/astravel/astravel-1.png",
+      "media": [
+        "trekuartista/works/astravel/15VJETOR_3 (1)-1.mp4",
+        "trekuartista/works/astravel/astravel-2.png",
+        "trekuartista/works/astravel/astravel-3.png",
+        "trekuartista/works/astravel/astravel-4.png",
+        "trekuartista/works/astravel/astravel-4.png",
+        "trekuartista/works/astravel/astravel-5.png",
+        "trekuartista/works/astravel/astravel-6.png",
+        "trekuartista/works/astravel/astravel-10.png",
+        "trekuartista/works/astravel/astravel-11.png",
+        "trekuartista/works/astravel/astravel-16.png",
+        "trekuartista/works/astravel/asas.jpg",
+        "trekuartista/works/astravel/astravel-17.png",
+        "trekuartista/works/astravel/astravel-15.png",
+        "trekuartista/works/astravel/asasas.jpg",
+        "trekuartista/works/astravel/astravel-7.png",
+        "trekuartista/works/astravel/astravel-9.png",
+        "trekuartista/works/astravel/2 (1)-1.mp4",
+        "trekuartista/works/astravel/3 (1)-1.mp4",
+        "trekuartista/works/astravel/4 (1)-1.mp4",
+        "trekuartista/works/astravel/astravel-12.png",
+        "trekuartista/works/astravel/astravel-13.png",
+        "trekuartista/works/astravel/astravel-14.png"
+      ],
+      "createdAt": "2025-09-01T00:00:00.000Z",
+      "hoverText": "Campaign / Design / Branding",
+      "color": "#1E1E1E",
+      "buttonTextColor": "white",
+      "descriptions": [
+        "For AS Travel's 15th anniversary, we had the privilege of designing a new logo that captures their growth and commitment to exceptional travel experiences.",
+        "We also carefully selected a typography that reflects the brand's adventurous spirit and commitment to exceptional service.",
+        "By integrating this typography into their logo and promotional content, we aimed to create a strong brand presence that captures the essence of exploration."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 8,
+      "workName": "EPOQUE",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Logo / Branding / Marketing Strategy / PR / Animation & 3D / Web Design & Development",
+      "cover": "trekuartista/works/epoque/epoque-1-1.mp4",
+      "thumbnail": "trekuartista/works/epoque/epoque-8.jpg",
+      "media": [
+        "trekuartista/works/epoque/epoque-2-2.mp4",
+        "trekuartista/works/epoque/epoque-3-3.mp4",
+        "trekuartista/works/epoque/epoque-4-4.mp4",
+        "trekuartista/works/epoque/epoque-5-5.mp4",
+        "trekuartista/works/epoque/epoque-6-6.mp4",
+        "trekuartista/works/epoque/epoque-7-7.mp4",
+        "trekuartista/works/epoque/epoque-8.jpg",
+        "trekuartista/works/epoque/epoque-9-9.mp4",
+        "trekuartista/works/epoque/epoque-10-10.mp4",
+        "trekuartista/works/epoque/epoque-11-11.mp4",
+        "trekuartista/works/epoque/epoque-12.jpg",
+        "trekuartista/works/epoque/epoque-13-13.mp4"
+      ],
+      "createdAt": "2025-08-20T00:00:00.000Z",
+      "hoverText": "Campaign / Design / Logo / Website Design / Development",
+      "descriptions": [
+        "For Époque, we carefullly crafted a logo that captures the timeless elegance of a bygone era, blending intricate vintage details with a modern twist.",
+        "Our work approach highlights the unique character of Époque, with a refined aesthetic that complements its innovative menu.",
+        "The Époque's website that we realized, is a digital showcase that perfectly captures the elegance of dining."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 7,
+      "workName": "KIDSDAY",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Logo / Branding / Animation & 3D",
+      "cover": "trekuartista/works/kidsday/Post_01-01.mp4",
+      "thumbnail": "trekuartista/works/kidsday/kidsday13.png",
+      "media": [
+        "trekuartista/works/kidsday/Post_01-01.mp4",
+        "trekuartista/works/kidsday/Post_02-02.mp4",
+        "trekuartista/works/kidsday/Post_03-03.mp4",
+        "trekuartista/works/kidsday/Post_04-04.mp4",
+        "trekuartista/works/kidsday/Post_05-05.mp4",
+        "trekuartista/works/kidsday/Post_06-06.mp4",
+        "trekuartista/works/kidsday/Post_07-07.mp4",
+        "trekuartista/works/kidsday/Post_08-08.mp4",
+        "trekuartista/works/kidsday/Post_09-09.mp4",
+        "trekuartista/works/kidsday/Post_10-10.mp4",
+        "trekuartista/works/kidsday/Post_11-11.mp4",
+        "trekuartista/works/kidsday/Post_12-12.mp4",
+        "trekuartista/works/kidsday/kidsday13.png",
+        "trekuartista/works/kidsday/kidsday14.png",
+        "trekuartista/works/kidsday/kidsday15.jpg",
+        "trekuartista/works/kidsday/kidsday16.jpg",
+        "trekuartista/works/kidsday/kidsday17.jpg",
+        "trekuartista/works/kidsday/kidsday18.jpg"
+      ],
+      "createdAt": "2025-08-01T00:00:00.000Z",
+      "hoverText": "Campaign / Design / Logo",
+      "descriptions": [
+        "We had the privilege to re-brand the identity for Kidsday, creating a logo that beautifully captures the bonds between them.",
+        "Blue offers versatility and elegance. This palette encourages creativity and imagination.",
+        "For Kidsday, we crafted a playful and engaging visual identity that reflects the app's mission to make every child’s day an adventure."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": "kosovo-olympic-committee",
+      "workName": "Kosovo Olympic Committee",
+      "specialCategory": "TV AD",
+      "category": "Brand Strategy",
+      "cover": "trekuartista/works/video-advertising/kok.mp4",
+      "media": [],
+      "createdAt": "2025-07-20T00:00:00.000Z",
+      "workDescription": "Video Advertising / Production",
+      "descriptions": [
+        "We poured creativity and dedication into this project for the Kosovo Olympic Committee, contributing to their efforts in representing the nation on the global stage."
+      ],
+      "youtubeLink": "https://www.youtube.com/watch?v=0youPK0fjE0",
+      "filterCategory": "Unassigned",
+      "youtubeOnly": true
+    },
+    {
+      "id": 6,
+      "workName": "VEGZA",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Logo / Branding / Marketing Strategy / PR / Animation / Web Design & Development",
+      "cover": "trekuartista/works/vegza/2000x2000 (1)-1.mp4",
+      "thumbnail": "trekuartista/works/vegza/vegza-44.jpg",
+      "media": [
+        "trekuartista/works/vegza/vegza-44.jpg",
+        "trekuartista/works/vegza/vegza-45.jpg",
+        "trekuartista/works/vegza/vegza-48.jpg",
+        "trekuartista/works/vegza/vegza-1.mp4",
+        "trekuartista/works/vegza/vegza-46.jpg",
+        "trekuartista/works/vegza/vegza-49.jpg",
+        "trekuartista/works/vegza/vegza-50.jpg",
+        "trekuartista/works/vegza/vegza-51.jpg",
+        "trekuartista/works/vegza/vegza-52.jpg",
+        "trekuartista/works/vegza/vegza-53.jpg",
+        "trekuartista/works/vegza/vegza-54.jpg"
+      ],
+      "createdAt": "2025-07-01T00:00:00.000Z",
+      "hoverText": "Campaign / Design / Logo",
+      "descriptions": [
+        "Embracing the fusion of asymmetry and modernism, Vegza's newest logo redesign beautifully intertwines the timeless essence of heritage with the contemporary edge of innovation.",
+        "In crafting the social media strategy, we’ve ensured that every post reflects Vegza’s unique perspective.",
+        "We redefined Vegza’s brand, merging modern architectural elegance with innovative visual elements."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 5,
+      "workName": "BOYUT",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Logo / Branding / Marketing Strategy / PR / Animation & 3D",
+      "cover": "trekuartista/works/boyut/boyut-1.jpg",
+      "media": [
+        "trekuartista/works/boyut/boyut11-11.mp4",
+        "trekuartista/works/boyut/boyutAnimation-1.mp4",
+        "trekuartista/works/boyut/boyut15-15.mp4",
+        "trekuartista/works/boyut/boyut10-10.mp4",
+        "trekuartista/works/boyut/boyut5.png",
+        "trekuartista/works/boyut/boyut6.png",
+        "trekuartista/works/boyut/boyut7.png",
+        "trekuartista/works/boyut/boyut4.png",
+        "trekuartista/works/boyut/boyut8.png",
+        "trekuartista/works/boyut/boyut9.png",
+        "trekuartista/works/boyut/boyut3.png",
+        "trekuartista/works/boyut/boyut12.png",
+        "trekuartista/works/boyut/boyut15.png",
+        "trekuartista/works/boyut/boyut14.png",
+        "trekuartista/works/boyut/boyut16.png",
+        "trekuartista/works/boyut/boyut-88.jpg"
+      ],
+      "createdAt": "2025-06-15T00:00:00.000Z",
+      "hoverText": "Campaign / Design / Logo",
+      "color": "#FFFFFF",
+      "buttonTextColor": "#1E1E1E",
+      "descriptions": [
+        "We are incredibly proud to have played a key role in Boyut Plastik's transformative journey.",
+        "We designed Boyut Plastik’s logo to balance its heritage with innovation.",
+        "Our design for Boyut Plastik focuses on consistency and impact, with every element crafted to showcase the brand's commitment to progress and sustainability."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 4,
+      "workName": "MOKNE",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Bottle / Mokne / Logo / Design Brand Strategy / Natyral Water from Istog",
+      "cover": "trekuartista/works/mokne/mokne.png",
+      "media": [
+        "trekuartista/works/mokne/mokneVideo1-1.mp4",
+        "trekuartista/works/mokne/mokneVideo2-2.mp4",
+        "trekuartista/works/mokne/mokne-3.jpg",
+        "trekuartista/works/mokne/mokne-4.jpg",
+        "trekuartista/works/mokne/mokne-5.jpg",
+        "trekuartista/works/mokne/mokne-6.jpg",
+        "trekuartista/works/mokne/mokne-7.jpg",
+        "trekuartista/works/mokne/mokne-8.jpg",
+        "trekuartista/works/mokne/mokne-10.jpg",
+        "trekuartista/works/mokne/mokne-11.jpg",
+        "trekuartista/works/mokne/mokne-12.jpg",
+        "trekuartista/works/mokne/mokne-13.jpg",
+        "trekuartista/works/mokne/mokne-14.jpg",
+        "trekuartista/works/mokne/mokne-15.jpg"
+      ],
+      "createdAt": "2025-06-01T00:00:00.000Z",
+      "descriptions": [
+        "We are pleased to present our remarkable work in designing the Mokne water bottle label.",
+        "MOKNE, a prominent water brand, enlisted our expertise to develop a brand identity that reflects purity, freshness, and natural.",
+        "The logo embodies clarity and precision, symbolizing the water's purity and exclusivity."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 3,
+      "workName": "Termokos",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Logo / Branding / Packaging Design / Marketing Strategy",
+      "cover": "trekuartista/works/termokos/termokos-1.jpg",
+      "media": [
+        "trekuartista/works/termokos/termokosVideo-1.mp4",
+        "trekuartista/works/termokos/termokos-3.jpg",
+        "trekuartista/works/termokos/termokos-4.jpg",
+        "trekuartista/works/termokos/Logo_Animation-1.mp4",
+        "trekuartista/works/termokos/termokos-5.jpg",
+        "trekuartista/works/termokos/termokos-6.jpg",
+        "trekuartista/works/termokos/termokos-7.jpg",
+        "trekuartista/works/termokos/termokos-8.jpg",
+        "trekuartista/works/termokos/termokos-9.jpg",
+        "trekuartista/works/termokos/termokos-10.jpg",
+        "trekuartista/works/termokos/termokos-11.jpg",
+        "trekuartista/works/termokos/termokos-12.jpg",
+        "trekuartista/works/termokos/termokos-13.jpg",
+        "trekuartista/works/termokos/termokos-14.jpg",
+        "trekuartista/works/termokos/termokos-15.jpg",
+        "trekuartista/works/termokos/termokos-16.jpg",
+        "trekuartista/works/termokos/termokos-17.jpg",
+        "trekuartista/works/termokos/termokos-18.jpg"
+      ],
+      "createdAt": "2025-05-20T00:00:00.000Z",
+      "descriptions": [
+        "Introducing Termokos’s refreshed identity, symbolizing their commitment to innovation and evolution.",
+        "In the mission of reshaping TERMOKOS, we ingeniously infused the distinctive silhouette of its buildings into the design.",
+        "This new logo embodies the core values functionality, setting the stage for exciting journeys ahead."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 101,
+      "workName": "DOKUTECH",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Design Brand Strategy / Web Design / Web Development",
+      "cover": "trekuartista/works/dokutech1/Untitle1312d-2-01 (1).png",
+      "media": [
+        "trekuartista/works/dokutech1/Untitle1312d-2-01 (1).png",
+        "trekuartista/works/dokutech1/Untitle1312d-2-02 (1).png",
+        "trekuartista/works/dokutech1/Untitle1312d-2-07 (1).png",
+        "trekuartista/works/dokutech1/DokuTechFinal-1.mp4",
+        "trekuartista/works/dokutech1/Untitle1312d-2-08 (1).png",
+        "trekuartista/works/dokutech1/dokutech-9-9.mp4",
+        "trekuartista/works/dokutech1/dokutech-2-1.mp4",
+        "trekuartista/works/dokutech1/dokutech-3-1.mp4",
+        "trekuartista/works/dokutech1/dokutech-4-4.mp4",
+        "trekuartista/works/dokutech1/dokutech-5-5.mp4",
+        "trekuartista/works/dokutech1/dokutech-6-6.mp4",
+        "trekuartista/works/dokutech1/dokutech-7-7.mp4",
+        "trekuartista/works/dokutech1/dokutech-8-8.mp4",
+        "trekuartista/works/dokutech1/Untitle1312d-2-09 (1).png",
+        "trekuartista/works/dokutech1/Untitle1312d-2-05 (1).png",
+        "trekuartista/works/dokutech1/Untitle1312d-2-06 (1).png",
+        "trekuartista/works/dokutech1/Untitle1312d-2-10 (1).png"
+      ],
+      "createdAt": "2025-05-01T00:00:00.000Z",
+      "descriptions": [
+        "We created the visual identity, communication strategy, and overall design for the jubilee edition of Dokutech.",
+        "We encapsulated a decade of tech goodness within one edition's visuals, full of colors and futuristic vibes.",
+        "The main visual in the design is the clock/spinning wheel/wormhole imagery."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 12,
+      "workName": "DROPS",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Design Brand Strategy / Web Design / Web Development",
+      "cover": "trekuartista/works/drops/drops-1-1.mp4",
+      "thumbnail": "trekuartista/works/drops/drops-6.png",
+      "media": [
+        "trekuartista/works/drops/drops-2-1.mp4",
+        "trekuartista/works/drops/drops-3-1.mp4",
+        "trekuartista/works/drops/drops-4-1.mp4",
+        "trekuartista/works/drops/drops-5-1.mp4",
+        "trekuartista/works/drops/drops-6.png",
+        "trekuartista/works/drops/drops-15-1.mp4",
+        "trekuartista/works/drops/drops-8.png",
+        "trekuartista/works/drops/drops-9-1.mp4",
+        "trekuartista/works/drops/drops-10-1.mp4",
+        "trekuartista/works/drops/drops-11.png",
+        "trekuartista/works/drops/drops-12.jpg",
+        "trekuartista/works/drops/drops-13.png",
+        "trekuartista/works/drops/drops-14-1.mp4",
+        "trekuartista/works/drops/drops-7.webp"
+      ],
+      "createdAt": "2025-04-15T00:00:00.000Z",
+      "descriptions": [
+        "For Drops, a modern pub in the heart of Graz, Austria. we crafted a distinctive and captivating identity.",
+        "Our goal was to create a brand presence for Drops that is both vibrant and memorable.",
+        "These carefully crafted symbols help bring the brand to life, encapsulating the essence of Drops in a visual language."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 14,
+      "workName": "HERZPRAXIS",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy / Web Design ",
+      "workDescription": "Design Brand Strategy / Web Design / Web Development",
+      "cover": "trekuartista/works/herzpraxis/herzpraxis1.jpg",
+      "media": [
+        "trekuartista/works/herzpraxis/herzpraxis2.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis3.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis4.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis5.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis6.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis7.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis8-8.mp4",
+        "trekuartista/works/herzpraxis/herzpraxis9.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis10.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis11.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis12.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis13.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis14.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis15.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis16.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis17.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis18.jpg",
+        "trekuartista/works/herzpraxis/herzpraxis19.jpg"
+      ],
+      "createdAt": "2025-04-01T00:00:00.000Z",
+      "descriptions": [
+        "In this unique project, we created a visual identity that precisely reflects the spirit of a medical practice dedicated to heart health.",
+        "The logo for Herzpraxis blends simplicity with depth.",
+        "The Herzpraxi’s website is designed with the same attention to detail as the brand’s visual identity."
+      ],
+      "filterCategory": "Unassigned"
+    },
+    {
+      "id": 1,
+      "workName": "EMONA BRAND",
+      "specialCategory": "Brand Strategy",
+      "category": "Brand Strategy",
+      "workDescription": "Bottle / Logo / Design Brand Strategy",
+      "cover": "trekuartista/works/emona/EMONA.jpg",
+      "media": [
+        "trekuartista/works/emona/emona-video (1)-1.mp4",
+        "trekuartista/works/emona/emona-tea (1).jpg",
+        "trekuartista/works/emona/2-tea (1).jpg",
+        "trekuartista/works/emona/3-tea (1).jpg",
+        "trekuartista/works/emona/4-tea (1).jpg",
+        "trekuartista/works/emona/6-emona (1) (1).jpg",
+        "trekuartista/works/emona/6-emona (2) (1).jpg",
+        "trekuartista/works/emona/emona-2-animation (1)-1.mp4",
+        "trekuartista/works/emona/emona-3-animation (1)-2.mp4"
+      ],
+      "createdAt": "2025-03-01T00:00:00.000Z",
+      "descriptions": [],
+      "filterCategory": "Unassigned"
+    }
+  ]
+}
