@@ -18,6 +18,12 @@ import type { WorkItem } from "@/lib/works/types";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+function featuredFirstDescription(work: WorkItem): string {
+  const sorted = [...work.descriptions].sort((a, b) => a.sortOrder - b.sortOrder);
+  const first = sorted.find((d) => d.content.trim());
+  return first?.content.trim() ?? work.description?.trim() ?? "";
+}
+
 function FeaturedWorkMedia({ work }: { work: WorkItem }) {
   const [hovered, setHovered] = useState(false);
   const mouseX = useMotionValue(0);
@@ -144,6 +150,8 @@ function DesktopFeaturedScroll({ works }: { works: WorkItem[] }) {
 
   if (!activeWork) return null;
 
+  const firstDescription = featuredFirstDescription(activeWork);
+
   return (
     <div
       ref={sectionRef}
@@ -170,9 +178,11 @@ function DesktopFeaturedScroll({ works }: { works: WorkItem[] }) {
                   <h3 className="font-custom2 text-base uppercase leading-[35px] text-[#111] lg:text-[30px]">
                     {activeWork.workName}
                   </h3>
-                  <p className="max-w-[340px] font-custom1 text-[14px] leading-[30px] text-black lg:text-[20px]">
-                    {activeWork.specialCategory}
-                  </p>
+                  {firstDescription ? (
+                    <p className="max-w-[340px] whitespace-pre-wrap font-custom1 text-[14px] leading-snug text-black lg:max-w-[420px] lg:text-[18px] lg:leading-[1.35]">
+                      {firstDescription}
+                    </p>
+                  ) : null}
                 </div>
 
                 <div>

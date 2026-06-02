@@ -91,10 +91,17 @@ const VideoAnimation = () => {
   }, []);
 
   useEffect(() => {
-    const videos = [videoRef.current, videoRefMobile.current].filter(
-      Boolean
-    ) as HTMLVideoElement[];
-    if (videos.length === 0) return;
+    const desktopVideo = videoRef.current;
+    const mobileVideo = videoRefMobile.current;
+    const active = isMobile ? mobileVideo : desktopVideo;
+    const inactive = isMobile ? desktopVideo : mobileVideo;
+
+    if (inactive) {
+      inactive.pause();
+      inactive.muted = true;
+    }
+
+    if (!active) return;
 
     setIsLoading(true);
 
@@ -102,25 +109,37 @@ const VideoAnimation = () => {
     const handleWaiting = () => setIsLoading(true);
     const handlePlaying = () => setIsLoading(false);
 
-    for (const video of videos) {
-      video.muted = true;
-      video.playsInline = true;
-      video.src = videoSrc;
-      video.load();
-      video.addEventListener("canplay", handleCanPlay);
-      video.addEventListener("waiting", handleWaiting);
-      video.addEventListener("playing", handlePlaying);
-      void video.play().catch(() => undefined);
-    }
+    active.muted = true;
+    active.playsInline = true;
+    active.src = videoSrc;
+    active.load();
+    active.addEventListener("canplay", handleCanPlay);
+    active.addEventListener("waiting", handleWaiting);
+    active.addEventListener("playing", handlePlaying);
+    void active.play().catch(() => undefined);
 
     return () => {
-      for (const video of videos) {
-        video.removeEventListener("canplay", handleCanPlay);
-        video.removeEventListener("waiting", handleWaiting);
-        video.removeEventListener("playing", handlePlaying);
-      }
+      active.removeEventListener("canplay", handleCanPlay);
+      active.removeEventListener("waiting", handleWaiting);
+      active.removeEventListener("playing", handlePlaying);
     };
   }, [videoSrc, isMobile]);
+
+  useEffect(() => {
+    const desktopVideo = videoRef.current;
+    const mobileVideo = videoRefMobile.current;
+    const active = isMobile ? mobileVideo : desktopVideo;
+    const inactive = isMobile ? desktopVideo : mobileVideo;
+
+    if (inactive) {
+      inactive.pause();
+      inactive.muted = true;
+    }
+
+    if (active) {
+      active.muted = isMuted;
+    }
+  }, [isMuted, isMobile]);
 
   const { scrollYProgress } = useScroll({
     target: isMounted ? sectionRef : undefined,
@@ -160,8 +179,13 @@ const VideoAnimation = () => {
 
   const toggleMute = () => {
     const nextMuted = !isMuted;
-    for (const video of [videoRef.current, videoRefMobile.current]) {
-      if (video) video.muted = nextMuted;
+    const active = isMobile ? videoRefMobile.current : videoRef.current;
+    const inactive = isMobile ? videoRef.current : videoRefMobile.current;
+
+    if (active) active.muted = nextMuted;
+    if (inactive) {
+      inactive.muted = true;
+      inactive.pause();
     }
     setIsMuted(nextMuted);
   };

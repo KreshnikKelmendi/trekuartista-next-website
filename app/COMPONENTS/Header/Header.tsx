@@ -56,7 +56,7 @@ function LogoComponent({ className = "" }: { className?: string }) {
 
   return (
     <div className="block font-custom">
-      <Link href="/" onClick={() => window.scrollTo({ top: 0, left: 0 })}>
+      <Link href="/" onClick={() => window.scrollTo({ top: 0, left: 0 })} className="cursor-pointer">
         {showFirstLogo ? (
           <motion.div
             className={`w-[175px] h-[47px] relative ${className}`}
@@ -127,7 +127,7 @@ function MenuLink({ to, label, num, onNavigate }: { to: string; label: string; n
         scrollTopSmooth();
         onNavigate();
       }}
-      className="group relative flex items-start font-custom text-black"
+      className="group relative flex cursor-pointer items-start font-custom text-black"
     >
       <span className="text-[clamp(2.5rem,8vw,5.5rem)] font-light uppercase leading-none tracking-tight transition-opacity group-hover:opacity-60">
         {label}
@@ -188,40 +188,49 @@ const Header = () => {
   // --- Animations ---
   const overlayVariants = {
     hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1, 
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, when: "beforeChildren" as const } 
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.22,
+        ease: [0.22, 1, 0.36, 1] as const,
+        when: "beforeChildren" as const,
+        staggerChildren: 0.04,
+      },
     },
-    exit: { 
-      opacity: 0, 
-      transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] as const, when: "afterChildren" as const } 
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.18,
+        ease: [0.4, 0, 0.2, 1] as const,
+        when: "afterChildren" as const,
+      },
     },
   };
 
   const menuItemVariants = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { 
-        delay: 0.2 + i * 0.1, 
-        duration: 0.8, 
-        ease: [0.22, 1, 0.36, 1] as const
+      transition: {
+        delay: i * 0.05,
+        duration: 0.32,
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     }),
     exit: {
       opacity: 0,
-      y: 18,
-      transition: { duration: 0.42, ease: [0.4, 0, 0.2, 1] as const },
+      y: 12,
+      transition: { duration: 0.15, ease: [0.4, 0, 0.2, 1] as const },
     },
   };
 
   const slashVariants = {
     hidden: { opacity: 0, scale: 0.8 },
-    visible: { 
-      opacity: 0.2, 
-      scale: 1, 
-      transition: { delay: 0.4, duration: 0.8 } 
+    visible: {
+      opacity: 0.2,
+      scale: 1,
+      transition: { delay: 0.1, duration: 0.3 },
     },
     exit: {
       opacity: 0,
@@ -272,7 +281,7 @@ const Header = () => {
                 <button
                   type="button"
                   onClick={closeMenu}
-                  className="flex min-h-[40px] min-w-[53px] items-center justify-end text-black"
+                  className="flex min-h-[40px] min-w-[53px] cursor-pointer items-center justify-end text-black transition-transform active:scale-95"
                   aria-label="Close menu"
                 >
                   {closeIcon}

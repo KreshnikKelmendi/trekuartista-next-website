@@ -9,6 +9,7 @@ import type {
   YoutubeVideoEntry,
 } from "@/lib/works/types";
 import WorkDetailFillMedia from "./WorkDetailFillMedia";
+import { WorkDetailVideoAudioProvider } from "./WorkDetailVideoAudioContext";
 
 type WorkDetailProps = {
   work: WorkItem;
@@ -190,10 +191,12 @@ function MediaBlock({
 }) {
   return (
     <WorkDetailFillMedia
+      mediaId={item.id}
       src={item.url}
       poster={item.thumbnail}
       alt={workName}
       priority={priority}
+      mediaType={item.mediaType}
     />
   );
 }
@@ -218,6 +221,7 @@ export default function WorkDetail({ work }: WorkDetailProps) {
   const hasMiddleRow = middlePair.length > 0 || featuredDescription != null;
 
   return (
+    <WorkDetailVideoAudioProvider>
     <article className={`bg-transparent pb-16 text-black md:pb-24 ${sectionGap}`}>
       <div className={`border-b border-black/10 py-5 ${pagePx}`}>
         <Link
@@ -348,5 +352,6 @@ export default function WorkDetail({ work }: WorkDetailProps) {
         </Link>
       </div>
     </article>
+    </WorkDetailVideoAudioProvider>
   );
 }

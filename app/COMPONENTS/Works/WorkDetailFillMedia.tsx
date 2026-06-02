@@ -1,27 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import LoadingSpinner from "@/app/COMPONENTS/ui/LoadingSpinner";
+import VideoMuteButton from "@/app/COMPONENTS/ui/VideoMuteButton";
+import { useWorkDetailVideoAudio } from "./WorkDetailVideoAudioContext";
 import { isWorkVideoSrc } from "./WorkListVideo";
 
 type WorkDetailFillMediaProps = {
+  mediaId: string;
   src: string;
   poster?: string | null;
   alt: string;
   priority?: boolean;
   className?: string;
+  mediaType?: "image" | "video";
 };
 
 export default function WorkDetailFillMedia({
+  mediaId,
   src,
   poster,
   alt,
   priority = false,
   className = "",
+  mediaType,
 }: WorkDetailFillMediaProps) {
   const [loaded, setLoaded] = useState(false);
-  const isVideo = isWorkVideoSrc(src);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audio = useWorkDetailVideoAudio();
+  const isVideo = mediaType === "video" || isWorkVideoSrc(src);
+  const isMuted = audio ? audio.unmutedId !== mediaId : true;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isVideo) return;
+
+    video.muted = isMuted;
+    if (!isMuted) {
+      void video.play().catch(() => undefined);
+    }
+  }, [isMuted, isVideo]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isVideo) return;
+
+    video.muted = true;
+    video.playsInline = true;
+    void video.play().catch(() => undefined);
+  }, [src, isVideo]);
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video || !audio || !isVideo) return;
+
+    const nextMuted = !isMuted;
+    video.muted = nextMuted;
+
+    if (nextMuted) {
+      audio.setUnmutedId(null);
+    } else {
+      audio.setUnmutedId(mediaId);
+      void video.play().catch(() => undefined);
+    }
+  };
 
   return (
     <div
@@ -35,21 +78,29 @@ export default function WorkDetailFillMedia({
         )}
 
         {isVideo ? (
-          <video
-            src={src}
-            poster={poster ?? undefined}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-              loaded ? "opacity-100" : "opacity-0"
-            }`}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            onLoadedData={() => setLoaded(true)}
-            onCanPlay={() => setLoaded(true)}
-            onError={() => setLoaded(true)}
-          />
+          <>
+            <video
+              ref={videoRef}
+              src={src}
+              poster={poster ?? undefined}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                loaded ? "opacity-100" : "opacity-0"
+              }`}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              onLoadedData={() => setLoaded(true)}
+              onCanPlay={() => setLoaded(true)}
+              onError={() => setLoaded(true)}
+            />
+            <VideoMuteButton
+              isMuted={isMuted}
+              onClick={toggleMute}
+              className="absolute bottom-4 left-4 z-30"
+            />
+          </>
         ) : (
           <Image
             src={src}
