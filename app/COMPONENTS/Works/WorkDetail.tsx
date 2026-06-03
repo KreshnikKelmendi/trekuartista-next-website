@@ -16,8 +16,12 @@ type WorkDetailProps = {
 };
 
 const pagePx = "px-5 lg:px-[55px]";
-const blockGap = "gap-6 md:gap-8";
-const sectionGap = "space-y-8 md:space-y-12";
+const blockGap = "gap-4 md:gap-5";
+const sectionGap = "space-y-5 md:space-y-12";
+
+/** Shared body copy — matches block 2 & 3 (featured) descriptions */
+const descriptionBodyClass =
+  "whitespace-pre-wrap text-base leading-relaxed md:text-xl md:leading-relaxed lg:text-[1.55rem] lg:leading-[1.42] xl:leading-[1.35]";
 
 function DescriptionBlockSmall({
   text,
@@ -31,7 +35,7 @@ function DescriptionBlockSmall({
       <p className="text-[10px] uppercase tracking-[0.35em] text-black/40">
         {String(index + 1).padStart(2, "0")}
       </p>
-      <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-600 md:text-[15px] md:leading-relaxed">
+      <p className={`${descriptionBodyClass} text-zinc-600`}>
         {text.content}
       </p>
     </div>
@@ -40,7 +44,7 @@ function DescriptionBlockSmall({
 
 function DescriptionBlockFeatured({ text }: { text: WorkDescriptionItem }) {
   return (
-    <p className="whitespace-pre-wrap text-base leading-relaxed text-zinc-800 md:text-xl md:leading-relaxed lg:text-2xl lg:leading-snug">
+    <p className={`${descriptionBodyClass} text-zinc-800`}>
       {text.content}
     </p>
   );
@@ -116,7 +120,7 @@ function YoutubeVideoText({ video }: { video: YoutubeVideoEntry }) {
         </h3>
       ) : null}
       {video.description ? (
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-600 md:text-base md:leading-relaxed">
+        <p className={`${descriptionBodyClass} text-zinc-600`}>
           {video.description}
         </p>
       ) : null}
@@ -144,7 +148,7 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
         <h2 className="text-[11px] uppercase tracking-[0.35em] text-black/40">
           {heading}
         </h2>
-        <div className="space-y-8">
+        <div className="space-y-5 md:space-y-8">
           <YoutubeEmbed video={video} />
           <YoutubeVideoText video={video} />
         </div>
@@ -157,7 +161,7 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
       <h2 className="text-[11px] uppercase tracking-[0.35em] text-black/40">
         {heading}
       </h2>
-      <div className="space-y-12 md:space-y-16">
+      <div className="space-y-8 md:space-y-16">
         {videos.map((video, index) => {
           const flip = index % 2 === 1;
 
@@ -166,11 +170,12 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
               key={`${video.url}-${index}`}
               className={`flex flex-col ${blockGap} md:grid md:grid-cols-2 md:items-center md:gap-10`}
             >
-              <div className={flip ? "order-2 md:order-2" : "order-1 md:order-1"}>
-                <YoutubeVideoText video={video} />
-              </div>
-              <div className={flip ? "order-1 md:order-1" : "order-2 md:order-2"}>
+              {/* Mobile: video then text. Desktop: alternating sides */}
+              <div className={flip ? "order-1 md:order-1" : "order-1 md:order-2"}>
                 <YoutubeEmbed video={video} />
+              </div>
+              <div className={flip ? "order-2 md:order-2" : "order-2 md:order-1"}>
+                <YoutubeVideoText video={video} />
               </div>
             </div>
           );
@@ -184,10 +189,14 @@ function MediaBlock({
   item,
   workName,
   priority,
+  square,
+  compact,
 }: {
   item: WorkMediaItem;
   workName: string;
   priority?: boolean;
+  square?: boolean;
+  compact?: boolean;
 }) {
   return (
     <WorkDetailFillMedia
@@ -197,6 +206,8 @@ function MediaBlock({
       alt={workName}
       priority={priority}
       mediaType={item.mediaType}
+      square={square}
+      compact={compact}
     />
   );
 }
@@ -219,11 +230,18 @@ export default function WorkDetail({ work }: WorkDetailProps) {
 
   const hasTopRow = topThree.length > 0;
   const hasMiddleRow = middlePair.length > 0 || featuredDescription != null;
+  const useSquareGrid =
+    work.detailMediaStyle === "square" || work.id === "1";
+  const useTwoColGrid = work.detailGridCols === 2 && !useSquareGrid;
+  const mediaGridClass = `grid grid-cols-1 ${blockGap} ${
+    useTwoColGrid ? "lg:grid-cols-2" : "md:grid-cols-3"
+  }`;
+  const useSimpleGallery = useSquareGrid || useTwoColGrid;
 
   return (
     <WorkDetailVideoAudioProvider>
-    <article className={`bg-transparent pb-16 text-black md:pb-24 ${sectionGap}`}>
-      <div className={`border-b border-black/10 py-5 ${pagePx}`}>
+    <article className={`bg-transparent pb-12 text-black md:pb-24 ${sectionGap}`}>
+      <div className={` py-3 md:py-5 ${pagePx}`}>
         <Link
           href="/our-works"
           className="text-[11px] uppercase tracking-[0.25em] text-black/45 transition hover:text-black"
@@ -232,15 +250,15 @@ export default function WorkDetail({ work }: WorkDetailProps) {
         </Link>
       </div>
 
-      <header className={`border-b border-black/10 py-10 md:py-14 ${pagePx}`}>
+      <header className={`py-5 md:pt-0 md:pb-0 ${pagePx}`}>
         <p className="text-[11px] uppercase tracking-[0.35em] text-[#DF319A]">
           {work.specialCategory}
         </p>
-        <h1 className="mt-4 max-w-5xl font-custom text-4xl font-bold uppercase leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
+        <h1 className="mt-2 max-w-5xl font-custom text-4xl font-bold uppercase leading-[0.92] tracking-tight md:mt-4 md:text-6xl lg:text-7xl">
           {work.workName}
         </h1>
         {intro ? (
-          <p className="mt-8 max-w-3xl text-sm leading-relaxed text-zinc-600 md:text-base md:leading-relaxed">
+          <p className={`mt-4 max-w-3xl md:mt-8 ${descriptionBodyClass} text-zinc-600`}>
             {intro.content}
           </p>
         ) : null}
@@ -250,9 +268,23 @@ export default function WorkDetail({ work }: WorkDetailProps) {
         <WorkYoutubeSection work={work} />
       ) : (
       <div className={`${pagePx} ${sectionGap}`}>
-        {/* Row 1 — three images only */}
-        {hasTopRow ? (
-          <div className={`grid grid-cols-1 md:grid-cols-3 ${blockGap}`}>
+        {useSimpleGallery && media.length > 0 ? (
+          <div className={mediaGridClass}>
+            {media.map((item, i) => (
+              <MediaBlock
+                key={item.id}
+                item={item}
+                workName={work.workName}
+                priority={i === 0}
+                square={useSquareGrid}
+                compact={useTwoColGrid}
+              />
+            ))}
+          </div>
+        ) : null}
+
+        {!useSimpleGallery && hasTopRow ? (
+          <div className={mediaGridClass}>
             {topThree.map((item, i) => (
               <MediaBlock
                 key={item.id}
@@ -264,8 +296,7 @@ export default function WorkDetail({ work }: WorkDetailProps) {
           </div>
         ) : null}
 
-        {/* Row 2 — next two images, then 2nd description on the right */}
-        {hasMiddleRow ? (
+        {!useSimpleGallery && hasMiddleRow ? (
           <div
             className={`flex flex-col ${blockGap} md:grid md:grid-cols-3 md:items-stretch`}
           >
@@ -291,8 +322,7 @@ export default function WorkDetail({ work }: WorkDetailProps) {
           </div>
         ) : null}
 
-        {/* After five assets — 6th | description 3 | 7th (center column) */}
-        {thirdDescription || centerLeftMedia || centerRightMedia ? (
+        {!useSimpleGallery && (thirdDescription || centerLeftMedia || centerRightMedia) ? (
           <div
             className={`grid grid-cols-1 ${blockGap} md:grid-cols-3 md:items-center`}
           >
@@ -305,7 +335,7 @@ export default function WorkDetail({ work }: WorkDetailProps) {
             </div>
 
             {thirdDescription ? (
-              <div className="order-2 flex items-center justify-center px-0 py-6 md:order-0 md:px-6 md:py-10">
+              <div className="order-2 flex items-center justify-center px-0 py-4 md:order-0 md:px-6 md:py-10">
                 <DescriptionBlockFeatured text={thirdDescription} />
               </div>
             ) : (
@@ -330,9 +360,8 @@ export default function WorkDetail({ work }: WorkDetailProps) {
           </div>
         ) : null}
 
-        {/* Remaining media in 3-column grid */}
-        {restMedia.length > 0 ? (
-          <div className={`grid grid-cols-1 md:grid-cols-3 ${blockGap}`}>
+        {!useSimpleGallery && restMedia.length > 0 ? (
+          <div className={mediaGridClass}>
             {restMedia.map((item) => (
               <MediaBlock key={item.id} item={item} workName={work.workName} />
             ))}
@@ -343,7 +372,7 @@ export default function WorkDetail({ work }: WorkDetailProps) {
       </div>
       )}
 
-      <div className={`border-t border-black/10 pt-8 text-center ${pagePx}`}>
+      <div className={`border-t border-black/10 pt-6 text-center md:pt-8 ${pagePx}`}>
         <Link
           href="/our-works"
           className="text-[11px] uppercase tracking-[0.25em] text-black/40 transition hover:text-black"

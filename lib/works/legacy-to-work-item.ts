@@ -138,6 +138,8 @@ export function legacyWorkToWorkItem(entry: LegacyWorkDefinition): WorkItem {
     hoverText: entry.hoverText,
     color: entry.color,
     buttonTextColor: entry.buttonTextColor,
+    detailGridCols: entry.detailGridCols,
+    detailMediaStyle: entry.detailMediaStyle,
   };
 }
 

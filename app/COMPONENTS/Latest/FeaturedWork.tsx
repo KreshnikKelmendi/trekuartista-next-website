@@ -179,7 +179,7 @@ function DesktopFeaturedScroll({ works }: { works: WorkItem[] }) {
                     {activeWork.workName}
                   </h3>
                   {firstDescription ? (
-                    <p className="max-w-[340px] whitespace-pre-wrap font-custom1 text-[14px] leading-snug text-black lg:max-w-[420px] lg:text-[18px] lg:leading-[1.35]">
+                    <p className="max-w-[340px] whitespace-pre-wrap font-custom1 text-[14px] leading-snug text-black md:max-w-[380px] md:text-base lg:max-w-[480px] lg:text-xl lg:leading-[1.4] xl:text-[1.35rem]">
                       {firstDescription}
                     </p>
                   ) : null}

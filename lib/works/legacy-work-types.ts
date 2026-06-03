@@ -33,6 +33,10 @@ export type LegacyWorkDefinition = {
   youtubeVideos?: YoutubeVideoEntry[];
   /** True for TV ads: no `media` gallery, only YouTube on the project page */
   youtubeOnly?: boolean;
+  /** Detail page gallery columns on large screens (default 3) */
+  detailGridCols?: 2 | 3;
+  /** Square tiles in a simple 3-column gallery (e.g. EMONA) */
+  detailMediaStyle?: "square";
   filterCategory?: string;
   hoverText?: string;
   color?: string;

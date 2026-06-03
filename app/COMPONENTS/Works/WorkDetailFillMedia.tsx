@@ -15,6 +15,10 @@ type WorkDetailFillMediaProps = {
   priority?: boolean;
   className?: string;
   mediaType?: "image" | "video";
+  /** Square tiles for 3-column galleries (e.g. EMONA) */
+  square?: boolean;
+  /** Shorter tiles for 2-column detail grids */
+  compact?: boolean;
 };
 
 function isVideoMedia(
@@ -34,6 +38,8 @@ export default function WorkDetailFillMedia({
   priority = false,
   className = "",
   mediaType,
+  square = false,
+  compact = false,
 }: WorkDetailFillMediaProps) {
   const [loaded, setLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -79,7 +85,15 @@ export default function WorkDetailFillMedia({
     <div
       className={`relative w-full overflow-hidden rounded-lg bg-zinc-100/80 ${className}`}
     >
-      <div className="relative aspect-4/5 w-full min-h-[58vh] max-md:min-h-[420px] md:aspect-3/4 md:min-h-0">
+      <div
+        className={
+          square
+            ? "relative aspect-square w-full min-h-0"
+            : compact
+              ? "relative aspect-4/5 w-full max-md:min-h-[320px] lg:aspect-5/4 lg:min-h-0"
+              : "relative aspect-4/5 w-full min-h-0 md:aspect-3/4"
+        }
+      >
         {!loaded && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-zinc-100/80">
             <LoadingSpinner label="Loading" />

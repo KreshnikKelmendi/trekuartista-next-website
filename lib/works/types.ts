@@ -39,6 +39,10 @@ export type WorkItem = {
   youtubeVideos?: YoutubeVideoEntry[];
   /** No gallery — only YouTube on detail (TV ads) */
   youtubeOnly?: boolean;
+  /** Detail gallery columns on large screens (default 3) */
+  detailGridCols?: 2 | 3;
+  /** Square media tiles in a uniform 3-column gallery */
+  detailMediaStyle?: "square";
   filterCategory?: string;
   hoverText?: string;
   color?: string;
