@@ -119,7 +119,17 @@ function LogoComponent({ className = "" }: { className?: string }) {
 }
 
 // --- Sub-Component: MenuLink ---
-function MenuLink({ to, label, num, onNavigate }: { to: string; label: string; num: string; onNavigate: () => void }) {
+function MenuLink({
+  to,
+  label,
+  num,
+  onNavigate,
+}: {
+  to: string;
+  label: string;
+  num: string;
+  onNavigate: () => void;
+}) {
   return (
     <Link
       href={to}
@@ -127,17 +137,45 @@ function MenuLink({ to, label, num, onNavigate }: { to: string; label: string; n
         scrollTopSmooth();
         onNavigate();
       }}
-      className="group relative flex cursor-pointer items-start font-custom text-black"
+      className="group relative inline-block cursor-pointer font-sfts"
     >
-      <span className="text-[clamp(2.5rem,8vw,5.5rem)] font-light uppercase leading-none tracking-tight transition-opacity group-hover:opacity-60">
-        {label}
-      </span>
-      <span className="ml-2 mt-2 font-sans text-[clamp(0.8rem,1.5vw,1.2rem)] font-medium text-zinc-300">
-        {num}
+      <span className="relative inline-block">
+        <span className="block text-[clamp(2.5rem,10vw,4.5rem)] uppercase leading-none tracking-tight text-black transition-opacity group-hover:opacity-60 lg:text-[clamp(3.25rem,4.5vw,5.25rem)]">
+          {label}
+        </span>
+        <span className="absolute -right-5 top-0 text-[clamp(0.7rem,1.2vw,1rem)] font-normal leading-none text-zinc-300 lg:-right-7 lg:-top-0.5 lg:text-[1.05rem]">
+          {num}
+        </span>
       </span>
     </Link>
   );
 }
+
+function MenuSlash() {
+  return (
+    <motion.span
+      variants={slashVariants}
+      className="select-none text-[clamp(2rem,4vw,3.25rem)] font-light leading-none text-zinc-300"
+      aria-hidden
+    >
+      /
+    </motion.span>
+  );
+}
+
+const slashVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { delay: 0.1, duration: 0.3 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.92,
+    transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] as const },
+  },
+};
 
 // --- Main Component: Header ---
 const Header = () => {
@@ -225,20 +263,6 @@ const Header = () => {
     },
   };
 
-  const slashVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 0.2,
-      scale: 1,
-      transition: { delay: 0.1, duration: 0.3 },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.92,
-      transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] as const },
-    },
-  };
-
   return (
     <>
       <header
@@ -267,9 +291,9 @@ const Header = () => {
               animate="visible"
               exit="exit"
               variants={overlayVariants}
-              className="fixed inset-0 z-10060 flex h-screen w-full flex-col bg-[#F0F0F0]"
+              className="fixed inset-0 z-10060 flex h-screen w-full flex-col bg-white lg:bg-[#F8F8F8]"
             >
-              <div className="flex w-full items-center justify-between px-6 pt-6 md:px-10">
+              <div className="flex w-full items-center justify-between px-6 pt-6 md:px-10 lg:px-[55px]">
                 <Image 
                   src={logoTreku} 
                   alt="Treku logo" 
@@ -287,35 +311,63 @@ const Header = () => {
                   {closeIcon}
                 </button>
               </div>
-              <div className="flex h-full w-full items-center justify-center px-6">
-                <div className="grid w-full max-w-7xl grid-cols-1 items-center justify-center gap-y-12 md:grid-cols-[1fr_auto_1fr] md:gap-x-12 lg:gap-x-20">
-                  
-                  {/* Column 1 */}
-                  <div className="flex flex-col items-center gap-y-12 md:items-end">
-                    <motion.div variants={menuItemVariants} custom={0}>
+
+              {/* Mobile menu */}
+              <div className="flex h-full w-full items-center justify-center px-6 lg:hidden">
+                <div className="flex w-full max-w-md flex-col items-center gap-y-12">
+                  <motion.div variants={menuItemVariants} custom={0}>
+                    <MenuLink to="/" label="HOME" num="01" onNavigate={closeMenu} />
+                  </motion.div>
+                  <motion.div variants={menuItemVariants} custom={1}>
+                    <MenuLink to="/about-trekuartista" label="ABOUT US" num="02" onNavigate={closeMenu} />
+                  </motion.div>
+                  <motion.div variants={menuItemVariants} custom={2}>
+                    <MenuLink to="/our-works" label="ALL WORK" num="03" onNavigate={closeMenu} />
+                  </motion.div>
+                  <motion.div variants={menuItemVariants} custom={3}>
+                    <MenuLink to="/contact" label="CONTACT" num="04" onNavigate={closeMenu} />
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Desktop menu — 2×2 grid with slash between each pair */}
+              <div className="hidden h-full w-full items-center justify-center px-[55px] lg:flex">
+                <div className="flex w-full max-w-[1100px] flex-col gap-y-[clamp(4rem,10vh,7.5rem)]">
+                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-[clamp(2.5rem,6vw,5.5rem)]">
+                    <motion.div
+                      variants={menuItemVariants}
+                      custom={0}
+                      className="flex justify-end"
+                    >
                       <MenuLink to="/" label="HOME" num="01" onNavigate={closeMenu} />
                     </motion.div>
-                    <motion.div variants={menuItemVariants} custom={2}>
-                      <MenuLink to="/our-works" label="ALL WORK" num="02" onNavigate={closeMenu} />
+                    <MenuSlash />
+                    <motion.div
+                      variants={menuItemVariants}
+                      custom={1}
+                      className="flex justify-start"
+                    >
+                      <MenuLink to="/about-trekuartista" label="ABOUT US" num="02" onNavigate={closeMenu} />
                     </motion.div>
                   </div>
 
-                  {/* Desktop Divider Slashes */}
-                  <div className="hidden h-full flex-col justify-center gap-y-40 md:flex">
-                    <motion.span variants={slashVariants} className="text-5xl font-light text-black">/</motion.span>
-                    <motion.span variants={slashVariants} className="text-5xl font-light text-black">/</motion.span>
-                  </div>
-
-                  {/* Column 2 */}
-                  <div className="flex flex-col items-center gap-y-12 md:items-start">
-                    <motion.div variants={menuItemVariants} custom={1}>
-                      <MenuLink to="/about-trekuartista" label="ABOUT US" num="03" onNavigate={closeMenu} />
+                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-[clamp(2.5rem,6vw,5.5rem)]">
+                    <motion.div
+                      variants={menuItemVariants}
+                      custom={2}
+                      className="flex justify-end"
+                    >
+                      <MenuLink to="/our-works" label="ALL WORK" num="03" onNavigate={closeMenu} />
                     </motion.div>
-                    <motion.div variants={menuItemVariants} custom={3}>
+                    <MenuSlash />
+                    <motion.div
+                      variants={menuItemVariants}
+                      custom={3}
+                      className="flex justify-start"
+                    >
                       <MenuLink to="/contact" label="CONTACT" num="04" onNavigate={closeMenu} />
                     </motion.div>
                   </div>
-
                 </div>
               </div>
             </motion.div>

@@ -88,7 +88,7 @@ const Services = () => {
         className="
           mb-8 lg:mb-10
           text-[14px] lg:text-[20px]
-          font-custom
+          font-roboto
           uppercase
           text-black
         "
@@ -145,24 +145,23 @@ const Services = () => {
                           right-[-22px]
                           text-[12px]
                           text-black/35
-                          font-light
+                          font-roboto
                         "
                       >
                         {service.id}
                       </span>
 
                       {/* TITLE */}
-                      <h2
+                      <p
                         className={`
                           text-[30px]
                           md:text-[46px]
                           lg:text-[56px]
                           leading-[1.1]
-                          tracking-[-0.04em]
-                          text-black
+                        
                           transition-all
                           duration-500
-                          font-custom7
+                          font-roboto
                           ${
                             isDimmed
                               ? "opacity-25"
@@ -171,7 +170,7 @@ const Services = () => {
                         `}
                       >
                         {service.title}
-                      </h2>
+                      </p>
                     </div>
 
                     {/* CURSOR FOLLOW IMAGE */}

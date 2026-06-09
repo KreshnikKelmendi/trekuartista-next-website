@@ -21,11 +21,11 @@ export default function AdminShell({
     "Dashboard";
 
   return (
-    <div className="flex min-h-screen bg-[#f0f4f3]">
+    <div className="flex h-screen overflow-hidden bg-[#f0f4f3]">
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-teal-900/10 bg-[#f0f4f3]/90 px-4 py-4 backdrop-blur-md lg:px-8">
+      <div className="flex h-screen min-w-0 w-full max-w-full flex-1 flex-col overflow-hidden">
+        <header className="z-30 flex shrink-0 items-center justify-between border-b border-teal-900/10 bg-[#f0f4f3]/90 px-4 py-4 backdrop-blur-md lg:px-8">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
@@ -41,7 +41,9 @@ export default function AdminShell({
           </span>
         </header>
 
-        <main className="flex-1 p-4 lg:p-6 xl:p-8">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto p-4 lg:p-6 xl:p-8">
+          {children}
+        </main>
       </div>
     </div>
   );

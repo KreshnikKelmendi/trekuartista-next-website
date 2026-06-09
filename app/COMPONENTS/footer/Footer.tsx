@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
           href="/contact" 
           className="group relative inline-block"
         >
-          <h2 className="text-6xl md:text-8xl font-medium tracking-tight transition-colors duration-300">
+          <h2 className="text-6xl md:text-8xl font-roboto tracking-tight transition-colors duration-300">
             Let's talk art.
           </h2>
           {/* Animated Underline on Hover */}
@@ -32,48 +32,49 @@ const Footer: React.FC = () => {
         
         {/* Column 1: Brand Info */}
         <div className="flex flex-col gap-6">
-          <h4 className="font-bold lowercase text-sm">trekuartista</h4>
-          <div className="text-gray-500 text-sm leading-snug">
-            <p>Prishtine, 30</p>
-            <p>Rep. of Kosova</p>
-          </div>
+          <h4 className="font-roboto text-base">Trekuartista</h4>
+          <address className="not-italic text-gray-500 text-sm leading-relaxed font-roboto">
+            <p>Rruga Ahmet Krasniqi</p>
+            <p>Arbëri, 10000 Prishtinë</p>
+            <p>Republic of Kosovo</p>
+          </address>
         </div>
 
         {/* Column 2 & 3: Navigation (Split into two sub-columns) */}
         <div className="md:col-span-2 grid grid-cols-2">
           <div className="flex flex-col gap-6">
-            <h4 className="font-bold text-sm">Navigation</h4>
+            <h4 className="font-roboto text-base">Navigation</h4>
             <div className="flex flex-col gap-1">
-              <Link href="/" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px]">Home</Link>
-              <Link href="/our-works" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px]">All Work</Link>
+              <Link href="/" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Home</Link>
+              <Link href="/our-works" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">All Work</Link>
             </div>
           </div>
           <div className="flex flex-col gap-1 pt-11"> 
-            <Link href="/about-trekuartista" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px]">About Us</Link>
-            <Link href="/contact" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px]">Contact</Link>
+            <Link href="/about-trekuartista" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">About Us</Link>
+            <Link href="/contact" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Contact</Link>
           </div>
         </div>
 
         {/* Column 4: Follow Links */}
-        <div className="flex flex-col gap-6">
-          <h4 className="font-bold text-sm">Follow</h4>
+        <div className="flex flex-col gap-6 font-roboto">
+          <h4 className="font-roboto text-base">Follow</h4>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            <a href="https://facebook.com/Trekuartista.LLC" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px]">Facebook</a>
-            <a href="https://linkedin.com/company/trekuartista-advertising-agency/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px]">Linkedin</a>
-            <a href="https://instagram.com/trekuartista/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px]">Instagram</a>
+            <a href="https://facebook.com/Trekuartista.LLC" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Facebook</a>
+            <a href="https://linkedin.com/company/trekuartista-advertising-agency/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Linkedin</a>
+            <a href="https://instagram.com/trekuartista/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Instagram</a>
           </div>
         </div>
       </div>
 
       {/* Bottom Bar: Boxed style with thin border */}
-      <div className="border border-white/20 rounded-sm px-4 py-3 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[2px] font-light">
-        <p className="uppercase">©2026 trekuartista</p>
-        <div className="flex gap-2 items-center mt-4 md:mt-0">
-          <Link href="/legal" className="hover:text-white transition-colors uppercase">Legal</Link>
+      <div className="border border-white/20 rounded-[8px] px-4 py-3 flex flex-col md:flex-row justify-between items-center text-[10px] font-roboto">
+        <p className="uppercase lg:text-sm pt-[4px]">©2026 Trekuartista</p>
+        <div className="flex gap-2 items-center mt-4 md:mt-0 pt-[4px]">
+          <Link href="/legal" className="hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Legal</Link>
           <span className="opacity-30">-</span>
-          <Link href="/privacy" className="hover:text-white transition-colors uppercase">Privacy</Link>
+          <Link href="/privacy" className="hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Privacy</Link>
           <span className="opacity-30">-</span>
-          <Link href="/cookies" className="hover:text-white transition-colors uppercase">Cookies</Link>
+          <Link href="/cookies" className="hover:text-white transition-colors uppercase text-[10px] lg:text-sm font-roboto">Cookies</Link>
         </div>
       </div>
     </footer>

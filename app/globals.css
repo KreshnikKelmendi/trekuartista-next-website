@@ -4,3 +4,21 @@
 body{
     background-color: #F8F8F8;
 }
+
+@font-face {
+    font-family: 'sfts';
+    src: url('../public/fonts/font1/SFTSchriftedSansTRIAL-MediumComp.ttf');
+  }
+  
+  .font-sfts {
+    font-family: 'sfts';
+  }
+
+  @font-face {
+    font-family: 'Roboto';
+    src: url('../public/fonts/font2/Roboto-Light.ttf');
+  }
+  
+  .font-roboto {
+    font-family: 'Roboto';
+  }

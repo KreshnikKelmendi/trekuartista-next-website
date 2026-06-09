@@ -20,8 +20,8 @@ function matchesFilter(position: string, filter: string | null): boolean {
 const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
   const [hoveredMember, setHoveredMember] = useState<TeamMember | null>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [mobileIndex, setMobileIndex] = useState<number>(0);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const positionFilters = useMemo(() => {
     const seen = new Set<string>();
@@ -38,6 +38,10 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
 
   useEffect(() => {
     setIsMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const filteredMembers = useMemo(() => {
@@ -46,8 +50,13 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
   }, [activeFilter, members]);
 
   useEffect(() => {
-    setMobileIndex(0);
+    setHoveredMember(null);
   }, [activeFilter]);
+
+  const selectMember = (member: TeamMember) => {
+    if (!matchesFilter(member.position, activeFilter)) return;
+    setHoveredMember((prev) => (prev?.id === member.id ? null : member));
+  };
 
   /**
    * PARALLAX
@@ -96,9 +105,6 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
     },
   };
 
-  const mobileSliderMax = Math.max(0, filteredMembers.length - 1);
-  const mobileCurrentMember = filteredMembers[mobileIndex] ?? filteredMembers[0];
-
   if (members.length === 0) return null;
 
   return (
@@ -109,7 +115,7 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
       {/* --- MOBILE VIEW --- */}
       <motion.div
         style={{ y: isMounted ? parallaxY : 0 }}
-        className="relative mx-auto w-full px-5 pb-28 pt-28 md:hidden flex flex-col min-h-screen"
+        className="relative mx-auto flex min-h-screen w-full flex-col px-5 pb-28 pt-28 md:hidden"
       >
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -175,113 +181,80 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
             viewport={{ once: true, amount: 0.2 }}
             className="z-10 mb-10 space-y-1"
           >
-            {members.map((member, idx) => {
+            {members.map((member) => {
               const isMatch = matchesFilter(member.position, activeFilter);
               const filterDim = activeFilter !== null && !isMatch;
-              const scrollDim = activeFilter === null && idx !== mobileIndex;
-              const dimmed = filterDim || scrollDim;
+              const selectionDim =
+                hoveredMember !== null && hoveredMember.id !== member.id;
+              const dimmed = filterDim || selectionDim;
+              const isSelected = hoveredMember?.id === member.id;
 
               return (
-                <motion.div
+                <motion.button
                   key={`${member.id}-mobile`}
+                  type="button"
                   variants={itemVariants}
-                  className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 py-2"
+                  disabled={filterDim}
+                  onClick={() => selectMember(member)}
+                  className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 py-2 text-left"
                   animate={{
                     opacity: dimmed ? 0.15 : 1,
-                    scale:
-                      !dimmed && activeFilter === null && idx === mobileIndex
-                        ? 1.05
-                        : 1,
+                    scale: isSelected ? 1.05 : 1,
                   }}
                   transition={{
                     duration: 0.5,
                     ease: [0.16, 1, 0.3, 1] as const,
                   }}
                 >
-                  <span className="text-xl text-white font-medium uppercase tracking-tight">
+                  <span className="text-xl font-medium uppercase tracking-tight text-white">
                     {member.name}
                   </span>
-                  <span className="text-[9px] text-white/60 uppercase tracking-widest">
+                  <span className="text-[9px] uppercase tracking-widest text-white/60">
                     {member.position}
                   </span>
-                </motion.div>
+                </motion.button>
               );
             })}
           </motion.div>
 
-          {/* IMAGE */}
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 h-[320px] w-[240px] -translate-x-1/2 -translate-y-1/2">
             <AnimatePresence mode="wait">
-              {mobileCurrentMember?.image ? (
+              {hoveredMember?.image ? (
                 <motion.div
-                  key={mobileCurrentMember.id}
+                  key={hoveredMember.id}
                   initial={{ opacity: 0, scale: 0.92, filter: "blur(10px)" }}
                   animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                   exit={{ opacity: 0, scale: 1.05, filter: "blur(8px)" }}
-                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }}
-                  className="absolute inset-0 h-full w-full rounded-sm border border-white/10 overflow-hidden"
+                  transition={{
+                    duration: 0.7,
+                    ease: [0.16, 1, 0.3, 1] as const,
+                  }}
+                  className="absolute inset-0 overflow-hidden rounded-sm border border-white/10"
                 >
                   <Image
-                    src={mobileCurrentMember.image}
-                    alt={mobileCurrentMember.name}
+                    src={hoveredMember.image}
+                    alt={hoveredMember.name}
                     fill
                     sizes="240px"
-                    priority
                     className="object-cover"
-                    unoptimized={mobileCurrentMember.image.includes("supabase.co")}
+                    unoptimized={hoveredMember.image.includes("supabase.co")}
                   />
+                  <div className="absolute bottom-4 left-4 border border-white/10 bg-black/60 px-3 py-1.5 backdrop-blur-md">
+                    <p className="font-custom1 text-[9px] uppercase tracking-widest text-white">
+                      {hoveredMember.position}
+                    </p>
+                  </div>
                 </motion.div>
               ) : null}
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Slider: native range for reliable touch */}
-        <div className="mt-auto flex flex-col items-center gap-3">
-          {filteredMembers.length === 0 ? (
-            <p className="text-center text-xs uppercase tracking-widest text-white/40">
-              No team members in this role
-            </p>
-          ) : (
-            <div className="relative mx-auto w-[min(100%,280px)] py-3">
-              <input
-                type="range"
-                min={0}
-                max={mobileSliderMax}
-                step={1}
-                value={Math.min(mobileIndex, mobileSliderMax)}
-                onChange={(e) => setMobileIndex(Number(e.target.value))}
-                className="absolute inset-x-0 top-1/2 z-40 h-11 w-full -translate-y-1/2 cursor-pointer opacity-0 touch-manipulation"
-                aria-label="Browse team members"
-              />
-              <div className="relative h-1 w-full rounded-full bg-white/10">
-                <div
-                  className="absolute left-0 top-0 h-full rounded-full bg-white/30 transition-[width] duration-150 ease-out"
-                  style={{
-                    width:
-                      mobileSliderMax === 0
-                        ? "100%"
-                        : `${(mobileIndex / mobileSliderMax) * 100}%`,
-                  }}
-                />
-                <div
-                  className="pointer-events-none absolute top-1/2 z-30 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-md transition-[left] duration-150 ease-out"
-                  style={{
-                    left:
-                      mobileSliderMax === 0
-                        ? "50%"
-                        : `${(mobileIndex / mobileSliderMax) * 100}%`,
-                  }}
-                >
-                  <div className="flex h-full items-center justify-center gap-0.5">
-                    <div className="h-3 w-0.5 bg-black/20" />
-                    <div className="h-3 w-0.5 bg-black/20" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        {filteredMembers.length === 0 ? (
+          <p className="text-center text-xs uppercase tracking-widest text-white/40">
+            No team members in this role
+          </p>
+        ) : null}
       </motion.div>
 
       {/* --- DESKTOP VIEW --- */}
@@ -330,7 +303,7 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
                   ease: [0.23, 1, 0.32, 1] as const,
                 }}
                 onMouseEnter={() => isMatch && setHoveredMember(member)}
-                onMouseLeave={() => setHoveredMember(null)}
+                onMouseLeave={() => !isMobile && setHoveredMember(null)}
                 className={`group relative ${
                   dimmed ? "pointer-events-none cursor-default" : "cursor-pointer"
                 }`}
@@ -348,55 +321,6 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
             );
           })}
         </motion.div>
-
-        {/* HOVER IMAGE */}
-        <AnimatePresence>
-          {hoveredMember?.image && (
-            <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.92,
-                x: "-50%",
-                y: "-45%",
-                filter: "blur(10px)",
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                x: "-50%",
-                y: "-50%",
-                filter: "blur(0px)",
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.96,
-                x: "-50%",
-                y: "-45%",
-                filter: "blur(8px)",
-              }}
-              transition={{
-                duration: 0.55,
-                ease: [0.16, 1, 0.3, 1] as const,
-              }}
-              className="fixed pointer-events-none z-50 w-[400px] h-[550px] left-1/2 top-1/2 rounded-sm border border-white/10 shadow-2xl overflow-hidden"
-            >
-              <Image
-                src={hoveredMember.image}
-                alt={hoveredMember.name}
-                fill
-                sizes="400px"
-                className="object-cover"
-                unoptimized={hoveredMember.image.includes("supabase.co")}
-              />
-
-              <div className="absolute bottom-8 left-8 border border-white/10 bg-black/60 px-4 py-2 backdrop-blur-md z-10">
-                <p className="font-custom1 text-[10px] uppercase tracking-widest text-white">
-                  {hoveredMember.position}
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* FILTERS */}
         <motion.div
@@ -454,6 +378,55 @@ const Team: React.FC<{ members: TeamMember[] }> = ({ members }) => {
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Desktop hover preview */}
+      <AnimatePresence>
+        {!isMobile && hoveredMember?.image ? (
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.92,
+              x: "-50%",
+              y: "-45%",
+              filter: "blur(10px)",
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              x: "-50%",
+              y: "-50%",
+              filter: "blur(0px)",
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.96,
+              x: "-50%",
+              y: "-45%",
+              filter: "blur(8px)",
+            }}
+            transition={{
+              duration: 0.55,
+              ease: [0.16, 1, 0.3, 1] as const,
+            }}
+            className="pointer-events-none fixed left-1/2 top-1/2 z-50 h-[min(62vh,440px)] w-[min(82vw,320px)] overflow-hidden rounded-sm border border-white/10 shadow-2xl md:h-[550px] md:w-[400px]"
+          >
+            <Image
+              src={hoveredMember.image}
+              alt={hoveredMember.name}
+              fill
+              sizes="(max-width: 768px) 82vw, 400px"
+              className="object-cover"
+              unoptimized={hoveredMember.image.includes("supabase.co")}
+            />
+
+            <div className="absolute bottom-6 left-6 z-10 border border-white/10 bg-black/60 px-4 py-2 backdrop-blur-md md:bottom-8 md:left-8">
+              <p className="font-custom1 text-[10px] uppercase tracking-widest text-white">
+                {hoveredMember.position}
+              </p>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 };

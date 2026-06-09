@@ -47,7 +47,7 @@ const FirstContentOfAbout = () => {
     >
       {/* TOP LABEL */}
       <div className="mb-0 lg:mb-0">
-        <span className="text-[11px] uppercase tracking-[0.25em] text-black font-light">
+        <span className="mb-8 lg:mb-10 text-[14px] lg:text-[20px] font-roboto uppercase text-black">
           / ABOUT US
         </span>
       </div>
@@ -81,7 +81,7 @@ const FirstContentOfAbout = () => {
           </motion.div>
 
           <div className="absolute bottom-[116px] left-5 max-w-[305px]">
-            <p className="font-custom text-[25px] uppercase leading-[1.02] tracking-[0.04em] text-white">
+            <p className="font-sfts text-[25px] uppercase leading-[1.02] tracking-[0.04em] text-white">
               Born in 2012, in the restless energy of Prishtina — a place where ideas don’t sit still, and neither do we.
             </p>
           </div>
@@ -111,13 +111,13 @@ const FirstContentOfAbout = () => {
           </div>
 
           <div className="absolute bottom-[52px] left-[28px] z-20 max-w-[470px]">
-            <p className="font-custom text-sm lg:text-[40px] uppercase leading-[1.2] text-white">
+            <p className="font-sfts text-sm lg:text-[40px] uppercase leading-[1.2] text-white">
               Born in 2012, in the restless energy of Prishtina—a place where ideas don’t sit still, and neither do we.
             </p>
           </div>
 
           <motion.div style={{ y: isMounted ? y1 : 0 }} className="absolute left-[54%] top-[200px] z-30 h-[156px] w-[212px] lg:h-[30vh] overflow-hidden rounded-[8px]">
-            <Image src={officeImage1} alt="" fill className="object-cover grayscale" sizes="212px" />
+            <Image src={officeImage1} alt="" fill className="object-cover grayscale rounded-[8px]" sizes="212px" />
           </motion.div>
           
           <motion.div style={{ y: isMounted ? y1 : 0 }} className="absolute left-[72%] top-[80px] z-70 h-[156px] w-[152px] lg:h-[20vh] overflow-hidden">
@@ -169,7 +169,7 @@ const FirstContentOfAbout = () => {
         viewport={{ once: true }}
         className="mt-24 ml-auto w-1/2 flex justify-end items-end lg:mt-24"
       >
-        <p className="text-[18px] leading-[1.2] text-black/55 md:text-[22px] lg:text-[46px] text-right font-custom z-50">
+        <p className="text-[18px] leading-[1.2] text-black md:text-[22px] lg:text-[46px] text-right font-roboto z-50">
           “No templates, no safe routes—just bold concepts, crafted to make brands felt, not just seen.”
         </p>
       </motion.div>

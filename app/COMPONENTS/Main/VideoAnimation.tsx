@@ -168,14 +168,7 @@ const VideoAnimation = () => {
   const videoTop = useTransform(expand, [0, 1], ["6%", "0%"]);
   const videoHeight = useTransform(expand, [0, 1], ["82%", "100%"]);
   const videoRadius = useTransform(expand, [0, 1], [14, 0]);
-  const videoShadow = useTransform(
-    expand,
-    [0, 1],
-    [
-      "0 20px 50px -18px rgba(0,0,0,0.22)",
-      "0 32px 80px -24px rgba(0,0,0,0.28)",
-    ]
-  );
+
 
   const toggleMute = () => {
     const nextMuted = !isMuted;
@@ -210,10 +203,10 @@ const VideoAnimation = () => {
           }}
           className="relative z-30 hidden shrink-0 pt-10 will-change-transform lg:block"
         >
-          <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-black/50">
+          <p className="text-[11px] font-roboto uppercase  text-black/50">
             Creative &amp; strategy studio — Prishtina
           </p>
-          <h1 className="mt-3 max-w-[14ch] font-custom text-[clamp(2.35rem,8.5vw,5.25rem)] font-bold uppercase leading-[0.92] tracking-[-0.02em] text-black">
+          <h1 className="mt-3 max-w-[14ch] font-sfts text-[clamp(2.35rem,8.5vw,5.25rem)] uppercase leading-[0.92] tracking-[-0.02em] text-black">
             Brands.
             <br />
             Built differently.
@@ -239,7 +232,7 @@ const VideoAnimation = () => {
               top: videoTop,
               height: videoHeight,
               borderRadius: videoRadius,
-              boxShadow: videoShadow,
+        
             }}
           >
             {isLoading && (

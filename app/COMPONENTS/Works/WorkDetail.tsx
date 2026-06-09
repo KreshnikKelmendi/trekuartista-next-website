@@ -21,7 +21,9 @@ const sectionGap = "space-y-5 md:space-y-12";
 
 /** Shared body copy — matches block 2 & 3 (featured) descriptions */
 const descriptionBodyClass =
-  "whitespace-pre-wrap text-base leading-relaxed md:text-xl md:leading-relaxed lg:text-[1.55rem] lg:leading-[1.42] xl:leading-[1.35]";
+  "font-roboto whitespace-pre-wrap text-base leading-relaxed md:text-xl md:leading-relaxed lg:text-[1.55rem] lg:leading-[1.42] xl:leading-[1.35]";
+
+const titleLinkClass = "font-sfts";
 
 function DescriptionBlockSmall({
   text,
@@ -32,7 +34,7 @@ function DescriptionBlockSmall({
 }) {
   return (
     <div className="space-y-2 border-t border-black/10 pt-6">
-      <p className="text-[10px] uppercase tracking-[0.35em] text-black/40">
+      <p className={`${titleLinkClass} text-[10px] uppercase tracking-[0.35em] text-black/40`}>
         {String(index + 1).padStart(2, "0")}
       </p>
       <p className={`${descriptionBodyClass} text-zinc-600`}>
@@ -87,7 +89,7 @@ function YoutubeEmbed({
         href={video.url}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-block text-sm text-[#DF319A] underline ${className}`}
+        className={`${titleLinkClass} inline-block text-sm text-[#DF319A] underline ${className}`}
       >
         Watch on YouTube
       </a>
@@ -115,7 +117,7 @@ function YoutubeVideoText({ video }: { video: YoutubeVideoEntry }) {
   return (
     <div className="flex flex-col justify-center gap-4">
       {video.title ? (
-        <h3 className="font-custom text-xl uppercase leading-tight text-black md:text-2xl">
+        <h3 className={`${titleLinkClass} text-xl uppercase leading-tight text-black md:text-2xl`}>
           {video.title}
         </h3>
       ) : null}
@@ -145,7 +147,7 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
     const video = videos[0];
     return (
       <section className={`${pagePx} ${sectionGap}`}>
-        <h2 className="text-[11px] uppercase tracking-[0.35em] text-black/40">
+        <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-black/40`}>
           {heading}
         </h2>
         <div className="space-y-5 md:space-y-8">
@@ -158,7 +160,7 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
 
   return (
     <section className={`${pagePx} ${sectionGap}`}>
-      <h2 className="text-[11px] uppercase tracking-[0.35em] text-black/40">
+      <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-black/40`}>
         {heading}
       </h2>
       <div className="space-y-8 md:space-y-16">
@@ -244,17 +246,17 @@ export default function WorkDetail({ work }: WorkDetailProps) {
       <div className={` py-3 md:py-5 ${pagePx}`}>
         <Link
           href="/our-works"
-          className="text-[11px] uppercase tracking-[0.25em] text-black/45 transition hover:text-black"
+          className={`${titleLinkClass} text-[11px] uppercase tracking-[0.25em] text-black/45 transition hover:text-black`}
         >
           ← All Work
         </Link>
       </div>
 
       <header className={`py-5 md:pt-0 md:pb-0 ${pagePx}`}>
-        <p className="text-[11px] uppercase tracking-[0.35em] text-[#DF319A]">
+        <p className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-[#DF319A]`}>
           {work.specialCategory}
         </p>
-        <h1 className="mt-2 max-w-5xl font-custom text-4xl font-bold uppercase leading-[0.92] tracking-tight md:mt-4 md:text-6xl lg:text-7xl">
+        <h1 className={`${titleLinkClass} mt-2 max-w-5xl text-4xl font-bold uppercase leading-[0.92] tracking-tight md:mt-4 md:text-6xl lg:text-7xl`}>
           {work.workName}
         </h1>
         {intro ? (
@@ -375,7 +377,7 @@ export default function WorkDetail({ work }: WorkDetailProps) {
       <div className={`border-t border-black/10 pt-6 text-center md:pt-8 ${pagePx}`}>
         <Link
           href="/our-works"
-          className="text-[11px] uppercase tracking-[0.25em] text-black/40 transition hover:text-black"
+          className={`${titleLinkClass} text-[11px] uppercase tracking-[0.25em] text-black/40 transition hover:text-black`}
         >
           Back to all work
         </Link>

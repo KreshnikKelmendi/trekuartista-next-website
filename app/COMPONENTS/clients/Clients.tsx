@@ -31,7 +31,7 @@ const Clients: React.FC = () => {
   return (
     <section className="pt-24 lg:pt-20 pb-32 overflow-hidden">
       <div className="px-5 lg:px-[55px] mb-12">
-        <p className="mb-6 text-[14px] lg:text-[20px] font-custom uppercase text-black">
+        <p className="mb-6 text-[14px] lg:text-[20px] font-roboto uppercase text-black">
           / CLIENTS
         </p>
       </div>
@@ -48,7 +48,7 @@ const Clients: React.FC = () => {
             {[...firstRow, ...firstRow].map((logo, index) => (
               <div
                 key={`row1-${index}`}
-                className="relative h-8 md:h-12 w-[120px] shrink-0 opacity-40 brightness-0 hover:opacity-100 transition-opacity duration-300"
+                className="relative h-8 md:h-12 w-[120px] shrink-0 brightness-0 hover:opacity-100 transition-opacity duration-300"
               >
                 <Image
                   src={logo.src}
@@ -72,7 +72,7 @@ const Clients: React.FC = () => {
             {[...secondRow, ...secondRow].map((logo, index) => (
               <div
                 key={`row2-${index}`}
-                className="relative h-8 md:h-12 w-[120px] shrink-0 opacity-40 brightness-0 hover:opacity-100 transition-opacity duration-300"
+                className="relative h-8 md:h-12 w-[120px] shrink-0 brightness-0 hover:opacity-100 transition-opacity duration-300"
               >
                 <Image
                   src={logo.src}

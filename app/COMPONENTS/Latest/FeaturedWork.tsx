@@ -175,11 +175,11 @@ function DesktopFeaturedScroll({ works }: { works: WorkItem[] }) {
                 className="absolute inset-x-0 top-10 flex h-full flex-col justify-between"
               >
                 <div className="space-y-8">
-                  <h3 className="font-custom2 text-base uppercase leading-[35px] text-[#111] lg:text-[30px]">
+                  <h3 className="font-sfts text-base uppercase leading-[45px] text-[#111] lg:text-[45px]">
                     {activeWork.workName}
                   </h3>
                   {firstDescription ? (
-                    <p className="max-w-[340px] whitespace-pre-wrap font-custom1 text-[14px] leading-snug text-black md:max-w-[380px] md:text-base lg:max-w-[480px] lg:text-xl lg:leading-[1.4] xl:text-[1.35rem]">
+                    <p className=" whitespace-pre-wrap font-roboto text-[12px] leading-snug text-black md:max-w-[380px] md:text-base lg:max-w-[480px] lg:text-xl lg:leading-[1.4] xl:text-[1.35rem]">
                       {firstDescription}
                     </p>
                   ) : null}
@@ -194,9 +194,9 @@ function DesktopFeaturedScroll({ works }: { works: WorkItem[] }) {
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <line x1="23.2929" y1="49.4882" x2="48.2069" y2="24.5742" stroke="#DF319A" strokeWidth="2" />
-                      <line x1="0" y1="25.2813" x2="47.8547" y2="25.2812" stroke="#DF319A" strokeWidth="2" />
-                      <line x1="23.7071" y1="0.706956" x2="48.6211" y2="25.6209" stroke="#DF319A" strokeWidth="2" />
+                      <line x1="23.2929" y1="49.4882" x2="48.2069" y2="24.5742" stroke="#3110EE" strokeWidth="2" />
+                      <line x1="0" y1="25.2813" x2="47.8547" y2="25.2812" stroke="#3110EE" strokeWidth="2" />
+                      <line x1="23.7071" y1="0.706956" x2="48.6211" y2="25.6209" stroke="#3110EE" strokeWidth="2" />
                     </svg>
                   </Link>
                 </div>
@@ -264,13 +264,13 @@ export default function FeaturedWork() {
   };
 
   return (
-    <section className="relative px-5 py-10 md:py-20 lg:px-[55px] lg:py-20">
+    <section className="relative px-5 py-10 md:py-20 lg:px-[55px] lg:pt-32 lg:pb-20">
       <div className="mx-auto w-full">
         <div className="mb-12 flex items-end justify-between border-b border-[#0000006e] pb-1">
-          <h2 className="font-custom text-[20px] uppercase text-[#111] md:text-[24px] lg:text-[28px]">
+          <h2 className="font-roboto text-[20px] uppercase text-[#111] md:text-[24px] lg:text-[28px]">
             Featured
           </h2>
-          <span className="font-custom text-[20px] uppercase text-[#111] md:text-[24px] lg:text-[28px]">
+          <span className="font-roboto text-[20px] uppercase text-[#111] md:text-[24px] lg:text-[28px]">
             Work
           </span>
         </div>
@@ -281,7 +281,7 @@ export default function FeaturedWork() {
             const isVideo = isWorkVideoSrc(work.workImage);
             return (
               <div key={`mobile-${work.id}`} className="space-y-3">
-                <Link href={`/our-works/${work.id}`} className="block aspect-16/11 w-full overflow-hidden">
+                <Link href={`/our-works/${work.id}`} className="block aspect-4/5 w-full overflow-hidden rounded-[8px]">
                   {isVideo ? (
                     <WorkListVideo
                       src={work.workImage}
@@ -294,10 +294,10 @@ export default function FeaturedWork() {
                   )}
                 </Link>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-custom text-[16px] uppercase">{work.workName}</h3>
+                  <h3 className="font-sfts text-[16px] uppercase">{work.workName}</h3>
                   <Link href={`/our-works/${work.id}`}>
                     <svg className="h-6 w-6 -rotate-45" width="40" height="20" viewBox="0 0 48 28" fill="none">
-                      <path d="M34 2L46 14M46 14L34 26M46 14H0" stroke="#EC4899" strokeWidth="1.5" />
+                      <path d="M34 2L46 14M46 14L34 26M46 14H0" stroke="#3110EE" strokeWidth="1.5" />
                     </svg>
                   </Link>
                 </div>
@@ -315,7 +315,7 @@ export default function FeaturedWork() {
           <Link
             href="/our-works"
             onClick={goToAllWorks}
-            className="group relative flex items-center justify-center gap-x-2 font-custom1 text-[11px] font-bold uppercase text-[#3110EE] transition-colors hover:text-black lg:text-[20px]"
+            className="group relative flex items-center justify-center gap-x-2 text-[11px] font-sfts uppercase text-[#3110EE] transition-colors hover:text-black lg:text-[20px]"
           >
             See All Works
             <svg width="20" height="20" viewBox="0 0 27 25" fill="none" xmlns="http://www.w3.org/2000/svg">
