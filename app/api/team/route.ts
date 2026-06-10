@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
-import { compressImage, isImageMime } from "@/lib/media/compress";
+import { compressTeamImage, isImageMime } from "@/lib/media/compress";
 import {
   getTeamMembers,
   getTeamImageUrl,
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     }
 
     const raw = Buffer.from(await file.arrayBuffer());
-    const { buffer, contentType, ext } = await compressImage(raw);
+    const { buffer, contentType, ext } = await compressTeamImage(raw);
     const path = `photos/${randomUUID()}.${ext}`;
     await uploadTeamImage(path, buffer, contentType);
 

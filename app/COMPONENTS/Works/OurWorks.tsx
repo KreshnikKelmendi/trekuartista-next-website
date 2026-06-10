@@ -97,7 +97,7 @@ function WorkCard({
       <div className="mt-3 flex items-center gap-2 font-custom text-[12px] tracking-tight lg:text-base">
         <span className="font-bold uppercase text-black">{item.workName}</span>
         <span className="font-light text-zinc-700">/</span>
-        <span className="font-medium uppercase text-zinc-500">
+        <span className="font-medium uppercase text-[#3110EE]">
           {item.specialCategory || ""}
         </span>
       </div>

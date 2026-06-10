@@ -12,6 +12,7 @@ if (ffmpegPath) {
 
 const IMAGE_MAX_WIDTH = 2400;
 const IMAGE_WEBP_QUALITY = 90;
+const TEAM_IMAGE_MAX_SIZE = 1200;
 const VIDEO_CRF = 18;
 
 export function isVideoMime(mime: string) {
@@ -38,6 +39,24 @@ export async function compressImage(buffer: Buffer): Promise<{
 
   const output = await pipeline
     .webp({ quality: IMAGE_WEBP_QUALITY, effort: 4 })
+    .toBuffer();
+
+  return { buffer: output, contentType: "image/webp", ext: "webp" };
+}
+
+/** Team headshots: resize + lossless WebP (no lossy quality setting). */
+export async function compressTeamImage(buffer: Buffer): Promise<{
+  buffer: Buffer;
+  contentType: string;
+  ext: string;
+}> {
+  const output = await sharp(buffer)
+    .rotate()
+    .resize(TEAM_IMAGE_MAX_SIZE, TEAM_IMAGE_MAX_SIZE, {
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({ lossless: true, effort: 4 })
     .toBuffer();
 
   return { buffer: output, contentType: "image/webp", ext: "webp" };

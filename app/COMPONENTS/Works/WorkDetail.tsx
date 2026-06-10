@@ -89,7 +89,7 @@ function YoutubeEmbed({
         href={video.url}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${titleLinkClass} inline-block text-sm text-[#DF319A] underline ${className}`}
+        className={`${titleLinkClass} inline-block text-sm text-[#3110EE] underline ${className}`}
       >
         Watch on YouTube
       </a>
@@ -141,13 +141,14 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
   if (videos.length === 0) return null;
 
   const heading =
-    videos.length === 1 ? "Video" : "Films & campaigns";
+    work.specialCategory.trim() ||
+    (videos.length === 1 ? "Video" : "Films & campaigns");
 
   if (videos.length === 1) {
     const video = videos[0];
     return (
       <section className={`${pagePx} ${sectionGap}`}>
-        <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-black/40`}>
+        <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-[#3110EE]`}>
           {heading}
         </h2>
         <div className="space-y-5 md:space-y-8">
@@ -160,7 +161,7 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
 
   return (
     <section className={`${pagePx} ${sectionGap}`}>
-      <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-black/40`}>
+      <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-[#3110EE]`}>
         {heading}
       </h2>
       <div className="space-y-8 md:space-y-16">
