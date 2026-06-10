@@ -7,6 +7,7 @@ import {
   useMotionValue,
   useSpring,
   useScroll,
+  useTransform,
   useMotionValueEvent,
 } from "framer-motion";
 import Link from "next/link";
@@ -220,6 +221,66 @@ function DesktopFeaturedScroll({ works }: { works: WorkItem[] }) {
   );
 }
 
+function MobileFeaturedCard({
+  work,
+  index,
+}: {
+  work: WorkItem;
+  index: number;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 45,
+    damping: 18,
+    mass: 0.7,
+  });
+  const y = useTransform(
+    smoothProgress,
+    [0, 1],
+    [28 + index * 10, -40 - index * 8]
+  );
+
+  return (
+    <motion.div ref={cardRef} style={{ y }} className="space-y-3">
+      <Link
+        href={`/our-works/${work.id}`}
+        className="block aspect-4/5 w-full overflow-hidden rounded-[8px] bg-zinc-100"
+      >
+        <WorkCardMedia
+          src={work.workImage}
+          poster={work.workThumbnail ?? undefined}
+          alt={work.workName}
+          className="h-full w-full rounded-[8px]"
+          mediaClassName="h-full w-full rounded-[8px] object-cover"
+          useNativeImg
+        />
+      </Link>
+      <div className="flex items-center justify-between">
+        <h3 className="font-sfts text-[16px] uppercase">{work.workName}</h3>
+        <Link href={`/our-works/${work.id}`}>
+          <svg
+            className="h-6 w-6 -rotate-45"
+            width="40"
+            height="20"
+            viewBox="0 0 48 28"
+            fill="none"
+          >
+            <path
+              d="M34 2L46 14M46 14L34 26M46 14H0"
+              stroke="#3110EE"
+              strokeWidth="1.5"
+            />
+          </svg>
+        </Link>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function FeaturedWork() {
   const router = useRouter();
   const [works, setWorks] = useState<WorkItem[]>([]);
@@ -269,30 +330,13 @@ export default function FeaturedWork() {
 
         {/* Mobile Layout */}
         <div className="flex flex-col space-y-16 md:hidden">
-          {displayWorks.map((work: WorkItem) => {
-            return (
-              <div key={`mobile-${work.id}`} className="space-y-3">
-                <Link href={`/our-works/${work.id}`} className="block aspect-4/5 w-full overflow-hidden rounded-[8px] bg-zinc-100">
-                  <WorkCardMedia
-                    src={work.workImage}
-                    poster={work.workThumbnail ?? undefined}
-                    alt={work.workName}
-                    className="h-full w-full rounded-[8px]"
-                    mediaClassName="h-full w-full rounded-[8px] object-cover"
-                    useNativeImg
-                  />
-                </Link>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sfts text-[16px] uppercase">{work.workName}</h3>
-                  <Link href={`/our-works/${work.id}`}>
-                    <svg className="h-6 w-6 -rotate-45" width="40" height="20" viewBox="0 0 48 28" fill="none">
-                      <path d="M34 2L46 14M46 14L34 26M46 14H0" stroke="#3110EE" strokeWidth="1.5" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
+          {displayWorks.map((work: WorkItem, index: number) => (
+            <MobileFeaturedCard
+              key={`mobile-${work.id}`}
+              work={work}
+              index={index}
+            />
+          ))}
         </div>
 
         {/* Desktop Layout */}
@@ -307,9 +351,18 @@ export default function FeaturedWork() {
             className="group relative flex items-center justify-center gap-x-2 text-[11px] font-sfts uppercase text-[#3110EE] transition-colors hover:text-black lg:text-[20px]"
           >
             See All Works
-            <svg width="20" height="20" viewBox="0 0 27 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15.0551 0.261921C14.968 0.176558 14.8653 0.109507 14.7527 0.0645965C14.6402 0.0196861 14.52 -0.00220448 14.3992 0.000175133C14.1551 0.00498098 13.9229 0.108352 13.7537 0.287547C13.5844 0.466743 13.492 0.707084 13.4967 0.955698C13.5015 1.20431 13.6029 1.44084 13.7789 1.61323L23.9338 11.5637L0.920389 11.5637C0.676287 11.5637 0.442183 11.6625 0.269575 11.8383C0.0969677 12.0141 0 12.2526 0 12.5012C0 12.7499 0.0969677 12.9884 0.269575 13.1642C0.442183 13.34 0.676287 13.4388 0.920389 13.4388L23.9314 13.4388L13.7776 23.3868C13.6905 23.4721 13.6208 23.5741 13.5724 23.687C13.524 23.7998 13.4978 23.9212 13.4955 24.0443C13.4932 24.1674 13.5147 24.2898 13.5588 24.4044C13.6028 24.519 13.6687 24.6237 13.7525 24.7125C13.8363 24.8012 13.9364 24.8722 14.0472 24.9215C14.1579 24.9708 14.2771 24.9974 14.398 24.9998C14.5188 25.0022 14.6389 24.9803 14.7515 24.9354C14.864 24.8905 14.9668 24.8234 15.0539 24.7381L26.6238 13.4013C26.7428 13.2847 26.8374 13.1448 26.902 12.99C26.9667 12.8353 27 12.6688 27 12.5006C27 12.3324 26.9667 12.166 26.902 12.0112C26.8374 11.8565 26.7428 11.7166 26.6238 11.6L15.0551 0.261921Z"
-                fill="#3110EE"
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 27 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="transition-colors duration-300"
+              aria-hidden
+            >
+              <path
+                d="M15.0551 0.261921C14.968 0.176558 14.8653 0.109507 14.7527 0.0645965C14.6402 0.0196861 14.52 -0.00220448 14.3992 0.000175133C14.1551 0.00498098 13.9229 0.108352 13.7537 0.287547C13.5844 0.466743 13.492 0.707084 13.4967 0.955698C13.5015 1.20431 13.6029 1.44084 13.7789 1.61323L23.9338 11.5637L0.920389 11.5637C0.676287 11.5637 0.442183 11.6625 0.269575 11.8383C0.0969677 12.0141 0 12.2526 0 12.5012C0 12.7499 0.0969677 12.9884 0.269575 13.1642C0.442183 13.34 0.676287 13.4388 0.920389 13.4388L23.9314 13.4388L13.7776 23.3868C13.6905 23.4721 13.6208 23.5741 13.5724 23.687C13.524 23.7998 13.4978 23.9212 13.4955 24.0443C13.4932 24.1674 13.5147 24.2898 13.5588 24.4044C13.6028 24.519 13.6687 24.6237 13.7525 24.7125C13.8363 24.8012 13.9364 24.8722 14.0472 24.9215C14.1579 24.9708 14.2771 24.9974 14.398 24.9998C14.5188 25.0022 14.6389 24.9803 14.7515 24.9354C14.864 24.8905 14.9668 24.8234 15.0539 24.7381L26.6238 13.4013C26.7428 13.2847 26.8374 13.1448 26.902 12.99C26.9667 12.8353 27 12.6688 27 12.5006C27 12.3324 26.9667 12.166 26.902 12.0112C26.8374 11.8565 26.7428 11.7166 26.6238 11.6L15.0551 0.261921Z"
+                fill="currentColor"
               />
             </svg>
             <span className="absolute -bottom-2 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />

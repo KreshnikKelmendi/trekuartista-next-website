@@ -182,7 +182,10 @@ const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [showTagline, setShowTagline] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+
+  const showHeaderBg = isScrolled && headerVisible && !isMenuOpen;
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : 'unset';
@@ -192,6 +195,8 @@ const Header = () => {
     let prevY = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
+      setIsScrolled(y > 24);
+
       if (isMenuOpen) {
         setHeaderVisible(true);
         prevY = y;
@@ -206,6 +211,7 @@ const Header = () => {
       }
       prevY = y;
     };
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [isMenuOpen]);
@@ -266,9 +272,11 @@ const Header = () => {
   return (
     <>
       <header
-        className={`sticky top-0 flex w-full items-center justify-between px-4 py-3 md:py-4 lg:px-[55px] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
+        className={`sticky top-0 flex w-full items-center justify-between px-4 py-3 md:py-4 lg:px-[55px] transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
           headerVisible ? 'translate-y-0' : '-translate-y-full pointer-events-none'
-        } ${isMenuOpen ? 'z-10050' : 'z-900'}`}
+        } ${showHeaderBg ? 'bg-[#F8F8F8]' : 'bg-transparent'} ${
+          isMenuOpen ? 'z-10050' : 'z-9999'
+        }`}
       >
         <div className="relative z-510 flex shrink-0 items-center">
           <LogoComponent />

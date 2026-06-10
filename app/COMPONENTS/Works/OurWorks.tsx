@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 import type { WorkItem } from "@/lib/works/types";
@@ -19,7 +26,15 @@ function sortNewestFirst(items: WorkItem[]) {
   );
 }
 
-function WorkCard({ item, className = "" }: { item: WorkItem; className?: string }) {
+function WorkCard({
+  item,
+  className = "",
+  parallaxY,
+}: {
+  item: WorkItem;
+  className?: string;
+  parallaxY?: MotionValue<number>;
+}) {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
   const [isHovering, setIsHovering] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
@@ -37,6 +52,7 @@ function WorkCard({ item, className = "" }: { item: WorkItem; className?: string
       transition={{ duration: 0.8, ease }}
       className={`group flex w-full flex-col ${className}`}
     >
+      <motion.div style={parallaxY ? { y: parallaxY } : undefined}>
       <div
         className="relative w-full overflow-hidden rounded-[8px]"
         onMouseEnter={() => setIsHovering(true)}
@@ -85,6 +101,7 @@ function WorkCard({ item, className = "" }: { item: WorkItem; className?: string
           {item.specialCategory || ""}
         </span>
       </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -153,9 +170,12 @@ function WorkCategoryFilters({
   );
 }
 
-function OurWorksPageHeader() {
+function OurWorksPageHeader({ y }: { y?: MotionValue<number> }) {
   return (
-    <header className="flex items-end justify-between gap-6">
+    <motion.header
+      style={y ? { y } : undefined}
+      className="flex items-end justify-between gap-6"
+    >
       <div className="flex items-end gap-3 md:gap-5">
         <h1 className="font-custom text-[clamp(2.5rem,9vw,4.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em] text-black">
           Our
@@ -164,16 +184,52 @@ function OurWorksPageHeader() {
           Work
         </h1>
       </div>
-    </header>
+    </motion.header>
+  );
+}
+
+function MobileWorkCard({
+  item,
+  index,
+}: {
+  item: WorkItem;
+  index: number;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 45,
+    damping: 18,
+    mass: 0.7,
+  });
+  const y = useTransform(
+    smoothProgress,
+    [0, 1],
+    [20 + index * 8, -36 - index * 6]
+  );
+
+  return (
+    <div ref={cardRef}>
+      <WorkCard item={item} parallaxY={y} />
+    </div>
   );
 }
 
 function WorksGrid({
   works,
   layoutKey,
+  col1Y,
+  col2Y,
+  col3Y,
 }: {
   works: WorkItem[];
   layoutKey: string;
+  col1Y?: MotionValue<number>;
+  col2Y?: MotionValue<number>;
+  col3Y?: MotionValue<number>;
 }) {
   const col1 = works.filter((_, i) => i % 3 === 0);
   const col2 = works.filter((_, i) => i % 3 === 1);
@@ -195,27 +251,33 @@ function WorksGrid({
       transition={{ duration: 0.45, ease }}
     >
       <div className="flex flex-col gap-12 md:hidden">
-        {works.map((item) => (
-          <WorkCard key={item.id} item={item} />
+        {works.map((item, index) => (
+          <MobileWorkCard key={item.id} item={item} index={index} />
         ))}
       </div>
 
       <div className="hidden md:grid md:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-x-12">
-        <div className="flex flex-col gap-24 lg:gap-40">
+        <motion.div className="flex flex-col gap-24 lg:gap-40" style={{ y: col1Y }}>
           {col1.map((item) => (
             <WorkCard key={item.id} item={item} />
           ))}
-        </div>
-        <div className="flex flex-col gap-24 lg:mt-44 lg:gap-44">
+        </motion.div>
+        <motion.div
+          className="flex flex-col gap-24 lg:mt-44 lg:gap-44"
+          style={{ y: col2Y }}
+        >
           {col2.map((item) => (
             <WorkCard key={item.id} item={item} />
           ))}
-        </div>
-        <div className="flex flex-col gap-24 lg:mt-16 lg:gap-40">
+        </motion.div>
+        <motion.div
+          className="flex flex-col gap-24 lg:mt-16 lg:gap-40"
+          style={{ y: col3Y }}
+        >
           {col3.map((item) => (
             <WorkCard key={item.id} item={item} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -224,7 +286,29 @@ function WorksGrid({
 export default function OurWorks({ works }: OurWorksProps) {
   const [selectedCategory, setSelectedCategory] = useState("All Work");
   const [isFiltering, setIsFiltering] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const skipFilterSpinner = useRef(true);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: isMounted ? sectionRef : undefined,
+    offset: ["start end", "end start"],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 45,
+    damping: 18,
+    mass: 0.7,
+  });
+
+  const headerY = useTransform(smoothProgress, [0, 1], [28, -32]);
+  const col1Y = useTransform(smoothProgress, [0, 1], [0, -90]);
+  const col2Y = useTransform(smoothProgress, [0, 1], [48, -140]);
+  const col3Y = useTransform(smoothProgress, [0, 1], [24, -70]);
 
   const categories = useMemo(() => {
     const specialCategories = Array.from(
@@ -271,9 +355,9 @@ export default function OurWorks({ works }: OurWorksProps) {
   }
 
   return (
-    <div className={`min-h-screen pb-32 ${pagePx}`}>
+    <div ref={sectionRef} className={`min-h-screen pb-32 ${pagePx}`}>
       <div className="pb-8 pt-10 md:pb-10 md:pt-14 lg:pt-16">
-        <OurWorksPageHeader />
+        <OurWorksPageHeader y={isMounted ? headerY : undefined} />
 
         <WorkCategoryFilters
           categories={categories}
@@ -302,7 +386,13 @@ export default function OurWorks({ works }: OurWorksProps) {
         <div
           className={`transition-opacity duration-300 ${isFiltering ? "pointer-events-none opacity-25" : "opacity-100"}`}
         >
-          <WorksGrid works={orderedWorks} layoutKey={selectedCategory} />
+          <WorksGrid
+            works={orderedWorks}
+            layoutKey={selectedCategory}
+            col1Y={isMounted ? col1Y : undefined}
+            col2Y={isMounted ? col2Y : undefined}
+            col3Y={isMounted ? col3Y : undefined}
+          />
         </div>
       </div>
     </div>
