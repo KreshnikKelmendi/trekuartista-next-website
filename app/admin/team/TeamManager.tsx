@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { TeamMember } from "@/lib/team/types";
@@ -36,8 +36,13 @@ export default function TeamManager({
   const [modalOpen, setModalOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [formKey, setFormKey] = useState(0);
 
   const isEditing = editingMember !== null;
+
+  useEffect(() => {
+    setMembers(initialMembers);
+  }, [initialMembers]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -55,6 +60,7 @@ export default function TeamManager({
     setPosition("");
     setFile(null);
     setError("");
+    setFormKey((k) => k + 1);
     setModalOpen(true);
   }
 
@@ -64,6 +70,7 @@ export default function TeamManager({
     setPosition(member.position);
     setFile(null);
     setError("");
+    setFormKey((k) => k + 1);
     setModalOpen(true);
   }
 
@@ -74,7 +81,15 @@ export default function TeamManager({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!position.trim()) {
+
+    const trimmedName = name.trim();
+    const trimmedPosition = position.trim();
+
+    if (!trimmedName) {
+      setError("Enter a name.");
+      return;
+    }
+    if (!trimmedPosition) {
       setError("Enter a position.");
       return;
     }
@@ -88,16 +103,26 @@ export default function TeamManager({
 
     try {
       const formData = new FormData();
-      formData.append("name", name);
-      formData.append("position", position.trim());
+      formData.append("name", trimmedName);
+      formData.append("position", trimmedPosition);
       if (file) formData.append("file", file);
 
       const url = isEditing ? `/api/team/${editingMember.id}` : "/api/team";
       const method = isEditing ? "PATCH" : "POST";
 
       const res = await fetch(url, { method, body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save failed");
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        member?: TeamMember;
+      };
+
+      if (!res.ok) {
+        throw new Error(data.error || `Save failed (${res.status})`);
+      }
+
+      if (!data.member) {
+        throw new Error("Save failed: no member returned.");
+      }
 
       if (isEditing) {
         setMembers((prev) =>
@@ -117,19 +142,33 @@ export default function TeamManager({
   }
 
   async function handleDelete(id: string) {
-    setDeletingId(id);
+    const member = members.find((m) => m.id === id);
+    const label = member?.name ?? "this member";
 
-    const res = await fetch(`/api/team/${id}`, { method: "DELETE" });
-    if (!res.ok) {
-      const data = await res.json();
-      alert(data.error || "Delete failed");
-      setDeletingId(null);
+    if (!window.confirm(`Delete ${label}? This cannot be undone.`)) {
       return;
     }
 
-    setMembers((prev) => prev.filter((m) => m.id !== id));
-    setDeletingId(null);
-    router.refresh();
+    setDeletingId(id);
+    setError("");
+
+    try {
+      const res = await fetch(`/api/team/${id}`, { method: "DELETE" });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+
+      if (!res.ok) {
+        throw new Error(data.error || `Delete failed (${res.status})`);
+      }
+
+      setMembers((prev) => prev.filter((m) => m.id !== id));
+      router.refresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Delete failed";
+      setError(message);
+      alert(message);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -182,9 +221,15 @@ export default function TeamManager({
         </div>
       )}
 
+      {error && !modalOpen ? (
+        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </p>
+      ) : null}
+
       {modalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-10000 flex items-center justify-center bg-stone-900/40 p-4 backdrop-blur-sm"
           onClick={closeModal}
         >
           <div
@@ -205,7 +250,7 @@ export default function TeamManager({
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key={formKey} onSubmit={handleSubmit} className="space-y-4">
               <label className="block">
                 <span className="text-sm text-stone-600">Name</span>
                 <input

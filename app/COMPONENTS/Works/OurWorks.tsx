@@ -142,7 +142,7 @@ function WorkCategoryFilters({
                 {isActive ? (
                   <motion.span
                     layoutId="our-works-active-dot"
-                    className="absolute h-2 w-2 rounded-full bg-[#DF319A]"
+                    className="absolute h-2 w-2 rounded-full bg-[#3110EE]"
                     transition={{
                       type: "spring",
                       stiffness: 480,
@@ -150,14 +150,14 @@ function WorkCategoryFilters({
                     }}
                   />
                 ) : (
-                  <span className="h-1 w-1 rounded-full bg-black/10 transition-colors group-hover:bg-black/20" />
+                  <span className="h-1 w-1 rounded-full bg-black/10 transition-colors group-hover:bg-[#3110EE]/35" />
                 )}
               </span>
               <span
                 className={`whitespace-nowrap font-custom text-[12px] uppercase tracking-[0.06em] transition-colors duration-300 md:text-[13px] lg:tracking-[0.08em] ${
                   isActive
-                    ? "text-black"
-                    : "text-black/25 group-hover:text-black/45"
+                    ? "text-[#3110EE]"
+                    : "text-black/25 group-hover:text-[#3110EE]/70"
                 }`}
               >
                 {category}
@@ -180,7 +180,7 @@ function OurWorksPageHeader({ y }: { y?: MotionValue<number> }) {
         <h1 className="font-custom text-[clamp(2.5rem,9vw,4.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em] text-black">
           Our
         </h1>
-        <h1 className="font-custom text-[clamp(2.5rem,9vw,4.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em] text-black/25">
+        <h1 className="font-custom text-[clamp(2.5rem,9vw,4.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em] text-[#3110EE]">
           Work
         </h1>
       </div>
@@ -283,14 +283,26 @@ function WorksGrid({
   );
 }
 
+function OurWorksPageLoader({ label = "Loading works" }: { label?: string }) {
+  return (
+    <div
+      className={`flex min-h-[60vh] items-center justify-center pb-32 pt-24 ${pagePx}`}
+    >
+      <LoadingSpinner label={label} />
+    </div>
+  );
+}
+
 export default function OurWorks({ works }: OurWorksProps) {
   const [selectedCategory, setSelectedCategory] = useState("All Work");
   const [isFiltering, setIsFiltering] = useState(false);
+  const [isPageReady, setIsPageReady] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const skipFilterSpinner = useRef(true);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setIsPageReady(true);
     setIsMounted(true);
   }, []);
 
@@ -341,6 +353,10 @@ export default function OurWorks({ works }: OurWorksProps) {
     const timer = window.setTimeout(() => setIsFiltering(false), FILTER_LOAD_MS);
     return () => window.clearTimeout(timer);
   }, [selectedCategory]);
+
+  if (!isPageReady) {
+    return <OurWorksPageLoader />;
+  }
 
   if (works.length === 0) {
     return (

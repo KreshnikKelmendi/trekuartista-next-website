@@ -177,6 +177,12 @@ create policy "Allow delete team members"
   on public.team_members for delete
   using (true);
 
+drop policy if exists "Allow update team members" on public.team_members;
+create policy "Allow update team members"
+  on public.team_members for update
+  using (true)
+  with check (true);
+
 insert into storage.buckets (id, name, public)
 values ('team-media', 'team-media', true)
 on conflict (id) do update set public = true;
@@ -195,5 +201,11 @@ drop policy if exists "Allow delete team media" on storage.objects;
 create policy "Allow delete team media"
   on storage.objects for delete
   using (bucket_id = 'team-media');
+
+drop policy if exists "Allow update team media" on storage.objects;
+create policy "Allow update team media"
+  on storage.objects for update
+  using (bucket_id = 'team-media')
+  with check (bucket_id = 'team-media');
 
 notify pgrst, 'reload schema';

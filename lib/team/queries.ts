@@ -11,8 +11,7 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("getTeamMembers:", error.message);
-    return [];
+    throw new Error(error.message);
   }
 
   return (data as TeamMemberRow[]).map(rowToTeamMember);

@@ -253,7 +253,7 @@ export default function WorkDetail({ work }: WorkDetailProps) {
       </div>
 
       <header className={`py-5 md:pt-0 md:pb-0 ${pagePx}`}>
-        <p className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-[#DF319A]`}>
+        <p className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-[#3110EE]`}>
           {work.specialCategory}
         </p>
         <h1 className={`${titleLinkClass} mt-2 max-w-5xl text-4xl font-bold uppercase leading-[0.92] tracking-tight md:mt-4 md:text-6xl lg:text-7xl`}>
