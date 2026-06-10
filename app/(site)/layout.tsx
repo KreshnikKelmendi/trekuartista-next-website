@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Header from "../COMPONENTS/Header/Header";
 import Footer from "../COMPONENTS/footer/Footer";
+import PageTransition from "../COMPONENTS/ui/PageTransition";
 
 export default function SiteLayout({
   children,
@@ -10,7 +11,7 @@ export default function SiteLayout({
   return (
     <>
       <Header />
-      {children}
+      <PageTransition>{children}</PageTransition>
       <Footer />
     </>
   );

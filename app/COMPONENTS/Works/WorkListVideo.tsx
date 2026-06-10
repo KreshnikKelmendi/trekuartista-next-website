@@ -5,6 +5,7 @@ type WorkListVideoProps = {
   poster?: string;
   className?: string;
   videoClassName?: string;
+  onMediaReady?: () => void;
 };
 
 export function isWorkVideoSrc(src?: string) {
@@ -21,6 +22,7 @@ export default function WorkListVideo({
   poster,
   className = "",
   videoClassName = "",
+  onMediaReady,
 }: WorkListVideoProps) {
   return (
     <div className={className}>
@@ -33,6 +35,8 @@ export default function WorkListVideo({
         loop
         playsInline
         preload="metadata"
+        onLoadedData={() => onMediaReady?.()}
+        onError={() => onMediaReady?.()}
       />
     </div>
   );

@@ -3,11 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import type { WorkItem } from "@/lib/works/types";
 import LoadingSpinner from "@/app/COMPONENTS/ui/LoadingSpinner";
-import WorkListVideo, { isWorkVideoSrc } from "./WorkListVideo";
+import WorkCardMedia from "./WorkCardMedia";
 
 const pagePx = "px-5 lg:px-[55px]";
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -45,28 +44,19 @@ function WorkCard({ item, className = "" }: { item: WorkItem; className?: string
         onMouseMove={handleMouseMove}
       >
         <div className="transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110">
-          <div className="aspect-4/5 w-full overflow-hidden bg-zinc-900 md:aspect-3/4 lg:aspect-square">
-            {isWorkVideoSrc(item.workImage) ? (
-              <WorkListVideo
-                src={item.workImage}
-                poster={item.workThumbnail ?? undefined}
-                className="h-full w-full"
-                videoClassName="h-full w-full object-cover"
-              />
-            ) : (
-              <Image
-                className="h-full w-full object-cover"
-                src={item.workImage}
-                alt={item.workName}
-                width={800}
-                height={1000}
-                sizes="(max-width: 768px) 100vw, 33vw"
-                unoptimized={
-                  item.workImage.includes("supabase.co") ||
-                  item.workImage.includes("res.cloudinary.com")
-                }
-              />
-            )}
+          <div className="aspect-4/5 w-full overflow-hidden bg-zinc-100 md:aspect-3/4 lg:aspect-square">
+            <WorkCardMedia
+              src={item.workImage}
+              poster={item.workThumbnail ?? undefined}
+              alt={item.workName}
+              className="h-full w-full"
+              mediaClassName="h-full w-full object-cover"
+              sizes="(max-width: 768px) 100vw, 33vw"
+              unoptimized={
+                item.workImage.includes("supabase.co") ||
+                item.workImage.includes("res.cloudinary.com")
+              }
+            />
           </div>
         </div>
 

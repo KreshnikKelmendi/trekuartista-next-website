@@ -11,7 +11,7 @@ import {
 } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import WorkListVideo, { isWorkVideoSrc } from "../Works/WorkListVideo";
+import WorkCardMedia from "../Works/WorkCardMedia";
 import { pickFeaturedWorks } from "@/lib/works/merge-works";
 import { HOMEPAGE_FEATURED_WORK_IDS } from "@/lib/works/workData";
 import type { WorkItem } from "@/lib/works/types";
@@ -37,8 +37,6 @@ function FeaturedWorkMedia({ work }: { work: WorkItem }) {
     mouseY.set(e.clientY - rect.top);
   };
 
-  const isVideo = isWorkVideoSrc(work.workImage);
-
   return (
     <Link
       href={`/our-works/${work.id}`}
@@ -47,20 +45,14 @@ function FeaturedWorkMedia({ work }: { work: WorkItem }) {
       onMouseMove={handleMouseMove}
       className="group relative block aspect-16/11 w-full cursor-none overflow-hidden rounded-[8px] bg-zinc-100"
     >
-      {isVideo ? (
-        <WorkListVideo
-          src={work.workImage}
-          poster={work.workThumbnail ?? undefined}
-          className="h-full w-full overflow-hidden rounded-[8px]"
-          videoClassName="h-full w-full rounded-[8px] object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
-        />
-      ) : (
-        <img
-          src={work.workImage}
-          alt={work.workName}
-          className="h-full w-full rounded-[8px] object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
-        />
-      )}
+      <WorkCardMedia
+        src={work.workImage}
+        poster={work.workThumbnail ?? undefined}
+        alt={work.workName}
+        className="h-full w-full rounded-[8px]"
+        mediaClassName="h-full w-full rounded-[8px] object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
+        useNativeImg
+      />
 
       <div className="absolute inset-0 rounded-[8px] bg-black/0 transition-all duration-500 group-hover:bg-black/10" />
 
@@ -278,20 +270,17 @@ export default function FeaturedWork() {
         {/* Mobile Layout */}
         <div className="flex flex-col space-y-16 md:hidden">
           {displayWorks.map((work: WorkItem) => {
-            const isVideo = isWorkVideoSrc(work.workImage);
             return (
               <div key={`mobile-${work.id}`} className="space-y-3">
-                <Link href={`/our-works/${work.id}`} className="block aspect-4/5 w-full overflow-hidden rounded-[8px]">
-                  {isVideo ? (
-                    <WorkListVideo
-                      src={work.workImage}
-                      poster={work.workThumbnail ?? undefined}
-                      className="h-full w-full overflow-hidden rounded-[8px]"
-                      videoClassName="h-full w-full rounded-[8px] object-cover"
-                    />
-                  ) : (
-                    <img src={work.workImage} alt={work.workName} className="h-full w-full rounded-[8px] object-cover" />
-                  )}
+                <Link href={`/our-works/${work.id}`} className="block aspect-4/5 w-full overflow-hidden rounded-[8px] bg-zinc-100">
+                  <WorkCardMedia
+                    src={work.workImage}
+                    poster={work.workThumbnail ?? undefined}
+                    alt={work.workName}
+                    className="h-full w-full rounded-[8px]"
+                    mediaClassName="h-full w-full rounded-[8px] object-cover"
+                    useNativeImg
+                  />
                 </Link>
                 <div className="flex items-center justify-between">
                   <h3 className="font-sfts text-[16px] uppercase">{work.workName}</h3>
