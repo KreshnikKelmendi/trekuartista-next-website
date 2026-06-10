@@ -120,16 +120,17 @@ export default function TeamManager({
         throw new Error(data.error || `Save failed (${res.status})`);
       }
 
-      if (!data.member) {
+      const savedMember = data.member;
+      if (!savedMember) {
         throw new Error("Save failed: no member returned.");
       }
 
       if (isEditing) {
         setMembers((prev) =>
-          prev.map((m) => (m.id === data.member.id ? data.member : m))
+          prev.map((m) => (m.id === savedMember.id ? savedMember : m))
         );
       } else {
-        setMembers((prev) => [...prev, data.member]);
+        setMembers((prev) => [...prev, savedMember]);
       }
 
       closeModal();
