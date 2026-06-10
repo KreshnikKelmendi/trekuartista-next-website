@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import type { TeamMember } from "@/lib/team/types";
 import TeamMemberCard from "./TeamMemberCard";
+
+const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
 
 function resetForm(setters: {
   setName: (v: string) => void;
@@ -25,7 +26,6 @@ export default function TeamManager({
 }: {
   initialMembers: TeamMember[];
 }) {
-  const router = useRouter();
   const [members, setMembers] = useState(initialMembers);
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
@@ -39,6 +39,20 @@ export default function TeamManager({
   const [formKey, setFormKey] = useState(0);
 
   const isEditing = editingMember !== null;
+
+  async function reloadMembers() {
+    const res = await fetch("/api/team", { cache: "no-store" });
+    const data = (await res.json().catch(() => ({}))) as {
+      members?: TeamMember[];
+      error?: string;
+    };
+    if (!res.ok) {
+      throw new Error(data.error || `Could not reload team (${res.status})`);
+    }
+    if (data.members) {
+      setMembers(data.members);
+    }
+  }
 
   useEffect(() => {
     setMembers(initialMembers);
@@ -97,6 +111,10 @@ export default function TeamManager({
       setError("Choose a photo.");
       return;
     }
+    if (file && file.size > MAX_PHOTO_BYTES) {
+      setError("Photo is too large. Use an image under 4 MB (JPG or PNG).");
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -110,7 +128,11 @@ export default function TeamManager({
       const url = isEditing ? `/api/team/${editingMember.id}` : "/api/team";
       const method = isEditing ? "PATCH" : "POST";
 
-      const res = await fetch(url, { method, body: formData });
+      const res = await fetch(url, {
+        method,
+        body: formData,
+        cache: "no-store",
+      });
       const data = (await res.json().catch(() => ({}))) as {
         error?: string;
         member?: TeamMember;
@@ -120,21 +142,12 @@ export default function TeamManager({
         throw new Error(data.error || `Save failed (${res.status})`);
       }
 
-      const savedMember = data.member;
-      if (!savedMember) {
+      if (!data.member) {
         throw new Error("Save failed: no member returned.");
       }
 
-      if (isEditing) {
-        setMembers((prev) =>
-          prev.map((m) => (m.id === savedMember.id ? savedMember : m))
-        );
-      } else {
-        setMembers((prev) => [...prev, savedMember]);
-      }
-
       closeModal();
-      router.refresh();
+      await reloadMembers();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
     } finally {
@@ -154,15 +167,17 @@ export default function TeamManager({
     setError("");
 
     try {
-      const res = await fetch(`/api/team/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/team/${id}`, {
+        method: "DELETE",
+        cache: "no-store",
+      });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
 
       if (!res.ok) {
         throw new Error(data.error || `Delete failed (${res.status})`);
       }
 
-      setMembers((prev) => prev.filter((m) => m.id !== id));
-      router.refresh();
+      await reloadMembers();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Delete failed";
       setError(message);
@@ -278,6 +293,9 @@ export default function TeamManager({
                 <span className="text-sm text-stone-600">
                   Photo{isEditing ? " (optional — leave empty to keep current)" : ""}
                 </span>
+                <span className="mt-1 block text-xs text-stone-400">
+                  JPG or PNG, max 4 MB
+                </span>
                 {isEditing && editingMember && !file && (
                   <div className="relative mt-2 h-24 w-24 overflow-hidden rounded-lg bg-stone-100">
                     <Image
@@ -292,7 +310,7 @@ export default function TeamManager({
                 )}
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp"
                   required={!isEditing}
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                   className="mt-2 w-full text-sm text-stone-600 file:mr-3 file:rounded-lg file:border-0 file:bg-teal-600 file:px-3 file:py-2 file:text-sm file:text-white"

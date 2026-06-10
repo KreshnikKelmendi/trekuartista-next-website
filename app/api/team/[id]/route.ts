@@ -1,12 +1,19 @@
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
-import { compressTeamImage, isImageMime } from "@/lib/media/compress";
+import {
+  compressTeamImage,
+  formatTeamImageError,
+  isImageMime,
+} from "@/lib/media/compress";
 import {
   deleteTeamMember,
   getTeamImageUrl,
   updateTeamMember,
   uploadTeamImage,
 } from "@/lib/team/queries";
+import { revalidateTeamPages } from "@/lib/team/revalidate";
+
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -40,6 +47,13 @@ export async function PATCH(request: Request, { params }: Props) {
     }
 
     if (file instanceof File && file.size > 0) {
+      if (file.size > MAX_UPLOAD_BYTES) {
+        return NextResponse.json(
+          { error: "Photo is too large. Use an image under 4 MB." },
+          { status: 413 }
+        );
+      }
+
       const mime = file.type || "application/octet-stream";
       if (!isImageMime(mime)) {
         return NextResponse.json({ error: "Only images are supported." }, { status: 400 });
@@ -57,9 +71,10 @@ export async function PATCH(request: Request, { params }: Props) {
     }
 
     const member = await updateTeamMember(id, updates);
+    revalidateTeamPages();
     return NextResponse.json({ member });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Update failed";
+    const message = formatTeamImageError(err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
@@ -68,6 +83,7 @@ export async function DELETE(_request: Request, { params }: Props) {
   try {
     const { id } = await params;
     await deleteTeamMember(id);
+    revalidateTeamPages();
     return NextResponse.json({ ok: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Delete failed";

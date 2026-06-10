@@ -6,6 +6,8 @@ import Services from "@/app/COMPONENTS/services/Services";
 import PeopleInTheRoom from "@/app/COMPONENTS/team/PeopleInTheRoom";
 import TeamSection from "@/app/COMPONENTS/team/TeamSection";
 
+export const dynamic = "force-dynamic";
+
 export default function AboutPage() {
   return (
     <>

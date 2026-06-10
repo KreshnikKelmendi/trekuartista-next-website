@@ -12,7 +12,7 @@ if (ffmpegPath) {
 
 const IMAGE_MAX_WIDTH = 2400;
 const IMAGE_WEBP_QUALITY = 90;
-const TEAM_IMAGE_MAX_SIZE = 1200;
+const TEAM_IMAGE_MAX_SIZE = 800;
 const VIDEO_CRF = 18;
 
 export function isVideoMime(mime: string) {
@@ -21,6 +21,15 @@ export function isVideoMime(mime: string) {
 
 export function isImageMime(mime: string) {
   return mime.startsWith("image/");
+}
+
+export function formatTeamImageError(err: unknown) {
+  if (!(err instanceof Error)) return "Image processing failed";
+  const msg = err.message.toLowerCase();
+  if (msg.includes("heif") || msg.includes("heic")) {
+    return "HEIC photos are not supported. Please upload JPG or PNG.";
+  }
+  return err.message;
 }
 
 export async function compressImage(buffer: Buffer): Promise<{
@@ -44,7 +53,7 @@ export async function compressImage(buffer: Buffer): Promise<{
   return { buffer: output, contentType: "image/webp", ext: "webp" };
 }
 
-/** Team headshots: resize + lossless WebP (no lossy quality setting). */
+/** Team headshots: downscale first, then WebP (reliable on Vercel serverless). */
 export async function compressTeamImage(buffer: Buffer): Promise<{
   buffer: Buffer;
   contentType: string;
@@ -56,7 +65,7 @@ export async function compressTeamImage(buffer: Buffer): Promise<{
       fit: "inside",
       withoutEnlargement: true,
     })
-    .webp({ lossless: true, effort: 4 })
+    .webp({ effort: 4 })
     .toBuffer();
 
   return { buffer: output, contentType: "image/webp", ext: "webp" };

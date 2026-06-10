@@ -1,12 +1,19 @@
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
-import { compressTeamImage, isImageMime } from "@/lib/media/compress";
+import {
+  compressTeamImage,
+  formatTeamImageError,
+  isImageMime,
+} from "@/lib/media/compress";
 import {
   getTeamMembers,
   getTeamImageUrl,
   insertTeamMember,
   uploadTeamImage,
 } from "@/lib/team/queries";
+import { revalidateTeamPages } from "@/lib/team/revalidate";
+
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -39,6 +46,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Photo is required." }, { status: 400 });
     }
 
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { error: "Photo is too large. Use an image under 4 MB." },
+        { status: 413 }
+      );
+    }
+
     const mime = file.type || "application/octet-stream";
     if (!isImageMime(mime)) {
       return NextResponse.json({ error: "Only images are supported." }, { status: 400 });
@@ -55,9 +69,11 @@ export async function POST(request: Request) {
       image: getTeamImageUrl(path),
     });
 
+    revalidateTeamPages();
+
     return NextResponse.json({ member }, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Upload failed";
+    const message = formatTeamImageError(err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
