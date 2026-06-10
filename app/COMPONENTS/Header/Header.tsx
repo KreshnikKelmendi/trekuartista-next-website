@@ -9,19 +9,45 @@ import { usePathname } from 'next/navigation';
 const logoTreku = "/assets/logo/logo-treku.png";
 const trek = "/assets/logo/trekuartistaLogoFooter.png";
 
-const hamburgerMenu = (
-  <svg width="53" height="15" viewBox="0 0 53 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <line x1="0" y1="1.5" x2="53" y2="1.5" stroke="black" strokeWidth="3" />
-    <line x1="18" y1="13.5" x2="53" y2="13.5" stroke="black" strokeWidth="3" />
-  </svg>
-);
-
-const closeIcon = (
-  <svg width="53" height="15" viewBox="0 0 53 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <line x1="0" y1="1.5" x2="53" y2="13.5" stroke="black" strokeWidth="3" />
-    <line x1="18" y1="13.5" x2="53" y2="1.5" stroke="black" strokeWidth="3" />
-  </svg>
-);
+function MenuToggleIcon({ isOpen }: { isOpen: boolean }) {
+  return (
+    <svg
+      width="53"
+      height="15"
+      viewBox="0 0 53 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      {isOpen ? (
+        <>
+          <line
+            x1="0"
+            y1="7.5"
+            x2="53"
+            y2="7.5"
+            stroke="black"
+            strokeOpacity={0.12}
+            strokeWidth="3"
+          />
+          <motion.rect
+            y={6}
+            height={3}
+            fill="black"
+            initial={{ width: 0, x: 53 }}
+            animate={{ width: 53, x: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </>
+      ) : (
+        <>
+          <line x1="0" y1="1.5" x2="53" y2="1.5" stroke="black" strokeWidth="3" />
+          <line x1="18" y1="13.5" x2="53" y2="13.5" stroke="black" strokeWidth="3" />
+        </>
+      )}
+    </svg>
+  );
+}
 
 const scrollTopSmooth = () => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
@@ -289,7 +315,7 @@ const Header = () => {
           }`}
           onClick={toggleMenu}
         >
-          {isMenuOpen ? closeIcon : hamburgerMenu}
+          <MenuToggleIcon isOpen={false} />
         </button>
 
         <AnimatePresence>
@@ -316,7 +342,7 @@ const Header = () => {
                   className="flex min-h-[40px] min-w-[53px] cursor-pointer items-center justify-end text-black transition-transform active:scale-95"
                   aria-label="Close menu"
                 >
-                  {closeIcon}
+                  <MenuToggleIcon isOpen />
                 </button>
               </div>
 
