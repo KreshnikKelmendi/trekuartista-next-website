@@ -76,8 +76,8 @@ const FirstContentOfAbout = () => {
           <motion.div style={{ y: isMounted ? y2 : 0 }} className="absolute right-0 top-[302px] h-[140px] w-[116px] overflow-hidden rounded-[8px]">
             <Image src={officeImage3} alt="" fill className="object-cover grayscale" sizes="116px" />
           </motion.div>
-          <motion.div style={{ y: isMounted ? y3 : 0 }} className="absolute right-[8%] bottom-0 h-[110px] w-[152px] overflow-hidden rounded-[8px]">
-            <Image src={officeImage1} alt="" fill className="object-cover grayscale" sizes="152px" />
+          <motion.div style={{ y: isMounted ? y3 : 0 }} className="absolute right-[8%] bottom-0 h-[220px] w-[152px] overflow-hidden rounded-[8px]">
+            <Image src={officeImage1} alt="" fill className="object-cover grayscale" sizes="" />
           </motion.div>
 
           <div className="absolute bottom-[116px] left-5 max-w-[305px]">
@@ -104,7 +104,7 @@ const FirstContentOfAbout = () => {
                   fill
                   priority
                   className="object-cover grayscale"
-                  sizes="68vw"
+                  sizes=""
                 />
               </motion.div>
             </div>
@@ -117,7 +117,7 @@ const FirstContentOfAbout = () => {
           </div>
 
           <motion.div style={{ y: isMounted ? y1 : 0 }} className="absolute left-[54%] top-[200px] z-30 h-[156px] w-[212px] lg:h-[30vh] overflow-hidden rounded-[8px]">
-            <Image src={officeImage1} alt="" fill className="object-cover grayscale rounded-[8px]" sizes="212px" />
+            <Image src={officeImage1} alt="" fill className="object-cover grayscale rounded-[8px]" sizes="" />
           </motion.div>
           
           <motion.div style={{ y: isMounted ? y1 : 0 }} className="absolute left-[72%] top-[80px] z-70 h-[156px] w-[152px] lg:h-[20vh] overflow-hidden">
@@ -148,11 +148,11 @@ const FirstContentOfAbout = () => {
           </motion.div>
 
           <motion.div style={{ y: isMounted ? y2 : 0 }} className="absolute right-[25%] top-[400px] z-30 h-[196px] w-[212px] overflow-hidden rounded-[8px]">
-            <Image src={officeImage2} alt="" fill className="object-cover grayscale" sizes="212px" />
+            <Image src={officeImage2} alt="" fill className="object-cover grayscale" sizes="" />
           </motion.div>
 
           <motion.div style={{ y: isMounted ? y3 : 0 }} className="absolute right-[3.5%] top-[100px] z-30 h-[156px] w-[212px] lg:h-[50vh] overflow-hidden rounded-[8px]">
-            <Image src={officeImage3} alt="" fill className="object-cover grayscale" sizes="212px" />
+            <Image src={officeImage3} alt="" fill className="object-cover grayscale" sizes="" />
           </motion.div>
         </motion.div>
       </div>
@@ -169,7 +169,7 @@ const FirstContentOfAbout = () => {
         viewport={{ once: true }}
         className="mt-24 ml-auto w-1/2 flex justify-end items-end lg:mt-24"
       >
-        <p className="text-[18px] leading-[1.2] text-black md:text-[22px] lg:text-[46px] text-right font-roboto z-50">
+        <p className="z-50 text-right font-roboto text-[18px] leading-[1.2] text-[#3110EE] md:text-[22px] lg:text-[46px]">
           “No templates, no safe routes—just bold concepts, crafted to make brands felt, not just seen.”
         </p>
       </motion.div>

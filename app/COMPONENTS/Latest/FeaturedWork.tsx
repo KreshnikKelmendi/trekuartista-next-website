@@ -1,23 +1,42 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-  useScroll,
-  useTransform,
-  useMotionValueEvent,
-} from "framer-motion";
+import { motion, useSpring, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useInView } from "react-intersection-observer";
 import WorkCardMedia from "../Works/WorkCardMedia";
 import { pickFeaturedWorks } from "@/lib/works/merge-works";
 import { HOMEPAGE_FEATURED_WORK_IDS } from "@/lib/works/workData";
 import type { WorkItem } from "@/lib/works/types";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const revealEase = [0.16, 1, 0.3, 1] as const;
+const STRIP_COUNT = 5;
+const ZOOM_HOLD_S = 0.5;
+const IMAGE_REVEAL_BASE_S = 0.65;
+const IMAGE_REVEAL_STAGGER_S = 0.09;
+const INITIAL_CLUSTER_SCALE = 0.065;
+const STRIP_GAP_PX = 4;
+const STRIP_GAP_HOVER_PX = 14;
+const stripZoomSpring = {
+  type: "spring" as const,
+  stiffness: 38,
+  damping: 20,
+  mass: 1.2,
+};
+const imageRevealSpring = {
+  type: "spring" as const,
+  stiffness: 52,
+  damping: 22,
+  mass: 0.95,
+};
+const tileHoverSpring = {
+  type: "spring" as const,
+  stiffness: 65,
+  damping: 20,
+  mass: 0.95,
+};
 
 function SeeMoreLink({
   href,
@@ -49,203 +68,163 @@ function SeeMoreLink({
         <path
           d="M34 2L46 14M46 14L34 26M46 14H0"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="2.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </Link>
   );
 }
 
-function featuredFirstDescription(work: WorkItem): string {
-  const sorted = [...work.descriptions].sort((a, b) => a.sortOrder - b.sortOrder);
-  const first = sorted.find((d) => d.content.trim());
-  return first?.content.trim() ?? work.description?.trim() ?? "";
-}
-
-function FeaturedWorkMedia({ work }: { work: WorkItem }) {
-  const [hovered, setHovered] = useState(false);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothX = useSpring(mouseX, { stiffness: 140, damping: 22, mass: 0.35 });
-  const smoothY = useSpring(mouseY, { stiffness: 140, damping: 22, mass: 0.35 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  };
-
-  return (
-    <Link
-      href={`/our-works/${work.id}`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onMouseMove={handleMouseMove}
-      className="group relative block aspect-16/11 w-full cursor-none overflow-hidden rounded-[8px] bg-zinc-100"
-    >
-      <WorkCardMedia
-        src={work.workImage}
-        poster={work.workThumbnail ?? undefined}
-        alt={work.workName}
-        className="h-full w-full rounded-[8px]"
-        mediaClassName="h-full w-full rounded-[8px] object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
-        useNativeImg
-      />
-
-      <div className="absolute inset-0 rounded-[8px] bg-black/0 transition-all duration-500 group-hover:bg-black/10" />
-
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            style={{ left: smoothX, top: smoothY, translateX: "-50%", translateY: "-50%" }}
-            initial={{ opacity: 0, scale: 0.4 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.4 }}
-            transition={{ duration: 0.25, ease }}
-            className="pointer-events-none absolute z-30 hidden items-center justify-center lg:flex"
-          >
-            <motion.div
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="flex h-[80px] w-[80px] items-center justify-center rounded-full border border-white/40 bg-white/90 shadow-[0_10px_60px_rgba(0,0,0,0.15)] backdrop-blur-xl"
-            >
-              <span className="whitespace-nowrap font-custom text-[10px] uppercase text-black">
-                See More
-              </span>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </Link>
-  );
-}
-
-function DesktopFeaturedScroll({ works }: { works: WorkItem[] }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [isMounted, setIsMounted] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const lastProgress = useRef(0);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  const count = works.length;
-  const safeIndex = count > 0 ? Math.min(activeIndex, count - 1) : 0;
-  const activeWork = works[safeIndex];
-
-  useEffect(() => {
-    if (count === 0) {
-      setActiveIndex(0);
-      return;
-    }
-    if (activeIndex > count - 1) {
-      setActiveIndex(count - 1);
-    }
-  }, [activeIndex, count]);
-
-  const { scrollYProgress } = useScroll({
-    target: isMounted ? sectionRef : undefined,
-    offset: ["start start", "end end"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const isScrollingDown = latest > lastProgress.current;
-    const currentDirection = isScrollingDown ? 1 : -1;
-    lastProgress.current = latest;
-
-    const rawIndex = Math.floor(latest * count);
-    const targetIndex = Math.max(0, Math.min(count - 1, rawIndex));
-    
-    if (targetIndex !== activeIndex) {
-      setDirection(currentDirection);
-      setActiveIndex(targetIndex);
-    }
-  });
-
-  const textVariants = {
-    enter: (dir: number) => ({
-      opacity: 0,
-      y: dir > 0 ? 40 : -40,
-    }),
-    center: {
-      opacity: 1,
-      y: 0,
-    },
-    exit: (dir: number) => ({
-      opacity: 0,
-      y: dir > 0 ? -30 : 30,
-    }),
-  };
-
-  if (!activeWork) return null;
-
-  const firstDescription = featuredFirstDescription(activeWork);
+function FeaturedWorkSquareTile({
+  work,
+  index,
+  isInView,
+  hoveredIndex,
+  onHover,
+  onLeave,
+}: {
+  work: WorkItem;
+  index: number;
+  isInView: boolean;
+  hoveredIndex: number | null;
+  onHover: () => void;
+  onLeave: () => void;
+}) {
+  const isHovered = hoveredIndex === index;
+  const isAnyHovered = hoveredIndex !== null && !isHovered;
 
   return (
     <div
-      ref={sectionRef}
-      className="relative hidden md:block"
-      style={{ height: `${count * 100}vh` }}
+      className="relative min-w-0 flex-1"
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+      onFocus={onHover}
+      onBlur={onLeave}
     >
-      <div className="sticky top-0 z-10 flex h-screen items-center overflow-hidden">
-        <div className="grid w-full grid-cols-[1fr_1.5fr] items-center gap-20 lg:gap-32">
-          
-          {/* Left Side — Copy Wrapper */}
-          <div className="relative h-[60vh] py-10">
-            <AnimatePresence mode="popLayout" custom={direction}>
-              <motion.div
-                key={activeWork.id}
-                custom={direction}
-                variants={textVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.45, ease }}
-                className="absolute inset-x-0 top-10 flex h-full flex-col justify-between"
-              >
-                <div className="space-y-8">
-                  <h3 className="font-sfts text-base uppercase leading-[45px] text-[#111] lg:text-[45px]">
-                    {activeWork.workName}
-                  </h3>
-                  {firstDescription ? (
-                    <p className=" whitespace-pre-wrap font-roboto text-[12px] leading-snug text-black md:max-w-[380px] md:text-base lg:max-w-[480px] lg:text-xl lg:leading-[1.4] xl:text-[1.35rem]">
-                      {firstDescription}
-                    </p>
-                  ) : null}
-                </div>
+      <motion.div
+        className="relative aspect-10/11 w-full overflow-hidden bg-black will-change-transform"
+        style={{ transformOrigin: "center center", zIndex: isHovered ? 10 : 1 }}
+        animate={{
+          scaleX: isHovered ? 1.05 : isAnyHovered ? 0.86 : 1,
+          scaleY: isHovered ? 1.08 : isAnyHovered ? 0.86 : 1,
+          opacity: isAnyHovered ? 0.82 : 1,
+        }}
+        transition={tileHoverSpring}
+      >
+        <Link
+          href={`/our-works/${work.id}`}
+          className="group relative block h-full w-full"
+        >
+          <motion.div
+            className="absolute inset-0 will-change-transform"
+            initial={false}
+            animate={
+              isInView
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 1.14 }
+            }
+            transition={{
+              ...imageRevealSpring,
+              delay: IMAGE_REVEAL_BASE_S + index * IMAGE_REVEAL_STAGGER_S,
+            }}
+          >
+            <WorkCardMedia
+              src={work.workImage}
+              poster={work.workThumbnail ?? undefined}
+              alt={work.workName}
+              className="h-full w-full"
+              mediaClassName="h-full w-full object-cover"
+              useNativeImg
+            />
+          </motion.div>
 
-                <div>
-                  <SeeMoreLink
-                    href={`/our-works/${activeWork.id}`}
-                    label="See more"
-                    className="text-base lg:text-xl"
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-10 origin-center bg-black will-change-transform"
+            initial={false}
+            animate={
+              isInView
+                ? { scale: 0, opacity: 0 }
+                : { scale: 1, opacity: 1 }
+            }
+            transition={{
+              ...imageRevealSpring,
+              delay: IMAGE_REVEAL_BASE_S + index * IMAGE_REVEAL_STAGGER_S,
+            }}
+          />
 
-          {/* Right Side — Media Container */}
-          <div className="relative flex items-center">
-            <AnimatePresence mode="popLayout" custom={direction}>
-              <motion.div
-                key={`media-${activeWork.id}`}
-                custom={direction}
-                variants={textVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.45, ease }}
-                className="w-full"
-              >
-                <FeaturedWorkMedia work={activeWork} />
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          <motion.div
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-linear-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-2.5 pt-10"
+            initial={false}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+              y: isHovered ? 0 : 8,
+            }}
+            transition={tileHoverSpring}
+          >
+            <p className="font-sfts text-[10px] uppercase leading-tight tracking-wide text-white sm:text-[11px]">
+              {work.workName}
+            </p>
+          </motion.div>
+        </Link>
+      </motion.div>
+    </div>
+  );
+}
 
-        </div>
-      </div>
+function FeaturedWorkSquareStrip({ works }: { works: WorkItem[] }) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [ref, isInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.15,
+    rootMargin: "-6% 0px -4% 0px",
+  });
+
+  const stripWorks = works.slice(0, STRIP_COUNT);
+
+  return (
+    <div
+      ref={ref}
+      className="flex w-full items-center justify-center overflow-visible py-8 sm:py-10 lg:min-h-[30vw] lg:py-12 xl:min-h-[340px]"
+    >
+      <motion.div
+        className="flex w-full origin-center items-center gap-1 overflow-visible will-change-transform"
+        initial={{ scale: INITIAL_CLUSTER_SCALE }}
+        animate={{
+          scale: isInView ? 1 : INITIAL_CLUSTER_SCALE,
+          gap: hoveredIndex !== null ? STRIP_GAP_HOVER_PX : STRIP_GAP_PX,
+        }}
+        transition={{
+          scale: {
+            ...stripZoomSpring,
+            delay: isInView ? ZOOM_HOLD_S : 0,
+          },
+          gap: tileHoverSpring,
+        }}
+      >
+        {stripWorks.map((work, index) => (
+          <FeaturedWorkSquareTile
+            key={work.id}
+            work={work}
+            index={index}
+            isInView={isInView}
+            hoveredIndex={hoveredIndex}
+            onHover={() => setHoveredIndex(index)}
+            onLeave={() => setHoveredIndex(null)}
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+function DesktopFeaturedStrip({ works }: { works: WorkItem[] }) {
+  if (works.length === 0) return null;
+
+  return (
+    <div className="hidden w-full md:block">
+      <FeaturedWorkSquareStrip works={works} />
     </div>
   );
 }
@@ -368,9 +347,8 @@ export default function FeaturedWork() {
           ))}
         </div>
 
-        {/* Desktop Layout */}
         {displayWorks.length > 0 && (
-          <DesktopFeaturedScroll works={displayWorks} />
+          <DesktopFeaturedStrip works={displayWorks} />
         )}
 
         <div className="flex items-center justify-end pb-10 pt-16 lg:pt-0">

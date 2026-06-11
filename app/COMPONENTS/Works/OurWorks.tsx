@@ -154,7 +154,7 @@ function WorkCategoryFilters({
                 )}
               </span>
               <span
-                className={`whitespace-nowrap font-custom text-[12px] uppercase tracking-[0.06em] transition-colors duration-300 md:text-[13px] lg:tracking-[0.08em] ${
+                className={`whitespace-nowrap font-custom text-[12px] font-bold uppercase transition-colors duration-300 md:text-[13px] ${
                   isActive
                     ? "text-[#3110EE]"
                     : "text-black/25 group-hover:text-[#3110EE]/70"
@@ -180,7 +180,7 @@ function OurWorksPageHeader({ y }: { y?: MotionValue<number> }) {
         <h1 className="font-custom text-[clamp(2.5rem,9vw,4.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em] text-black">
           Our
         </h1>
-        <h1 className="font-custom text-[clamp(2.5rem,9vw,4.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em] text-[#3110EE]">
+        <h1 className="font-custom text-[clamp(2.5rem,9vw,4.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em] text-black">
           Work
         </h1>
       </div>
