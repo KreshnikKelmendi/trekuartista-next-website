@@ -19,7 +19,16 @@ export const metadata: Metadata = {
   description:
     "Trekuartista is a creative advertising agency in Prishtinë, Kosovo — branding, campaigns, design, and digital experiences for brands built differently.",
   icons: {
-    icon: "/assets/logo/whiteLogoTreku.png",
+    icon: [
+      {
+        url: "/assets/logo/whiteLogoTreku.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/assets/logo/logo-treku.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
     shortcut: "/assets/logo/whiteLogoTreku.png",
     apple: "/assets/logo/whiteLogoTreku.png",
   },
