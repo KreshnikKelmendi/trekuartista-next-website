@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useSpring, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useInView } from "react-intersection-observer";
@@ -18,25 +24,33 @@ const IMAGE_REVEAL_BASE_S = 0.65;
 const IMAGE_REVEAL_STAGGER_S = 0.09;
 const INITIAL_CLUSTER_SCALE = 0.065;
 const STRIP_GAP_PX = 4;
-const STRIP_GAP_HOVER_PX = 14;
+const STRIP_GAP_HOVER_PX = 30;
+const TILE_ASPECT_RATIO = "10 / 11.5";
+const HOVER_FLEX_GROW = 1.2;
+const OTHER_FLEX_GROW = 0.9;
 const stripZoomSpring = {
   type: "spring" as const,
-  stiffness: 38,
-  damping: 20,
-  mass: 1.2,
+  stiffness: 34,
+  damping: 22,
+  mass: 1.15,
 };
 const imageRevealSpring = {
   type: "spring" as const,
-  stiffness: 52,
-  damping: 22,
-  mass: 0.95,
+  stiffness: 48,
+  damping: 24,
+  mass: 1,
 };
-const tileHoverSpring = {
+const hoverSpring = {
   type: "spring" as const,
-  stiffness: 65,
-  damping: 20,
-  mass: 0.95,
+  stiffness: 62,
+  damping: 24,
+  mass: 0.85,
 };
+const hoverEase = { duration: 0.38, ease: revealEase };
+const imageHoverEase = { duration: 0.45, ease: revealEase };
+const cursorSpring = { stiffness: 220, damping: 28, mass: 0.3 };
+const hoverShadow = "0 8px 20px -12px rgba(17,17,17,0.1)";
+const idleShadow = "0 0 0 rgba(0,0,0,0)";
 
 function SeeMoreLink({
   href,
@@ -94,41 +108,64 @@ function FeaturedWorkSquareTile({
 }) {
   const isHovered = hoveredIndex === index;
   const isAnyHovered = hoveredIndex !== null && !isHovered;
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  const smoothCursorX = useSpring(cursorX, cursorSpring);
+  const smoothCursorY = useSpring(cursorY, cursorSpring);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    cursorX.set(e.clientX - rect.left);
+    cursorY.set(e.clientY - rect.top);
+  };
 
   return (
-    <div
-      className="relative min-w-0 flex-1"
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      onFocus={onHover}
-      onBlur={onLeave}
+    <motion.div
+      className="relative min-w-0"
+      style={{ flex: 1 }}
+      animate={{
+        flexGrow: isHovered
+          ? HOVER_FLEX_GROW
+          : isAnyHovered
+            ? OTHER_FLEX_GROW
+            : 1,
+      }}
+      transition={hoverSpring}
     >
       <motion.div
-        className="relative aspect-10/11 w-full overflow-hidden bg-black will-change-transform"
+        className="relative w-full will-change-transform"
         style={{ transformOrigin: "center center", zIndex: isHovered ? 10 : 1 }}
         animate={{
-          scaleX: isHovered ? 1.05 : isAnyHovered ? 0.86 : 1,
-          scaleY: isHovered ? 1.08 : isAnyHovered ? 0.86 : 1,
-          opacity: isAnyHovered ? 0.82 : 1,
+          aspectRatio: TILE_ASPECT_RATIO,
+          scale: isHovered ? 1.03 : isAnyHovered ? 0.94 : 1,
+          boxShadow: isHovered ? hoverShadow : idleShadow,
         }}
-        transition={tileHoverSpring}
+        transition={hoverSpring}
       >
-        <Link
-          href={`/our-works/${work.id}`}
-          className="group relative block h-full w-full"
+        <div
+          className="relative h-full w-full cursor-none overflow-hidden bg-black"
+          onMouseEnter={onHover}
+          onMouseLeave={onLeave}
+          onMouseMove={handleMouseMove}
+          onFocus={onHover}
+          onBlur={onLeave}
         >
           <motion.div
             className="absolute inset-0 will-change-transform"
             initial={false}
             animate={
-              isInView
-                ? { opacity: 1, scale: 1 }
-                : { opacity: 0, scale: 1.14 }
+              !isInView
+                ? { opacity: 0, scale: 1.08 }
+                : { opacity: 1, scale: 1 }
             }
-            transition={{
-              ...imageRevealSpring,
-              delay: IMAGE_REVEAL_BASE_S + index * IMAGE_REVEAL_STAGGER_S,
-            }}
+            transition={
+              !isInView
+                ? {
+                    ...imageRevealSpring,
+                    delay: IMAGE_REVEAL_BASE_S + index * IMAGE_REVEAL_STAGGER_S,
+                  }
+                : imageHoverEase
+            }
           >
             <WorkCardMedia
               src={work.workImage}
@@ -155,21 +192,46 @@ function FeaturedWorkSquareTile({
           />
 
           <motion.div
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-linear-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-2.5 pt-10"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-linear-to-t from-black/85 via-black/40 to-transparent px-2.5 pb-2.5 pt-10"
             initial={false}
             animate={{
               opacity: isHovered ? 1 : 0,
-              y: isHovered ? 0 : 8,
+              y: isHovered ? 0 : 6,
             }}
-            transition={tileHoverSpring}
+            transition={hoverEase}
           >
             <p className="font-sfts text-[10px] uppercase leading-tight tracking-wide text-white sm:text-[11px]">
               {work.workName}
             </p>
           </motion.div>
-        </Link>
+
+          <div className="pointer-events-none absolute inset-0 z-30 hidden md:block">
+            <motion.div
+              style={{
+                left: smoothCursorX,
+                top: smoothCursorY,
+                translateX: "-50%",
+                translateY: "-50%",
+              }}
+              animate={{
+                opacity: isHovered ? 1 : 0,
+                scale: isHovered ? 1 : 0.92,
+              }}
+              transition={hoverSpring}
+              className="absolute flex h-[84px] w-[84px] items-center justify-center rounded-full border border-white/35 bg-white/94 font-custom text-[9px] uppercase tracking-[0.14em] text-black shadow-[0_8px_32px_rgba(0,0,0,0.14)] backdrop-blur-md"
+            >
+              See More
+            </motion.div>
+          </div>
+
+          <Link
+            href={`/our-works/${work.id}`}
+            className="absolute inset-0 z-20"
+            scroll
+          />
+        </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -186,7 +248,7 @@ function FeaturedWorkSquareStrip({ works }: { works: WorkItem[] }) {
   return (
     <div
       ref={ref}
-      className="flex w-full items-center justify-center overflow-visible py-8 sm:py-10 lg:min-h-[30vw] lg:py-12 xl:min-h-[340px]"
+      className="flex w-full items-center justify-center overflow-visible py-8 sm:py-10 lg:min-h-[30vw] lg:py-12 xl:min-h-[360px]"
     >
       <motion.div
         className="flex w-full origin-center items-center gap-1 overflow-visible will-change-transform"
@@ -200,7 +262,7 @@ function FeaturedWorkSquareStrip({ works }: { works: WorkItem[] }) {
             ...stripZoomSpring,
             delay: isInView ? ZOOM_HOLD_S : 0,
           },
-          gap: tileHoverSpring,
+          gap: hoverSpring,
         }}
       >
         {stripWorks.map((work, index) => (
