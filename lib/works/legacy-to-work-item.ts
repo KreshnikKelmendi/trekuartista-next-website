@@ -1,3 +1,4 @@
+import { slugify } from "./slug";
 import { inferMediaKind, isAbsoluteMediaUrl, toCloudinaryUrl } from "./cloudinary";
 import type { LegacyMediaInput, LegacyWorkDefinition } from "./legacy-work-types";
 import type { WorkDescriptionItem, WorkItem, WorkMediaItem } from "./types";
@@ -120,6 +121,7 @@ export function legacyWorkToWorkItem(entry: LegacyWorkDefinition): WorkItem {
 
   return {
     id,
+    slug: slugify(entry.workName) || id,
     workName: entry.workName,
     specialCategory: entry.specialCategory,
     description: combinedDescription,

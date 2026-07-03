@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 import type { WorkItem } from "@/lib/works/types";
+import { workDetailPath } from "@/lib/works/slug";
 import LoadingSpinner from "@/app/COMPONENTS/ui/LoadingSpinner";
 import WorkCardMedia from "./WorkCardMedia";
 
@@ -19,11 +20,15 @@ const pagePx = "px-5 lg:px-[55px]";
 const ease = [0.22, 1, 0.36, 1] as const;
 const FILTER_LOAD_MS = 380;
 
-function sortNewestFirst(items: WorkItem[]) {
-  return [...items].sort(
-    (a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+function sortByDisplayOrder(items: WorkItem[]) {
+  return [...items].sort((a, b) => {
+    const aOrder = a.sortOrder;
+    const bOrder = b.sortOrder;
+    if (aOrder !== undefined && bOrder !== undefined && aOrder !== bOrder) {
+      return aOrder - bOrder;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 }
 
 function WorkCard({
@@ -91,7 +96,7 @@ function WorkCard({
           </motion.div>
         </div>
 
-        <Link href={`/our-works/${item.id}`} className="absolute inset-0 z-20" scroll />
+        <Link href={workDetailPath(item)} className="absolute inset-0 z-20" scroll />
       </div>
 
       <div className="mt-3 flex items-center gap-2 font-custom text-[12px] tracking-tight lg:text-base">
@@ -335,7 +340,7 @@ export default function OurWorks({ works }: OurWorksProps) {
   }, [selectedCategory, works]);
 
   const orderedWorks = useMemo(
-    () => sortNewestFirst(filteredWorks),
+    () => sortByDisplayOrder(filteredWorks),
     [filteredWorks]
   );
 

@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
 import { parseDescriptionsFromFormData } from "@/lib/works/parse-descriptions";
+import {
+  parseMediaOrder,
+  parseYoutubeFromFormData,
+} from "@/lib/works/parse-youtube-form";
 import { processWorkFile } from "@/lib/works/process-media";
 import {
-  deleteWork,
+  deleteWorkById,
   deleteWorkMedia,
   getNextMediaSortOrder,
   getWorkById,
   syncWorkCover,
   syncWorkDescriptions,
+  syncWorkMediaOrder,
   updateWork,
   insertWorkMedia,
 } from "@/lib/works/queries";
+import { isYoutubeOnlyWork } from "@/lib/works/is-youtube-only-work";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -49,12 +55,16 @@ export async function PATCH(request: Request, { params }: Props) {
     const workNameRaw = formData.get("workName");
     const specialCategoryRaw = formData.get("specialCategory");
     const descriptionItems = parseDescriptionsFromFormData(formData);
+    const { youtubeLink, youtubeOnly } = parseYoutubeFromFormData(formData);
+    const mediaOrder = parseMediaOrder(formData);
     const files = getFilesFromFormData(formData);
     const removeIds = parseRemoveMediaIds(formData).filter((mid) => !mid.startsWith("legacy-"));
 
     const metaUpdates: {
       workName?: string;
       specialCategory?: string;
+      youtubeLink?: string | null;
+      youtubeOnly?: boolean;
     } = {};
 
     let changed = false;
@@ -77,6 +87,12 @@ export async function PATCH(request: Request, { params }: Props) {
       changed = true;
     }
 
+    if (formData.has("youtubeLink") || formData.has("youtubeOnly")) {
+      metaUpdates.youtubeLink = youtubeLink;
+      metaUpdates.youtubeOnly = youtubeOnly;
+      changed = true;
+    }
+
     if (Object.keys(metaUpdates).length > 0) {
       await updateWork(id, metaUpdates);
     }
@@ -93,6 +109,11 @@ export async function PATCH(request: Request, { params }: Props) {
 
     if (removeIds.length > 0) {
       await syncWorkCover(id);
+    }
+
+    if (mediaOrder && mediaOrder.length > 0) {
+      await syncWorkMediaOrder(id, mediaOrder);
+      changed = true;
     }
 
     let sortOrder = await getNextMediaSortOrder(id);
@@ -117,7 +138,8 @@ export async function PATCH(request: Request, { params }: Props) {
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
     }
 
-    if (work.media.length === 0) {
+    const youtubeOnlyProject = isYoutubeOnlyWork(work);
+    if (work.media.length === 0 && !youtubeOnlyProject) {
       return NextResponse.json(
         { error: "Project must have at least one image or video." },
         { status: 400 }
@@ -136,10 +158,11 @@ export async function PATCH(request: Request, { params }: Props) {
 export async function DELETE(_request: Request, { params }: Props) {
   try {
     const { id } = await params;
-    await deleteWork(id);
+    await deleteWorkById(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Delete failed";
+    const status = message === "Project not found." ? 404 : 500;
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

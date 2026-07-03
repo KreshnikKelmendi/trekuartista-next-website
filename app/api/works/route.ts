@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseDescriptionsFromFormData } from "@/lib/works/parse-descriptions";
+import { parseYoutubeFromFormData } from "@/lib/works/parse-youtube-form";
 import { processWorkFile } from "@/lib/works/process-media";
 import {
   getWorkById,
@@ -8,6 +9,7 @@ import {
   insertWorkMedia,
   syncWorkDescriptions,
 } from "@/lib/works/queries";
+import { youtubeThumbnailUrl } from "@/lib/works/youtube";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -39,6 +41,7 @@ export async function POST(request: Request) {
     const workName = String(formData.get("workName") ?? "").trim();
     const specialCategory = String(formData.get("specialCategory") ?? "").trim();
     const descriptionItems = parseDescriptionsFromFormData(formData) ?? [];
+    const { youtubeLink, youtubeOnly } = parseYoutubeFromFormData(formData);
     const files = getFilesFromFormData(formData);
 
     if (!workName || !specialCategory) {
@@ -48,11 +51,22 @@ export async function POST(request: Request) {
       );
     }
 
-    if (files.length === 0) {
-      return NextResponse.json({ error: "Add at least one image or video." }, { status: 400 });
+    if (files.length === 0 && !(youtubeOnly && youtubeLink)) {
+      return NextResponse.json(
+        { error: "Add at least one image or video, or enable YouTube-only with a link." },
+        { status: 400 }
+      );
     }
 
-    const processed = await Promise.all(files.map((file) => processWorkFile(file)));
+    if (youtubeOnly && !youtubeLink) {
+      return NextResponse.json({ error: "Add a YouTube link for YouTube-only projects." }, { status: 400 });
+    }
+
+    const processed = files.length > 0
+      ? await Promise.all(files.map((file) => processWorkFile(file)))
+      : [];
+
+    const fallbackThumb = youtubeLink ? youtubeThumbnailUrl(youtubeLink) : null;
     const first = processed[0];
     const summary = descriptionItems.map((d) => d.content).join("\n\n");
 
@@ -60,8 +74,10 @@ export async function POST(request: Request) {
       workName,
       specialCategory,
       description: summary,
-      workImage: first.url,
-      workThumbnail: first.thumbnail,
+      workImage: first?.url ?? fallbackThumb ?? "",
+      workThumbnail: first?.thumbnail ?? fallbackThumb,
+      youtubeLink,
+      youtubeOnly,
     });
 
     await Promise.all(

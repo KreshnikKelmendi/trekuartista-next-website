@@ -6,15 +6,27 @@ import type { WorkItem } from "@/lib/works/types";
 
 type ProjectCardProps = {
   work: WorkItem;
+  index: number;
   onEdit: (work: WorkItem) => void;
   onDelete: (id: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  reordering?: boolean;
   deleting?: boolean;
 };
 
 export default function ProjectCard({
   work,
+  index,
   onEdit,
   onDelete,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
+  reordering,
   deleting,
 }: ProjectCardProps) {
   const isVideo = isWorkVideoSrc(work.workImage);
@@ -25,7 +37,31 @@ export default function ProjectCard({
     work.workImage;
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-stone-200 bg-white px-4 py-3">
+    <div className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3">
+      <div className="flex shrink-0 flex-col items-center gap-0.5">
+        <button
+          type="button"
+          onClick={() => onMoveUp(work.id)}
+          disabled={!canMoveUp || reordering}
+          className="rounded px-1.5 py-0.5 text-xs text-stone-500 hover:bg-stone-100 disabled:opacity-30"
+          aria-label="Move up"
+        >
+          ↑
+        </button>
+        <span className="text-[10px] font-medium tabular-nums text-stone-400">
+          {index + 1}
+        </span>
+        <button
+          type="button"
+          onClick={() => onMoveDown(work.id)}
+          disabled={!canMoveDown || reordering}
+          className="rounded px-1.5 py-0.5 text-xs text-stone-500 hover:bg-stone-100 disabled:opacity-30"
+          aria-label="Move down"
+        >
+          ↓
+        </button>
+      </div>
+
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-stone-100">
         {isVideo && !work.workThumbnail ? (
           <video
@@ -35,7 +71,7 @@ export default function ProjectCard({
             playsInline
             preload="metadata"
           />
-        ) : (
+        ) : preview ? (
           <Image
             src={preview}
             alt={work.workName}
@@ -47,8 +83,12 @@ export default function ProjectCard({
               preview.includes("res.cloudinary.com")
             }
           />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-[10px] text-stone-400">
+            ▶
+          </div>
         )}
-        {isVideo && (
+        {isVideo && preview && (
           <span className="absolute bottom-0.5 right-0.5 rounded bg-black/60 px-1 text-[8px] text-white">
             ▶
           </span>
@@ -59,6 +99,7 @@ export default function ProjectCard({
         <p className="truncate font-medium text-stone-900">{work.workName}</p>
         <p className="truncate text-sm text-stone-500">
           {work.specialCategory}
+          {work.youtubeLink || work.youtubeVideos?.length ? " · YouTube" : ""}
           {work.media.length > 1 ? ` · ${work.media.length} media` : ""}
         </p>
       </div>
