@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -350,28 +350,8 @@ function MobileFeaturedCard({
   );
 }
 
-export default function FeaturedWork() {
+export default function FeaturedWork({ works }: { works: WorkItem[] }) {
   const router = useRouter();
-  const [works, setWorks] = useState<WorkItem[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const res = await fetch("/api/works");
-        const data = await res.json();
-        if (!cancelled && res.ok && Array.isArray(data.works)) {
-          setWorks(data.works);
-        }
-      } catch {
-        if (!cancelled) setWorks([]);
-      }
-    };
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const displayWorks = useMemo(() => works.slice(0, STRIP_COUNT), [works]);
 

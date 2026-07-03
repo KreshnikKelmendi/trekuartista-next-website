@@ -21,7 +21,7 @@ import {
 const staticWorkItems = getStaticWorkItems(legacyWorks);
 
 async function getHiddenStaticWorkIds(): Promise<Set<string>> {
-  const supabase = createServiceClient();
+  const supabase = createServerClient();
   const { data, error } = await supabase
     .from("hidden_static_works")
     .select("work_id");
@@ -35,7 +35,7 @@ async function getHiddenStaticWorkIds(): Promise<Set<string>> {
 }
 
 async function getWorkDisplayOrderMap(): Promise<Map<string, number>> {
-  const supabase = createServiceClient();
+  const supabase = createServerClient();
   const { data, error } = await supabase
     .from("work_display_order")
     .select("work_id, sort_order")
@@ -68,7 +68,7 @@ export async function getMediaByWorkIds(
   const map = new Map<string, WorkMediaItem[]>();
   if (workIds.length === 0) return map;
 
-  const supabase = createServiceClient();
+  const supabase = createServerClient();
   const { data, error } = await supabase
     .from("work_media")
     .select("*")
@@ -96,7 +96,7 @@ export async function getDescriptionsByWorkIds(
   const map = new Map<string, WorkDescriptionItem[]>();
   if (workIds.length === 0) return map;
 
-  const supabase = createServiceClient();
+  const supabase = createServerClient();
   const { data, error } = await supabase
     .from("work_descriptions")
     .select("*")
@@ -162,7 +162,7 @@ export async function getWorks(): Promise<WorkItem[]> {
 }
 
 async function getDbWorkBySlugOrId(param: string): Promise<WorkItem | null> {
-  const supabase = createServiceClient();
+  const supabase = createServerClient();
   const query = isUuid(param)
     ? supabase.from("works").select("*").eq("id", param)
     : supabase.from("works").select("*").eq("slug", param);
@@ -208,20 +208,32 @@ export async function insertWork(input: {
 }) {
   const supabase = createServiceClient();
   const slug = input.slug ?? (await ensureUniqueDbSlug(input.workName));
-  const { data, error } = await supabase
-    .from("works")
-    .insert({
-      work_name: input.workName,
-      special_category: input.specialCategory,
-      description: input.description ?? "",
-      work_image: input.workImage,
-      work_thumbnail: input.workThumbnail ?? null,
-      slug,
-      youtube_link: input.youtubeLink ?? null,
-      youtube_only: input.youtubeOnly ?? false,
-    })
-    .select()
-    .single();
+  const fullRow = {
+    work_name: input.workName,
+    special_category: input.specialCategory,
+    description: input.description ?? "",
+    work_image: input.workImage,
+    work_thumbnail: input.workThumbnail ?? null,
+    slug,
+    youtube_link: input.youtubeLink ?? null,
+    youtube_only: input.youtubeOnly ?? false,
+  };
+
+  let { data, error } = await supabase.from("works").insert(fullRow).select().single();
+
+  if (error?.message?.includes("column")) {
+    ({ data, error } = await supabase
+      .from("works")
+      .insert({
+        work_name: input.workName,
+        special_category: input.specialCategory,
+        description: input.description ?? "",
+        work_image: input.workImage,
+        work_thumbnail: input.workThumbnail ?? null,
+      })
+      .select()
+      .single());
+  }
 
   if (error) throw new Error(error.message);
   return data as WorkRow;
