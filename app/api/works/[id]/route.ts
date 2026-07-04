@@ -44,7 +44,7 @@ export async function PATCH(request: Request, { params }: Props) {
     const workNameRaw = formData.get("workName");
     const specialCategoryRaw = formData.get("specialCategory");
     const descriptionItems = parseDescriptionsFromFormData(formData);
-    const { youtubeLink, youtubeOnly } = parseYoutubeFromFormData(formData);
+    const { youtubeLink, youtubeVideos, youtubeOnly } = parseYoutubeFromFormData(formData);
     const mediaOrder = parseMediaOrder(formData);
     const newMedia = await resolveUploadedWorkMedia(formData);
     const removeIds = parseRemoveMediaIds(formData).filter((mid) => !mid.startsWith("legacy-"));
@@ -53,6 +53,7 @@ export async function PATCH(request: Request, { params }: Props) {
       workName?: string;
       specialCategory?: string;
       youtubeLink?: string | null;
+      youtubeVideos?: typeof youtubeVideos;
       youtubeOnly?: boolean;
     } = {};
 
@@ -76,8 +77,9 @@ export async function PATCH(request: Request, { params }: Props) {
       changed = true;
     }
 
-    if (formData.has("youtubeLink") || formData.has("youtubeOnly")) {
+    if (formData.has("youtubeLink") || formData.has("youtubeOnly") || formData.has("youtubeVideos")) {
       metaUpdates.youtubeLink = youtubeLink;
+      metaUpdates.youtubeVideos = youtubeVideos;
       metaUpdates.youtubeOnly = youtubeOnly;
       changed = true;
     }

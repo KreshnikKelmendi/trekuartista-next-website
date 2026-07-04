@@ -1,10 +1,32 @@
+import type { YoutubeVideoEntry } from "./types";
+
 export function parseYoutubeFromFormData(formData: FormData) {
-  const youtubeLink = String(formData.get("youtubeLink") ?? "").trim();
   const youtubeOnly = formData.get("youtubeOnly") === "true";
-  return {
-    youtubeLink: youtubeLink || null,
-    youtubeOnly,
-  };
+  let youtubeVideos: YoutubeVideoEntry[] = [];
+
+  const raw = formData.get("youtubeVideos");
+  if (raw) {
+    try {
+      const parsed = JSON.parse(String(raw));
+      if (Array.isArray(parsed)) {
+        youtubeVideos = parsed
+          .filter((item): item is Record<string, unknown> => item && typeof item === "object")
+          .map((item) => ({
+            url: String(item.url ?? "").trim(),
+            title: String(item.title ?? "").trim(),
+            description: String(item.description ?? "").trim(),
+          }))
+          .filter((item) => item.url.length > 0);
+      }
+    } catch {
+      youtubeVideos = [];
+    }
+  }
+
+  const youtubeLink =
+    String(formData.get("youtubeLink") ?? "").trim() || youtubeVideos[0]?.url || null;
+
+  return { youtubeLink, youtubeVideos, youtubeOnly };
 }
 
 export function parseMediaOrder(formData: FormData): string[] | null {

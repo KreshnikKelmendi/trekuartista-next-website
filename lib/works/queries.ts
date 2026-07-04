@@ -16,6 +16,7 @@ import {
   type WorkMediaItem,
   type WorkMediaRow,
   type WorkRow,
+  type YoutubeVideoEntry,
 } from "./types";
 
 const staticWorkItems = getStaticWorkItems(legacyWorks);
@@ -204,6 +205,7 @@ export async function insertWork(input: {
   workThumbnail?: string | null;
   slug?: string;
   youtubeLink?: string | null;
+  youtubeVideos?: YoutubeVideoEntry[];
   youtubeOnly?: boolean;
 }) {
   const supabase = createServiceClient();
@@ -216,6 +218,7 @@ export async function insertWork(input: {
     work_thumbnail: input.workThumbnail ?? null,
     slug,
     youtube_link: input.youtubeLink ?? null,
+    youtube_videos: input.youtubeVideos ?? [],
     youtube_only: input.youtubeOnly ?? false,
   };
 
@@ -450,11 +453,12 @@ export async function updateWork(
     workThumbnail?: string | null;
     slug?: string;
     youtubeLink?: string | null;
+    youtubeVideos?: YoutubeVideoEntry[];
     youtubeOnly?: boolean;
   }
 ) {
   const supabase = createServiceClient();
-  const patch: Record<string, string | boolean | null> = {};
+  const patch: Record<string, string | boolean | null | YoutubeVideoEntry[]> = {};
   if (input.workName !== undefined) {
     patch.work_name = input.workName;
     if (input.slug === undefined) {
@@ -467,6 +471,7 @@ export async function updateWork(
   if (input.workThumbnail !== undefined) patch.work_thumbnail = input.workThumbnail;
   if (input.slug !== undefined) patch.slug = input.slug;
   if (input.youtubeLink !== undefined) patch.youtube_link = input.youtubeLink;
+  if (input.youtubeVideos !== undefined) patch.youtube_videos = input.youtubeVideos;
   if (input.youtubeOnly !== undefined) patch.youtube_only = input.youtubeOnly;
 
   if (Object.keys(patch).length === 0) {

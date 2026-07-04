@@ -22,6 +22,26 @@ function newDescriptionField(content = "", id?: string): DescriptionField {
   };
 }
 
+type YoutubeField = {
+  key: string;
+  url: string;
+  title: string;
+  description: string;
+};
+
+function newYoutubeField(
+  url = "",
+  title = "",
+  description = ""
+): YoutubeField {
+  return {
+    key: typeof crypto !== "undefined" ? crypto.randomUUID() : String(Math.random()),
+    url,
+    title,
+    description,
+  };
+}
+
 function resetForm(setters: {
   setWorkName: (v: string) => void;
   setSpecialCategory: (v: string) => void;
@@ -29,7 +49,7 @@ function resetForm(setters: {
   setNewFiles: (v: File[]) => void;
   setRemoveMediaIds: (v: string[]) => void;
   setMediaOrderIds: (v: string[]) => void;
-  setYoutubeLink: (v: string) => void;
+  setYoutubeFields: (v: YoutubeField[]) => void;
   setYoutubeOnly: (v: boolean) => void;
   setError: (v: string) => void;
   setEditingWork: (v: WorkItem | null) => void;
@@ -40,7 +60,7 @@ function resetForm(setters: {
   setters.setNewFiles([]);
   setters.setRemoveMediaIds([]);
   setters.setMediaOrderIds([]);
-  setters.setYoutubeLink("");
+  setters.setYoutubeFields([]);
   setters.setYoutubeOnly(false);
   setters.setError("");
   setters.setEditingWork(null);
@@ -172,7 +192,7 @@ export default function ProjectsManager({
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [removeMediaIds, setRemoveMediaIds] = useState<string[]>([]);
   const [mediaOrderIds, setMediaOrderIds] = useState<string[]>([]);
-  const [youtubeLink, setYoutubeLink] = useState("");
+  const [youtubeFields, setYoutubeFields] = useState<YoutubeField[]>([]);
   const [youtubeOnly, setYoutubeOnly] = useState(false);
   const [loading, setLoading] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -203,7 +223,7 @@ export default function ProjectsManager({
     setNewFiles([]);
     setRemoveMediaIds([]);
     setMediaOrderIds([]);
-    setYoutubeLink("");
+    setYoutubeFields([]);
     setYoutubeOnly(false);
     setError("");
     setModalOpen(true);
@@ -213,8 +233,16 @@ export default function ProjectsManager({
     setEditingWork(work);
     setWorkName(work.workName);
     setSpecialCategory(work.specialCategory);
-    setYoutubeLink(work.youtubeLink ?? "");
     setYoutubeOnly(work.youtubeOnly ?? false);
+    setYoutubeFields(
+      work.youtubeVideos?.length
+        ? work.youtubeVideos.map((v) =>
+            newYoutubeField(v.url, v.title, v.description)
+          )
+        : work.youtubeLink
+          ? [newYoutubeField(work.youtubeLink, work.workName, "")]
+          : []
+    );
     setDescriptionFields(
       work.descriptions.length > 0
         ? work.descriptions.map((d) =>
@@ -241,7 +269,7 @@ export default function ProjectsManager({
       setNewFiles,
       setRemoveMediaIds,
       setMediaOrderIds,
-      setYoutubeLink,
+      setYoutubeFields,
       setYoutubeOnly,
       setError,
       setEditingWork,
@@ -314,8 +342,16 @@ export default function ProjectsManager({
           newFiles.length)
       : newFiles.length;
 
-    if (youtubeOnly && !youtubeLink.trim()) {
-      setError("Add a YouTube link for YouTube-only projects.");
+    const youtubeEntries = youtubeFields
+      .map(({ url, title, description }) => ({
+        url: url.trim(),
+        title: title.trim(),
+        description: description.trim(),
+      }))
+      .filter((entry) => entry.url.length > 0);
+
+    if (youtubeOnly && youtubeEntries.length === 0) {
+      setError("Add at least one YouTube link.");
       return;
     }
 
@@ -338,7 +374,8 @@ export default function ProjectsManager({
         }))
         .filter((d) => d.content.length > 0);
       formData.append("descriptions", JSON.stringify(descriptionsPayload));
-      formData.append("youtubeLink", youtubeLink.trim());
+      formData.append("youtubeVideos", JSON.stringify(youtubeEntries));
+      formData.append("youtubeLink", youtubeEntries[0]?.url ?? "");
       formData.append("youtubeOnly", youtubeOnly ? "true" : "false");
 
       if (newFiles.length > 0) {
@@ -521,15 +558,88 @@ export default function ProjectsManager({
                 />
               </label>
 
-              <label className="block">
-                <span className="text-sm text-stone-600">YouTube link</span>
-                <input
-                  value={youtubeLink}
-                  onChange={(e) => setYoutubeLink(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                  placeholder="https://www.youtube.com/watch?v=..."
-                />
-              </label>
+              <div className="block">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm text-stone-600">YouTube videos</span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setYoutubeFields((prev) => [...prev, newYoutubeField()])
+                    }
+                    className="text-sm font-medium text-teal-700 hover:text-teal-900"
+                  >
+                    + Add video
+                  </button>
+                </div>
+
+                {youtubeFields.length === 0 ? (
+                  <p className="mt-2 text-xs text-stone-400">
+                    Optional. Add one or more YouTube links with title and description.
+                  </p>
+                ) : (
+                  <div className="mt-2 space-y-3">
+                    {youtubeFields.map((field) => (
+                      <div
+                        key={field.key}
+                        className="rounded-lg border border-stone-200 bg-stone-50/50 p-3 space-y-2"
+                      >
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setYoutubeFields((prev) =>
+                                prev.filter((f) => f.key !== field.key)
+                              )
+                            }
+                            className="text-xs text-red-600 hover:underline"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        <input
+                          value={field.url}
+                          onChange={(e) =>
+                            setYoutubeFields((prev) =>
+                              prev.map((f) =>
+                                f.key === field.key ? { ...f, url: e.target.value } : f
+                              )
+                            )
+                          }
+                          className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-500"
+                          placeholder="https://www.youtube.com/watch?v=..."
+                        />
+                        <input
+                          value={field.title}
+                          onChange={(e) =>
+                            setYoutubeFields((prev) =>
+                              prev.map((f) =>
+                                f.key === field.key ? { ...f, title: e.target.value } : f
+                              )
+                            )
+                          }
+                          className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-500"
+                          placeholder="Video title"
+                        />
+                        <textarea
+                          value={field.description}
+                          onChange={(e) =>
+                            setYoutubeFields((prev) =>
+                              prev.map((f) =>
+                                f.key === field.key
+                                  ? { ...f, description: e.target.value }
+                                  : f
+                              )
+                            )
+                          }
+                          rows={2}
+                          className="w-full resize-y rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-500"
+                          placeholder="Description shown beside the video"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <label className="flex items-center gap-2 text-sm text-stone-600">
                 <input

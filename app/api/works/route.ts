@@ -30,8 +30,9 @@ export async function POST(request: Request) {
     const workName = String(formData.get("workName") ?? "").trim();
     const specialCategory = String(formData.get("specialCategory") ?? "").trim();
     const descriptionItems = parseDescriptionsFromFormData(formData) ?? [];
-    const { youtubeLink, youtubeOnly } = parseYoutubeFromFormData(formData);
+    const { youtubeLink, youtubeVideos, youtubeOnly } = parseYoutubeFromFormData(formData);
     const processed = await resolveUploadedWorkMedia(formData);
+    const hasYoutube = youtubeVideos.length > 0 || Boolean(youtubeLink);
 
     if (!workName || !specialCategory) {
       return NextResponse.json(
@@ -40,14 +41,14 @@ export async function POST(request: Request) {
       );
     }
 
-    if (processed.length === 0 && !(youtubeOnly && youtubeLink)) {
+    if (processed.length === 0 && !(youtubeOnly && hasYoutube)) {
       return NextResponse.json(
         { error: "Add at least one image or video, or enable YouTube-only with a link." },
         { status: 400 }
       );
     }
 
-    if (youtubeOnly && !youtubeLink) {
+    if (youtubeOnly && !hasYoutube) {
       return NextResponse.json(
         { error: "Add a YouTube link for YouTube-only projects." },
         { status: 400 }
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
       workImage: first?.url ?? fallbackThumb ?? "",
       workThumbnail: first?.thumbnail ?? fallbackThumb,
       youtubeLink,
+      youtubeVideos,
       youtubeOnly,
     });
 
