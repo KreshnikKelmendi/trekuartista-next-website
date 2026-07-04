@@ -4,7 +4,6 @@ import {
   parseMediaOrder,
   parseYoutubeFromFormData,
 } from "@/lib/works/parse-youtube-form";
-import { processWorkFile } from "@/lib/works/process-media";
 import {
   deleteWorkById,
   deleteWorkMedia,
@@ -16,23 +15,13 @@ import {
   updateWork,
   insertWorkMedia,
 } from "@/lib/works/queries";
+import { resolveUploadedWorkMedia } from "@/lib/works/resolve-upload-media";
 import { isYoutubeOnlyWork } from "@/lib/works/is-youtube-only-work";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
 type Props = { params: Promise<{ id: string }> };
-
-function getFilesFromFormData(formData: FormData): File[] {
-  const fromFiles = formData
-    .getAll("files")
-    .filter((f): f is File => f instanceof File && f.size > 0);
-  if (fromFiles.length > 0) return fromFiles;
-
-  const single = formData.get("file");
-  if (single instanceof File && single.size > 0) return [single];
-  return [];
-}
 
 function parseRemoveMediaIds(formData: FormData): string[] {
   const raw = formData.get("removeMediaIds");
@@ -57,7 +46,7 @@ export async function PATCH(request: Request, { params }: Props) {
     const descriptionItems = parseDescriptionsFromFormData(formData);
     const { youtubeLink, youtubeOnly } = parseYoutubeFromFormData(formData);
     const mediaOrder = parseMediaOrder(formData);
-    const files = getFilesFromFormData(formData);
+    const newMedia = await resolveUploadedWorkMedia(formData);
     const removeIds = parseRemoveMediaIds(formData).filter((mid) => !mid.startsWith("legacy-"));
 
     const metaUpdates: {
@@ -117,8 +106,7 @@ export async function PATCH(request: Request, { params }: Props) {
     }
 
     let sortOrder = await getNextMediaSortOrder(id);
-    for (const file of files) {
-      const item = await processWorkFile(file);
+    for (const item of newMedia) {
       await insertWorkMedia({
         workId: id,
         url: item.url,

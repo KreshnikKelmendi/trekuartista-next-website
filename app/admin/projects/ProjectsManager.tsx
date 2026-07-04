@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { WorkItem, WorkMediaItem } from "@/lib/works/types";
+import { readApiError, readApiJson } from "@/lib/admin/parse-api-response";
+import { uploadWorkFilesFromBrowser } from "@/lib/works/client-upload";
 import ProjectCard from "./ProjectCard";
 
 type DescriptionField = {
@@ -284,8 +286,9 @@ export default function ProjectsManager({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderedIds: next.map((work) => work.id) }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Reorder failed");
+      if (!res.ok) {
+        throw new Error(await readApiError(res, "Reorder failed"));
+      }
       router.refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Reorder failed");
@@ -337,7 +340,12 @@ export default function ProjectsManager({
       formData.append("descriptions", JSON.stringify(descriptionsPayload));
       formData.append("youtubeLink", youtubeLink.trim());
       formData.append("youtubeOnly", youtubeOnly ? "true" : "false");
-      newFiles.forEach((f) => formData.append("files", f));
+
+      if (newFiles.length > 0) {
+        const uploadedMedia = await uploadWorkFilesFromBrowser(newFiles);
+        formData.append("uploadedMedia", JSON.stringify(uploadedMedia));
+      }
+
       if (removeMediaIds.length > 0) {
         formData.append("removeMediaIds", JSON.stringify(removeMediaIds));
       }
@@ -352,8 +360,11 @@ export default function ProjectsManager({
       const method = isEditing ? "PATCH" : "POST";
 
       const res = await fetch(url, { method, body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save failed");
+      if (!res.ok) {
+        throw new Error(await readApiError(res, "Save failed"));
+      }
+
+      const data = await readApiJson<{ work: WorkItem }>(res);
 
       if (isEditing) {
         setWorks((prev) =>
@@ -384,10 +395,9 @@ export default function ProjectsManager({
 
     try {
       const res = await fetch(`/api/works/${id}`, { method: "DELETE" });
-      const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Delete failed");
+        throw new Error(await readApiError(res, "Delete failed"));
       }
 
       setWorks((prev) => prev.filter((w) => w.id !== id));

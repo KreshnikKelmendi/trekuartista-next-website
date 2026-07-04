@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseDescriptionsFromFormData } from "@/lib/works/parse-descriptions";
 import { parseYoutubeFromFormData } from "@/lib/works/parse-youtube-form";
-import { processWorkFile } from "@/lib/works/process-media";
 import {
   getWorkById,
   getWorks,
@@ -9,21 +8,11 @@ import {
   insertWorkMedia,
   syncWorkDescriptions,
 } from "@/lib/works/queries";
+import { resolveUploadedWorkMedia } from "@/lib/works/resolve-upload-media";
 import { youtubeThumbnailUrl } from "@/lib/works/youtube";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
-
-function getFilesFromFormData(formData: FormData): File[] {
-  const fromFiles = formData
-    .getAll("files")
-    .filter((f): f is File => f instanceof File && f.size > 0);
-  if (fromFiles.length > 0) return fromFiles;
-
-  const single = formData.get("file");
-  if (single instanceof File && single.size > 0) return [single];
-  return [];
-}
 
 export async function GET() {
   try {
@@ -42,7 +31,7 @@ export async function POST(request: Request) {
     const specialCategory = String(formData.get("specialCategory") ?? "").trim();
     const descriptionItems = parseDescriptionsFromFormData(formData) ?? [];
     const { youtubeLink, youtubeOnly } = parseYoutubeFromFormData(formData);
-    const files = getFilesFromFormData(formData);
+    const processed = await resolveUploadedWorkMedia(formData);
 
     if (!workName || !specialCategory) {
       return NextResponse.json(
@@ -51,7 +40,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (files.length === 0 && !(youtubeOnly && youtubeLink)) {
+    if (processed.length === 0 && !(youtubeOnly && youtubeLink)) {
       return NextResponse.json(
         { error: "Add at least one image or video, or enable YouTube-only with a link." },
         { status: 400 }
@@ -59,12 +48,11 @@ export async function POST(request: Request) {
     }
 
     if (youtubeOnly && !youtubeLink) {
-      return NextResponse.json({ error: "Add a YouTube link for YouTube-only projects." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Add a YouTube link for YouTube-only projects." },
+        { status: 400 }
+      );
     }
-
-    const processed = files.length > 0
-      ? await Promise.all(files.map((file) => processWorkFile(file)))
-      : [];
 
     const fallbackThumb = youtubeLink ? youtubeThumbnailUrl(youtubeLink) : null;
     const first = processed[0];
