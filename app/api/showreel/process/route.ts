@@ -3,7 +3,7 @@ import { processShowreelUpload } from "@/lib/showreel/process-upload";
 import { getShowreelSettings } from "@/lib/showreel/queries";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 export async function POST(request: Request) {
   try {

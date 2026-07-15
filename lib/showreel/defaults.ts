@@ -7,6 +7,8 @@ export const DEFAULT_SHOWREEL_MOBILE_URL =
 export type ShowreelSettings = {
   desktopUrl: string;
   mobileUrl: string;
+  hasCustomDesktop: boolean;
+  hasCustomMobile: boolean;
 };
 
 export function isCustomShowreelUrl(url: string) {

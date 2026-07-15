@@ -4,31 +4,36 @@ import { useRef, useState } from "react";
 import LoadingSpinner from "@/app/COMPONENTS/ui/LoadingSpinner";
 import { readApiError, readApiJson } from "@/lib/admin/parse-api-response";
 import { uploadShowreelIncoming } from "@/lib/showreel/client-upload";
-import { isCustomShowreelUrl, type ShowreelSettings } from "@/lib/showreel/defaults";
+import type { ShowreelSettings } from "@/lib/showreel/defaults";
 
 type Variant = "desktop" | "mobile";
 
 function ShowreelRow({
   label,
+  hint,
   url,
   busy,
+  progressLabel,
+  isCustom,
   onUpload,
   onDelete,
 }: {
   label: string;
+  hint: string;
   url: string;
   busy: boolean;
+  progressLabel: string;
+  isCustom: boolean;
   onUpload: (file: File) => void;
   onDelete: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const isCustom = isCustomShowreelUrl(url);
 
   return (
     <div className="relative rounded-lg border border-stone-200 bg-white p-4">
       {busy && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80">
-          <LoadingSpinner label="Processing" />
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-lg bg-white/85">
+          <LoadingSpinner label={progressLabel} />
         </div>
       )}
 
@@ -47,9 +52,7 @@ function ShowreelRow({
         <div className="min-w-0 flex-1 space-y-3">
           <div>
             <p className="text-sm font-medium text-stone-900">{label}</p>
-            <p className="text-xs text-stone-500">
-              {isCustom ? "Custom upload" : "Default video"}
-            </p>
+            <p className="text-xs text-stone-500">{hint}</p>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -99,6 +102,7 @@ export default function ShowreelManager({
 }) {
   const [settings, setSettings] = useState(initialSettings);
   const [busyVariant, setBusyVariant] = useState<Variant | null>(null);
+  const [progressLabel, setProgressLabel] = useState("Processing");
   const [error, setError] = useState("");
 
   async function handleUpload(variant: Variant, file: File) {
@@ -108,10 +112,13 @@ export default function ShowreelManager({
     }
 
     setBusyVariant(variant);
+    setProgressLabel("Uploading");
     setError("");
 
     try {
-      const storagePath = await uploadShowreelIncoming(file, variant);
+      const storagePath = await uploadShowreelIncoming(file, variant, setProgressLabel);
+      setProgressLabel("Compressing");
+
       const res = await fetch("/api/showreel/process", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -128,16 +135,20 @@ export default function ShowreelManager({
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setBusyVariant(null);
+      setProgressLabel("Processing");
     }
   }
 
   async function handleDelete(variant: Variant) {
-    const label = variant === "desktop" ? "desktop" : "mobile";
-    if (!window.confirm(`Remove custom ${label} showreel? The default video will be used.`)) {
-      return;
-    }
+    const message =
+      variant === "mobile"
+        ? "Remove mobile video? Phones will use the desktop showreel."
+        : "Remove desktop showreel? The default video will be used.";
+
+    if (!window.confirm(message)) return;
 
     setBusyVariant(variant);
+    setProgressLabel("Removing");
     setError("");
 
     try {
@@ -157,27 +168,40 @@ export default function ShowreelManager({
       setError(err instanceof Error ? err.message : "Delete failed");
     } finally {
       setBusyVariant(null);
+      setProgressLabel("Processing");
     }
   }
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
-      <p className="text-sm text-stone-500">Homepage hero videos.</p>
+      <p className="text-sm text-stone-500">
+        Upload one desktop video for the homepage. Mobile uses the same video unless you upload a separate one.
+      </p>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <ShowreelRow
         label="Desktop"
+        hint={settings.hasCustomDesktop ? "Custom upload" : "Default video"}
         url={settings.desktopUrl}
         busy={busyVariant === "desktop"}
+        progressLabel={progressLabel}
+        isCustom={settings.hasCustomDesktop}
         onUpload={(file) => void handleUpload("desktop", file)}
         onDelete={() => void handleDelete("desktop")}
       />
 
       <ShowreelRow
-        label="Mobile"
+        label="Mobile (optional)"
+        hint={
+          settings.hasCustomMobile
+            ? "Custom mobile upload"
+            : "Uses desktop video"
+        }
         url={settings.mobileUrl}
         busy={busyVariant === "mobile"}
+        progressLabel={progressLabel}
+        isCustom={settings.hasCustomMobile}
         onUpload={(file) => void handleUpload("mobile", file)}
         onDelete={() => void handleDelete("mobile")}
       />

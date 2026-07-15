@@ -2,7 +2,6 @@ import { createServerClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import {
   DEFAULT_SHOWREEL_DESKTOP_URL,
-  DEFAULT_SHOWREEL_MOBILE_URL,
   type ShowreelSettings,
 } from "./defaults";
 
@@ -22,14 +21,22 @@ export async function getShowreelSettings(): Promise<ShowreelSettings> {
   if (error || !data) {
     return {
       desktopUrl: DEFAULT_SHOWREEL_DESKTOP_URL,
-      mobileUrl: DEFAULT_SHOWREEL_MOBILE_URL,
+      mobileUrl: DEFAULT_SHOWREEL_DESKTOP_URL,
+      hasCustomDesktop: false,
+      hasCustomMobile: false,
     };
   }
 
   const row = data as ShowreelRow;
+  const hasCustomDesktop = Boolean(row.desktop_url?.trim());
+  const hasCustomMobile = Boolean(row.mobile_url?.trim());
+  const desktopUrl = row.desktop_url?.trim() || DEFAULT_SHOWREEL_DESKTOP_URL;
+
   return {
-    desktopUrl: row.desktop_url?.trim() || DEFAULT_SHOWREEL_DESKTOP_URL,
-    mobileUrl: row.mobile_url?.trim() || DEFAULT_SHOWREEL_MOBILE_URL,
+    desktopUrl,
+    mobileUrl: row.mobile_url?.trim() || desktopUrl,
+    hasCustomDesktop,
+    hasCustomMobile,
   };
 }
 
@@ -97,4 +104,36 @@ export async function downloadStorageFile(path: string): Promise<Buffer> {
 export async function removeStorageFile(path: string) {
   const supabase = createServiceClient();
   await supabase.storage.from("works-media").remove([path]);
+}
+
+export async function getStorageObjectSize(path: string): Promise<number | null> {
+  const slash = path.lastIndexOf("/");
+  if (slash === -1) return null;
+
+  const dir = path.slice(0, slash);
+  const name = path.slice(slash + 1);
+  const supabase = createServiceClient();
+  const { data, error } = await supabase.storage.from("works-media").list(dir, {
+    search: name,
+    limit: 1,
+  });
+
+  if (error || !data?.length) return null;
+
+  const item = data.find((entry) => entry.name === name);
+  const size = item?.metadata?.size;
+  return typeof size === "number" ? size : null;
+}
+
+export async function moveStorageFile(from: string, to: string) {
+  const supabase = createServiceClient();
+  const { error } = await supabase.storage.from("works-media").move(from, to);
+
+  if (error) {
+    const { error: copyError } = await supabase.storage
+      .from("works-media")
+      .copy(from, to);
+    if (copyError) throw new Error(copyError.message);
+    await removeStorageFile(from);
+  }
 }
