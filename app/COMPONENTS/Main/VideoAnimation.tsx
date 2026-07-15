@@ -3,12 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import SpinningTreMark from "./SpinningTreMark";
-
-const SHOWREEL_MOBILE_URL =
-  "https://res.cloudinary.com/dmzjjud3z/video/upload/v1779716236/showreel-2_q1vynk.mp4";
-
-const SHOWREEL_DESKTOP_URL =
-  "https://res.cloudinary.com/dmzjjud3z/video/upload/v1779716841/showreel-1_mxq4af.mp4";
+import {
+  DEFAULT_SHOWREEL_DESKTOP_URL,
+  DEFAULT_SHOWREEL_MOBILE_URL,
+} from "@/lib/showreel/defaults";
 
 const MOBILE_MEDIA = "(max-width: 1023px)";
 
@@ -67,7 +65,13 @@ function MuteButton({
   );
 }
 
-const VideoAnimation = () => {
+const VideoAnimation = ({
+  desktopUrl = DEFAULT_SHOWREEL_DESKTOP_URL,
+  mobileUrl = DEFAULT_SHOWREEL_MOBILE_URL,
+}: {
+  desktopUrl?: string;
+  mobileUrl?: string;
+}) => {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRefMobile = useRef<HTMLVideoElement>(null);
@@ -76,7 +80,7 @@ const VideoAnimation = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  const videoSrc = isMobile ? SHOWREEL_MOBILE_URL : SHOWREEL_DESKTOP_URL;
+  const videoSrc = isMobile ? mobileUrl : desktopUrl;
 
   useEffect(() => {
     setIsMounted(true);

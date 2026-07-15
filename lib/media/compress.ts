@@ -143,3 +143,40 @@ export async function compressVideo(buffer: Buffer): Promise<{
     await unlink(thumbPath).catch(() => {});
   }
 }
+
+/** Lighter compression for homepage showreel (smaller file, 1080p max). */
+export async function compressShowreelVideo(buffer: Buffer): Promise<{
+  videoBuffer: Buffer;
+  videoContentType: string;
+  videoExt: string;
+}> {
+  const dir = join(tmpdir(), `treku-showreel-${randomUUID()}`);
+  await mkdir(dir, { recursive: true });
+
+  const inputPath = join(dir, "input");
+  const outputPath = join(dir, "output.mp4");
+
+  await writeFile(inputPath, buffer);
+
+  try {
+    await runFfmpeg(inputPath, outputPath, [
+      "-c:v libx264",
+      "-crf 23",
+      "-preset medium",
+      "-vf scale='min(1920,iw)':-2",
+      "-c:a aac",
+      "-b:a 128k",
+      "-movflags +faststart",
+    ]);
+
+    const videoBuffer = await readFile(outputPath);
+    return {
+      videoBuffer,
+      videoContentType: "video/mp4",
+      videoExt: "mp4",
+    };
+  } finally {
+    await unlink(inputPath).catch(() => {});
+    await unlink(outputPath).catch(() => {});
+  }
+}
