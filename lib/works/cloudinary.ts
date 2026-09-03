@@ -4,6 +4,15 @@ export const CLOUDINARY_CLOUD_NAME =
 
 export type MediaKind = "image" | "video";
 
+export function isWorkVideoSrc(src?: string): boolean {
+  if (!src) return false;
+  return (
+    /\.(mp4|webm|mov)(\?|#|$)/i.test(src) ||
+    src.includes("/video/upload") ||
+    src.includes("/videos/")
+  );
+}
+
 /** True when `src` is a full URL (Cloudinary, Supabase, etc.). */
 export function isAbsoluteMediaUrl(src: string): boolean {
   return /^https?:\/\//i.test(src);

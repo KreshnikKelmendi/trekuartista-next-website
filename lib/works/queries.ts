@@ -104,9 +104,12 @@ async function getDbWorks(): Promise<WorkItem[]> {
 /** Static workData + Supabase admin works (DB wins on duplicate id). */
 export async function getWorks(): Promise<WorkItem[]> {
   const dbWorks = await getDbWorks();
-  return sortWorksNewestFirst(
-    mergeStaticAndDbWorks(staticWorkItems, dbWorks)
-  );
+  // The legacy static catalog (data/works.json) predates the Supabase admin
+  // and still points at Cloudinary URLs we no longer use — every one of them
+  // is now a dead/duplicate entry (the real case studies were re-created in
+  // Supabase). Kept out of the public grid; getWorkById() below still finds
+  // a static item by id so old direct links don't 404.
+  return sortWorksNewestFirst(dbWorks);
 }
 
 async function getDbWorkById(id: string): Promise<WorkItem | null> {

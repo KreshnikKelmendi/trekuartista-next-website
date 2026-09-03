@@ -17,6 +17,20 @@ export const maxDuration = 120;
 
 type Props = { params: Promise<{ id: string }> };
 
+export async function GET(_request: Request, { params }: Props) {
+  try {
+    const { id } = await params;
+    const work = await getWorkById(id);
+    if (!work) {
+      return NextResponse.json({ error: "Project not found." }, { status: 404 });
+    }
+    return NextResponse.json({ work });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Failed to load project";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
 function getFilesFromFormData(formData: FormData): File[] {
   const fromFiles = formData
     .getAll("files")

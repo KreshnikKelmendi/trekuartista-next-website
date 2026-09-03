@@ -1,21 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { isWorkVideoSrc } from "@/lib/works/cloudinary";
+
+export { isWorkVideoSrc };
+
 type WorkListVideoProps = {
   src: string;
   poster?: string;
   className?: string;
   videoClassName?: string;
   onMediaReady?: () => void;
+  onMediaError?: () => void;
 };
-
-export function isWorkVideoSrc(src?: string) {
-  if (!src) return false;
-  return (
-    /\.(mp4|webm|mov)(\?|#|$)/i.test(src) ||
-    src.includes("/video/upload") ||
-    src.includes("/videos/")
-  );
-}
 
 export default function WorkListVideo({
   src,
@@ -23,7 +20,47 @@ export default function WorkListVideo({
   className = "",
   videoClassName = "",
   onMediaReady,
+  onMediaError,
 }: WorkListVideoProps) {
+  const [usePosterFallback, setUsePosterFallback] = useState(false);
+
+  useEffect(() => {
+    setUsePosterFallback(false);
+  }, [src, poster]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      onMediaReady?.();
+    }, 8000);
+    return () => window.clearTimeout(timer);
+  }, [src, onMediaReady]);
+
+  const handleError = () => {
+    if (poster && !usePosterFallback) {
+      setUsePosterFallback(true);
+      return;
+    }
+    onMediaError?.();
+    onMediaReady?.();
+  };
+
+  if (usePosterFallback && poster) {
+    return (
+      <div className={className}>
+        <img
+          src={poster}
+          alt=""
+          className={videoClassName}
+          onLoad={() => onMediaReady?.()}
+          onError={() => {
+            onMediaError?.();
+            onMediaReady?.();
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={className}>
       <video
@@ -36,7 +73,9 @@ export default function WorkListVideo({
         playsInline
         preload="metadata"
         onLoadedData={() => onMediaReady?.()}
-        onError={() => onMediaReady?.()}
+        onLoadedMetadata={() => onMediaReady?.()}
+        onCanPlay={() => onMediaReady?.()}
+        onError={handleError}
       />
     </div>
   );

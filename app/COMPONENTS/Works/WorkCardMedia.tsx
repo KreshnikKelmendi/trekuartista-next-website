@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import WorkListVideo, { isWorkVideoSrc } from "./WorkListVideo";
+import { isWorkVideoSrc } from "@/lib/works/cloudinary";
+import WorkListVideo from "./WorkListVideo";
 
 type WorkCardMediaProps = {
   src: string;
@@ -17,6 +18,8 @@ type WorkCardMediaProps = {
   height?: number;
 };
 
+const LOAD_TIMEOUT_MS = 8000;
+
 function CardMediaSpinner() {
   return (
     <div
@@ -24,6 +27,16 @@ function CardMediaSpinner() {
       aria-hidden
     >
       <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-800" />
+    </div>
+  );
+}
+
+function CardMediaFallback({ alt }: { alt: string }) {
+  return (
+    <div className="flex h-full w-full items-end bg-zinc-100 p-4">
+      <p className="font-custom text-[10px] uppercase leading-tight tracking-wide text-black/35">
+        {alt}
+      </p>
     </div>
   );
 }
@@ -41,25 +54,48 @@ export default function WorkCardMedia({
   height = 1000,
 }: WorkCardMediaProps) {
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
   const isVideo = isWorkVideoSrc(src);
 
   useEffect(() => {
     setLoading(true);
-  }, [src]);
+    setFailed(false);
+  }, [src, poster]);
+
+  useEffect(() => {
+    if (!loading) return;
+    const timer = window.setTimeout(() => setLoading(false), LOAD_TIMEOUT_MS);
+    return () => window.clearTimeout(timer);
+  }, [loading, src]);
 
   const handleReady = () => setLoading(false);
+  const handleError = () => {
+    setFailed(true);
+    setLoading(false);
+  };
+
+  if (!src) {
+    return (
+      <div className={`relative overflow-hidden ${className}`}>
+        <CardMediaFallback alt={alt} />
+      </div>
+    );
+  }
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
       {loading ? <CardMediaSpinner /> : null}
 
-      {isVideo ? (
+      {failed ? (
+        <CardMediaFallback alt={alt} />
+      ) : isVideo ? (
         <WorkListVideo
           src={src}
           poster={poster}
           className="h-full w-full"
           videoClassName={mediaClassName}
           onMediaReady={handleReady}
+          onMediaError={handleError}
         />
       ) : useNativeImg ? (
         <img
@@ -67,7 +103,7 @@ export default function WorkCardMedia({
           alt={alt}
           className={mediaClassName}
           onLoad={handleReady}
-          onError={handleReady}
+          onError={handleError}
         />
       ) : (
         <Image
@@ -79,7 +115,7 @@ export default function WorkCardMedia({
           unoptimized={unoptimized}
           className={mediaClassName}
           onLoad={handleReady}
-          onError={handleReady}
+          onError={handleError}
         />
       )}
     </div>

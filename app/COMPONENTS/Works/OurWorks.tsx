@@ -12,12 +12,27 @@ import {
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 import type { WorkItem } from "@/lib/works/types";
+import { pickWorkCardMedia } from "@/lib/works/card-media";
 import LoadingSpinner from "@/app/COMPONENTS/ui/LoadingSpinner";
 import WorkCardMedia from "./WorkCardMedia";
 
 const pagePx = "px-5 lg:px-[55px]";
 const ease = [0.22, 1, 0.36, 1] as const;
 const FILTER_LOAD_MS = 380;
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  return isDesktop;
+}
 
 function sortNewestFirst(items: WorkItem[]) {
   return [...items].sort(
@@ -44,6 +59,8 @@ function WorkCard({
     setCursorPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
+  const cardMedia = pickWorkCardMedia(item);
+
   return (
     <motion.div
       ref={ref}
@@ -62,15 +79,17 @@ function WorkCard({
         <div className="transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110">
           <div className="aspect-4/5 w-full overflow-hidden bg-zinc-100 md:aspect-3/4 lg:aspect-square">
             <WorkCardMedia
-              src={item.workImage}
-              poster={item.workThumbnail ?? undefined}
+              src={cardMedia.src}
+              poster={cardMedia.poster}
               alt={item.workName}
               className="h-full w-full"
               mediaClassName="h-full w-full object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
+              useNativeImg
               unoptimized={
-                item.workImage.includes("supabase.co") ||
-                item.workImage.includes("res.cloudinary.com")
+                cardMedia.src.includes("supabase.co") ||
+                cardMedia.src.includes("res.cloudinary.com") ||
+                cardMedia.src.includes("img.youtube.com")
               }
             />
           </div>
@@ -106,7 +125,7 @@ function WorkCard({
   );
 }
 
-type OurWorksProps = { works: WorkItem[] };
+type OurWorksProps = { works?: WorkItem[] };
 
 function WorkCategoryFilters({
   categories,
@@ -234,6 +253,8 @@ function WorksGrid({
   const col1 = works.filter((_, i) => i % 3 === 0);
   const col2 = works.filter((_, i) => i % 3 === 1);
   const col3 = works.filter((_, i) => i % 3 === 2);
+  // Hooks must run unconditionally (before any early return) per Rules of Hooks.
+  const isDesktop = useIsDesktop();
 
   if (works.length === 0) {
     return (
@@ -250,35 +271,42 @@ function WorksGrid({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease }}
     >
-      <div className="flex flex-col gap-12 md:hidden">
-        {works.map((item, index) => (
-          <MobileWorkCard key={item.id} item={item} index={index} />
-        ))}
-      </div>
+      {/* isDesktop is null until the viewport check runs on mount. We render
+          nothing for that one tick rather than mounting BOTH layouts, since
+          mounting both used to fetch every image/video twice. */}
+      {isDesktop === false && (
+        <div className="flex flex-col gap-12">
+          {works.map((item, index) => (
+            <MobileWorkCard key={item.id} item={item} index={index} />
+          ))}
+        </div>
+      )}
 
-      <div className="hidden md:grid md:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-x-12">
-        <motion.div className="flex flex-col gap-24 lg:gap-40" style={{ y: col1Y }}>
-          {col1.map((item) => (
-            <WorkCard key={item.id} item={item} />
-          ))}
-        </motion.div>
-        <motion.div
-          className="flex flex-col gap-24 lg:mt-44 lg:gap-44"
-          style={{ y: col2Y }}
-        >
-          {col2.map((item) => (
-            <WorkCard key={item.id} item={item} />
-          ))}
-        </motion.div>
-        <motion.div
-          className="flex flex-col gap-24 lg:mt-16 lg:gap-40"
-          style={{ y: col3Y }}
-        >
-          {col3.map((item) => (
-            <WorkCard key={item.id} item={item} />
-          ))}
-        </motion.div>
-      </div>
+      {isDesktop === true && (
+        <div className="grid grid-cols-2 gap-12 lg:grid-cols-3 lg:gap-x-12">
+          <motion.div className="flex flex-col gap-24 lg:gap-40" style={{ y: col1Y }}>
+            {col1.map((item) => (
+              <WorkCard key={item.id} item={item} />
+            ))}
+          </motion.div>
+          <motion.div
+            className="flex flex-col gap-24 lg:mt-44 lg:gap-44"
+            style={{ y: col2Y }}
+          >
+            {col2.map((item) => (
+              <WorkCard key={item.id} item={item} />
+            ))}
+          </motion.div>
+          <motion.div
+            className="flex flex-col gap-24 lg:mt-16 lg:gap-40"
+            style={{ y: col3Y }}
+          >
+            {col3.map((item) => (
+              <WorkCard key={item.id} item={item} />
+            ))}
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -293,21 +321,47 @@ function OurWorksPageLoader({ label = "Loading works" }: { label?: string }) {
   );
 }
 
-export default function OurWorks({ works }: OurWorksProps) {
+export default function OurWorks({ works: initialWorks }: OurWorksProps) {
+  const [works, setWorks] = useState<WorkItem[]>(initialWorks ?? []);
   const [selectedCategory, setSelectedCategory] = useState("All Work");
   const [isFiltering, setIsFiltering] = useState(false);
-  const [isPageReady, setIsPageReady] = useState(false);
+  const [isPageReady, setIsPageReady] = useState(Boolean(initialWorks?.length));
   const [isMounted, setIsMounted] = useState(false);
   const skipFilterSpinner = useRef(true);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setIsPageReady(true);
     setIsMounted(true);
+
+    if (initialWorks?.length) {
+      setWorks(initialWorks);
+      setIsPageReady(true);
+      return;
+    }
+
+    let cancelled = false;
+    fetch("/api/works")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        setWorks(Array.isArray(data.works) ? data.works : []);
+        setIsPageReady(true);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setWorks([]);
+        setIsPageReady(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const scrollEnabled = isMounted && isPageReady;
   const { scrollYProgress } = useScroll({
-    target: isMounted ? sectionRef : undefined,
+    target: scrollEnabled ? sectionRef : undefined,
     offset: ["start end", "end start"],
   });
 

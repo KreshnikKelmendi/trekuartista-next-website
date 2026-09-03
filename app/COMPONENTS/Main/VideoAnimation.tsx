@@ -4,11 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import SpinningTreMark from "./SpinningTreMark";
 
-const SHOWREEL_MOBILE_URL =
-  "https://res.cloudinary.com/dmzjjud3z/video/upload/v1779716236/showreel-2_q1vynk.mp4";
+// Hosted in Supabase Storage (works-media bucket) — Cloudinary is no longer used.
+// Same file for mobile and desktop; kept as two constants in case a distinct
+// mobile-optimized encode is added later.
+const SHOWREEL_URL =
+  "https://uzweyvxkwomywolhhdfp.supabase.co/storage/v1/object/public/works-media/showreel/desktop.mp4";
 
-const SHOWREEL_DESKTOP_URL =
-  "https://res.cloudinary.com/dmzjjud3z/video/upload/v1779716841/showreel-1_mxq4af.mp4";
+const SHOWREEL_MOBILE_URL = SHOWREEL_URL;
+
+const SHOWREEL_DESKTOP_URL = SHOWREEL_URL;
 
 const MOBILE_MEDIA = "(max-width: 1023px)";
 
