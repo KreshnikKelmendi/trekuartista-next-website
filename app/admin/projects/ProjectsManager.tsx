@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { WorkItem, WorkMediaItem } from "@/lib/works/types";
+import { readApiError, readApiJson } from "@/lib/admin/parse-api-response";
+import { uploadWorkFilesFromBrowser } from "@/lib/works/client-upload";
 import ProjectCard from "./ProjectCard";
 
 type DescriptionField = {
@@ -20,12 +22,35 @@ function newDescriptionField(content = "", id?: string): DescriptionField {
   };
 }
 
+type YoutubeField = {
+  key: string;
+  url: string;
+  title: string;
+  description: string;
+};
+
+function newYoutubeField(
+  url = "",
+  title = "",
+  description = ""
+): YoutubeField {
+  return {
+    key: typeof crypto !== "undefined" ? crypto.randomUUID() : String(Math.random()),
+    url,
+    title,
+    description,
+  };
+}
+
 function resetForm(setters: {
   setWorkName: (v: string) => void;
   setSpecialCategory: (v: string) => void;
   setDescriptionFields: (v: DescriptionField[]) => void;
   setNewFiles: (v: File[]) => void;
   setRemoveMediaIds: (v: string[]) => void;
+  setMediaOrderIds: (v: string[]) => void;
+  setYoutubeFields: (v: YoutubeField[]) => void;
+  setYoutubeOnly: (v: boolean) => void;
   setError: (v: string) => void;
   setEditingWork: (v: WorkItem | null) => void;
 }) {
@@ -34,8 +59,19 @@ function resetForm(setters: {
   setters.setDescriptionFields([]);
   setters.setNewFiles([]);
   setters.setRemoveMediaIds([]);
+  setters.setMediaOrderIds([]);
+  setters.setYoutubeFields([]);
+  setters.setYoutubeOnly(false);
   setters.setError("");
   setters.setEditingWork(null);
+}
+
+function moveArrayItem<T>(items: T[], index: number, direction: "up" | "down"): T[] {
+  const swapIndex = direction === "up" ? index - 1 : index + 1;
+  if (swapIndex < 0 || swapIndex >= items.length) return items;
+  const next = [...items];
+  [next[index], next[swapIndex]] = [next[swapIndex], next[index]];
+  return next;
 }
 
 function ThumbnailPreview({ src, label }: { src: string; label: string }) {
@@ -72,13 +108,45 @@ function ThumbnailPreview({ src, label }: { src: string; label: string }) {
   );
 }
 
-function MediaThumb({ item, index }: { item: WorkMediaItem; index: number }) {
+function MediaThumb({
+  item,
+  index,
+  total,
+  onMoveUp,
+  onMoveDown,
+}: {
+  item: WorkMediaItem;
+  index: number;
+  total: number;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+}) {
   const preview =
     item.mediaType === "video" ? item.thumbnail || item.url : item.url;
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <span className="text-[10px] text-stone-400">{index + 1}</span>
+      <div className="flex items-center gap-0.5">
+        <button
+          type="button"
+          onClick={onMoveUp}
+          disabled={index === 0}
+          className="rounded px-1 text-[10px] text-stone-500 hover:bg-stone-100 disabled:opacity-30"
+          aria-label="Move media up"
+        >
+          ↑
+        </button>
+        <span className="text-[10px] text-stone-400">{index + 1}</span>
+        <button
+          type="button"
+          onClick={onMoveDown}
+          disabled={index >= total - 1}
+          className="rounded px-1 text-[10px] text-stone-500 hover:bg-stone-100 disabled:opacity-30"
+          aria-label="Move media down"
+        >
+          ↓
+        </button>
+      </div>
       <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-stone-100">
         {item.mediaType === "video" && !item.thumbnail ? (
           <video
@@ -123,7 +191,11 @@ export default function ProjectsManager({
   const [descriptionFields, setDescriptionFields] = useState<DescriptionField[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [removeMediaIds, setRemoveMediaIds] = useState<string[]>([]);
+  const [mediaOrderIds, setMediaOrderIds] = useState<string[]>([]);
+  const [youtubeFields, setYoutubeFields] = useState<YoutubeField[]>([]);
+  const [youtubeOnly, setYoutubeOnly] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -150,6 +222,9 @@ export default function ProjectsManager({
     setDescriptionFields([]);
     setNewFiles([]);
     setRemoveMediaIds([]);
+    setMediaOrderIds([]);
+    setYoutubeFields([]);
+    setYoutubeOnly(false);
     setError("");
     setModalOpen(true);
   }
@@ -158,6 +233,16 @@ export default function ProjectsManager({
     setEditingWork(work);
     setWorkName(work.workName);
     setSpecialCategory(work.specialCategory);
+    setYoutubeOnly(work.youtubeOnly ?? false);
+    setYoutubeFields(
+      work.youtubeVideos?.length
+        ? work.youtubeVideos.map((v) =>
+            newYoutubeField(v.url, v.title, v.description)
+          )
+        : work.youtubeLink
+          ? [newYoutubeField(work.youtubeLink, work.workName, "")]
+          : []
+    );
     setDescriptionFields(
       work.descriptions.length > 0
         ? work.descriptions.map((d) =>
@@ -170,6 +255,7 @@ export default function ProjectsManager({
     );
     setNewFiles([]);
     setRemoveMediaIds([]);
+    setMediaOrderIds(work.media.map((m) => m.id));
     setError("");
     setModalOpen(true);
   }
@@ -182,6 +268,9 @@ export default function ProjectsManager({
       setDescriptionFields,
       setNewFiles,
       setRemoveMediaIds,
+      setMediaOrderIds,
+      setYoutubeFields,
+      setYoutubeOnly,
       setError,
       setEditingWork,
     });
@@ -198,6 +287,43 @@ export default function ProjectsManager({
   function markMediaRemoved(id: string) {
     if (id.startsWith("legacy-")) return;
     setRemoveMediaIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    setMediaOrderIds((prev) => prev.filter((mediaId) => mediaId !== id));
+  }
+
+  function moveMedia(id: string, direction: "up" | "down") {
+    setMediaOrderIds((prev) => {
+      const index = prev.indexOf(id);
+      if (index === -1) return prev;
+      return moveArrayItem(prev, index, direction);
+    });
+  }
+
+  async function handleMove(id: string, direction: "up" | "down") {
+    if (search.trim()) return;
+
+    const index = works.findIndex((work) => work.id === id);
+    if (index === -1) return;
+
+    const next = moveArrayItem(works, index, direction);
+    setWorks(next);
+    setReordering(true);
+
+    try {
+      const res = await fetch("/api/works/reorder", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderedIds: next.map((work) => work.id) }),
+      });
+      if (!res.ok) {
+        throw new Error(await readApiError(res, "Reorder failed"));
+      }
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Reorder failed");
+      router.refresh();
+    } finally {
+      setReordering(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -216,7 +342,20 @@ export default function ProjectsManager({
           newFiles.length)
       : newFiles.length;
 
-    if (totalMedia === 0) {
+    const youtubeEntries = youtubeFields
+      .map(({ url, title, description }) => ({
+        url: url.trim(),
+        title: title.trim(),
+        description: description.trim(),
+      }))
+      .filter((entry) => entry.url.length > 0);
+
+    if (youtubeOnly && youtubeEntries.length === 0) {
+      setError("Add at least one YouTube link.");
+      return;
+    }
+
+    if (!youtubeOnly && totalMedia === 0) {
       setError("Add at least one image or video.");
       return;
     }
@@ -235,17 +374,34 @@ export default function ProjectsManager({
         }))
         .filter((d) => d.content.length > 0);
       formData.append("descriptions", JSON.stringify(descriptionsPayload));
-      newFiles.forEach((f) => formData.append("files", f));
+      formData.append("youtubeVideos", JSON.stringify(youtubeEntries));
+      formData.append("youtubeLink", youtubeEntries[0]?.url ?? "");
+      formData.append("youtubeOnly", youtubeOnly ? "true" : "false");
+
+      if (newFiles.length > 0) {
+        const uploadedMedia = await uploadWorkFilesFromBrowser(newFiles);
+        formData.append("uploadedMedia", JSON.stringify(uploadedMedia));
+      }
+
       if (removeMediaIds.length > 0) {
         formData.append("removeMediaIds", JSON.stringify(removeMediaIds));
+      }
+      if (isEditing && mediaOrderIds.length > 0) {
+        formData.append(
+          "mediaOrder",
+          JSON.stringify(mediaOrderIds.filter((id) => !removeMediaIds.includes(id)))
+        );
       }
 
       const url = isEditing ? `/api/works/${editingWork.id}` : "/api/works";
       const method = isEditing ? "PATCH" : "POST";
 
       const res = await fetch(url, { method, body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save failed");
+      if (!res.ok) {
+        throw new Error(await readApiError(res, "Save failed"));
+      }
+
+      const data = await readApiJson<{ work: WorkItem }>(res);
 
       if (isEditing) {
         setWorks((prev) =>
@@ -265,25 +421,38 @@ export default function ProjectsManager({
   }
 
   async function handleDelete(id: string) {
-    setDeletingId(id);
+    const work = works.find((item) => item.id === id);
+    const label = work?.workName || "this project";
 
-    const res = await fetch(`/api/works/${id}`, { method: "DELETE" });
-    if (!res.ok) {
-      const data = await res.json();
-      alert(data.error || "Delete failed");
-      setDeletingId(null);
+    if (!window.confirm(`Delete ${label}? This cannot be undone.`)) {
       return;
     }
 
-    setWorks((prev) => prev.filter((w) => w.id !== id));
-    setDeletingId(null);
-    router.refresh();
+    setDeletingId(id);
+
+    try {
+      const res = await fetch(`/api/works/${id}`, { method: "DELETE" });
+
+      if (!res.ok) {
+        throw new Error(await readApiError(res, "Delete failed"));
+      }
+
+      setWorks((prev) => prev.filter((w) => w.id !== id));
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Delete failed");
+    } finally {
+      setDeletingId(null);
+    }
   }
 
-  const visibleExisting =
-    editingWork?.media.filter(
-      (m) => !removeMediaIds.includes(m.id)
-    ) ?? [];
+  const orderedExistingMedia =
+    editingWork?.media
+      .filter((m) => !removeMediaIds.includes(m.id))
+      .sort(
+        (a, b) =>
+          mediaOrderIds.indexOf(a.id) - mediaOrderIds.indexOf(b.id)
+      ) ?? [];
 
   return (
     <div className="w-full">
@@ -323,12 +492,20 @@ export default function ProjectsManager({
         </div>
       ) : (
         <div className="space-y-2">
-          {filtered.map((work) => (
+          {filtered.map((work, index) => (
             <ProjectCard
               key={work.id}
               work={work}
+              index={search.trim() ? works.indexOf(work) : index}
               onEdit={openEditModal}
               onDelete={handleDelete}
+              onMoveUp={(id) => handleMove(id, "up")}
+              onMoveDown={(id) => handleMove(id, "down")}
+              canMoveUp={!search.trim() && works.indexOf(work) > 0}
+              canMoveDown={
+                !search.trim() && works.indexOf(work) < works.length - 1
+              }
+              reordering={reordering}
               deleting={deletingId === work.id}
             />
           ))}
@@ -383,6 +560,99 @@ export default function ProjectsManager({
 
               <div className="block">
                 <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm text-stone-600">YouTube videos</span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setYoutubeFields((prev) => [...prev, newYoutubeField()])
+                    }
+                    className="text-sm font-medium text-teal-700 hover:text-teal-900"
+                  >
+                    + Add video
+                  </button>
+                </div>
+
+                {youtubeFields.length === 0 ? (
+                  <p className="mt-2 text-xs text-stone-400">
+                    Optional. Add one or more YouTube links with title and description.
+                  </p>
+                ) : (
+                  <div className="mt-2 space-y-3">
+                    {youtubeFields.map((field) => (
+                      <div
+                        key={field.key}
+                        className="rounded-lg border border-stone-200 bg-stone-50/50 p-3 space-y-2"
+                      >
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setYoutubeFields((prev) =>
+                                prev.filter((f) => f.key !== field.key)
+                              )
+                            }
+                            className="text-xs text-red-600 hover:underline"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        <input
+                          value={field.url}
+                          onChange={(e) =>
+                            setYoutubeFields((prev) =>
+                              prev.map((f) =>
+                                f.key === field.key ? { ...f, url: e.target.value } : f
+                              )
+                            )
+                          }
+                          className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-500"
+                          placeholder="https://www.youtube.com/watch?v=..."
+                        />
+                        <input
+                          value={field.title}
+                          onChange={(e) =>
+                            setYoutubeFields((prev) =>
+                              prev.map((f) =>
+                                f.key === field.key ? { ...f, title: e.target.value } : f
+                              )
+                            )
+                          }
+                          className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-500"
+                          placeholder="Video title"
+                        />
+                        <textarea
+                          value={field.description}
+                          onChange={(e) =>
+                            setYoutubeFields((prev) =>
+                              prev.map((f) =>
+                                f.key === field.key
+                                  ? { ...f, description: e.target.value }
+                                  : f
+                              )
+                            )
+                          }
+                          rows={2}
+                          className="w-full resize-y rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-500"
+                          placeholder="Description shown beside the video"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <label className="flex items-center gap-2 text-sm text-stone-600">
+                <input
+                  type="checkbox"
+                  checked={youtubeOnly}
+                  onChange={(e) => setYoutubeOnly(e.target.checked)}
+                  className="rounded border-stone-300"
+                />
+                YouTube only — show video on detail page (TV ads style)
+              </label>
+
+              <div className="block">
+                <div className="flex items-center justify-between gap-2">
                   <span className="text-sm text-stone-600">Descriptions</span>
                   <button
                     type="button"
@@ -406,7 +676,7 @@ export default function ProjectsManager({
                         key={field.key}
                         className="rounded-lg border border-stone-200 bg-stone-50/50 p-3"
                       >
-                        <div className="mb-2 flex items-center justify-between">
+                        <div className="mb-2 flex items-center justify-between gap-2">
                           <span className="text-xs font-medium text-stone-500">
                             {index === 0
                               ? "Block 1 — page header"
@@ -416,17 +686,43 @@ export default function ProjectsManager({
                                   ? "Block 3 — after 6 media (center)"
                                   : `Block ${index + 1}`}
                           </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setDescriptionFields((prev) =>
-                                prev.filter((f) => f.key !== field.key)
-                              )
-                            }
-                            className="text-xs text-red-600 hover:underline"
-                          >
-                            Remove
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setDescriptionFields((prev) =>
+                                  moveArrayItem(prev, index, "up")
+                                )
+                              }
+                              disabled={index === 0}
+                              className="text-xs text-stone-500 hover:underline disabled:opacity-30"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setDescriptionFields((prev) =>
+                                  moveArrayItem(prev, index, "down")
+                                )
+                              }
+                              disabled={index === descriptionFields.length - 1}
+                              className="text-xs text-stone-500 hover:underline disabled:opacity-30"
+                            >
+                              ↓
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setDescriptionFields((prev) =>
+                                  prev.filter((f) => f.key !== field.key)
+                                )
+                              }
+                              className="text-xs text-red-600 hover:underline"
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </div>
                         <textarea
                           value={field.content}
@@ -451,12 +747,13 @@ export default function ProjectsManager({
 
               <div className="block">
                 <span className="text-sm text-stone-600">
-                  Media {isEditing ? "(add more or remove)" : ""}
+                  Media {isEditing ? "(add more, remove, or reorder)" : ""}
+                  {youtubeOnly ? " — optional cover for list card" : ""}
                 </span>
 
                 {(isEditing &&
                   (editingWork.workThumbnail || editingWork.workImage)) ||
-                visibleExisting.length > 0 ? (
+                orderedExistingMedia.length > 0 ? (
                   <div className="mt-2 flex flex-wrap items-end gap-3">
                     {isEditing &&
                     (editingWork.workThumbnail || editingWork.workImage) ? (
@@ -465,9 +762,15 @@ export default function ProjectsManager({
                         label="Thumbnail"
                       />
                     ) : null}
-                    {visibleExisting.map((item, index) => (
+                    {orderedExistingMedia.map((item, index) => (
                       <div key={item.id} className="relative">
-                        <MediaThumb item={item} index={index} />
+                        <MediaThumb
+                          item={item}
+                          index={index}
+                          total={orderedExistingMedia.length}
+                          onMoveUp={() => moveMedia(item.id, "up")}
+                          onMoveDown={() => moveMedia(item.id, "down")}
+                        />
                         {!item.id.startsWith("legacy-") && (
                           <button
                             type="button"

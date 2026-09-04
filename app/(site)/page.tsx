@@ -4,13 +4,22 @@ import FeaturedWork from "../COMPONENTS/Latest/FeaturedWork";
 import FirstContentOfAbout from "../COMPONENTS/about/FirstContentOfAbout";
 import Services from "../COMPONENTS/services/Services";
 import Clients from "../COMPONENTS/clients/Clients";
+import { getWorks } from "@/lib/works/queries";
+import { getShowreelSettings } from "@/lib/showreel/queries";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const [works, showreel] = await Promise.all([getWorks(), getShowreelSettings()]);
+
   return (
     <>
-      <VideoAnimation />
+      <VideoAnimation
+        desktopUrl={showreel.desktopUrl}
+        mobileUrl={showreel.mobileUrl}
+      />
       <LetsTalkArt />
-      <FeaturedWork />
+      <FeaturedWork works={works} />
       <FirstContentOfAbout />
       <Services />
       <Clients />

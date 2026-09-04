@@ -7,6 +7,7 @@ import { clearAdminAuth } from "@/lib/admin/client-auth";
 
 const nav = [
   { href: "/admin/projects", label: "Projects", icon: "◆" },
+  { href: "/admin/showreel", label: "Showreel", icon: "▶" },
   { href: "/admin/team", label: "Team", icon: "◎" },
 ];
 

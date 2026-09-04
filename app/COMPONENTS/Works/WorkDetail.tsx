@@ -144,45 +144,25 @@ function WorkYoutubeSection({ work }: { work: WorkItem }) {
     work.specialCategory.trim() ||
     (videos.length === 1 ? "Video" : "Films & campaigns");
 
-  if (videos.length === 1) {
-    const video = videos[0];
-    return (
-      <section className={`${pagePx} ${sectionGap}`}>
-        <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-[#3110EE]`}>
-          {heading}
-        </h2>
-        <div className="space-y-5 md:space-y-8">
-          <YoutubeEmbed video={video} />
-          <YoutubeVideoText video={video} />
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className={`${pagePx} ${sectionGap}`}>
       <h2 className={`${titleLinkClass} text-[11px] uppercase tracking-[0.35em] text-[#3110EE]`}>
         {heading}
       </h2>
       <div className="space-y-8 md:space-y-16">
-        {videos.map((video, index) => {
-          const flip = index % 2 === 1;
-
-          return (
-            <div
-              key={`${video.url}-${index}`}
-              className={`flex flex-col ${blockGap} md:grid md:grid-cols-2 md:items-center md:gap-10`}
-            >
-              {/* Mobile: video then text. Desktop: alternating sides */}
-              <div className={flip ? "order-1 md:order-1" : "order-1 md:order-2"}>
-                <YoutubeEmbed video={video} />
-              </div>
-              <div className={flip ? "order-2 md:order-2" : "order-2 md:order-1"}>
-                <YoutubeVideoText video={video} />
-              </div>
+        {videos.map((video, index) => (
+          <div
+            key={`${video.url}-${index}`}
+            className={`flex flex-col ${blockGap} md:grid md:grid-cols-2 md:items-center md:gap-10`}
+          >
+            <div className="order-1 md:order-2">
+              <YoutubeEmbed video={video} />
             </div>
-          );
-        })}
+            <div className="order-2 md:order-1">
+              <YoutubeVideoText video={video} />
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

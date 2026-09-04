@@ -6,6 +6,7 @@ import AdminSidebar from "./AdminSidebar";
 
 const pageLabels: Record<string, string> = {
   "/admin/projects": "Projects",
+  "/admin/showreel": "Showreel",
   "/admin/team": "Team",
 };
 

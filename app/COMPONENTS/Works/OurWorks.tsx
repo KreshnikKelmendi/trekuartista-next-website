@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 import type { WorkItem } from "@/lib/works/types";
-import { pickWorkCardMedia } from "@/lib/works/card-media";
+import { workDetailPath } from "@/lib/works/slug";
 import LoadingSpinner from "@/app/COMPONENTS/ui/LoadingSpinner";
 import WorkCardMedia from "./WorkCardMedia";
 
@@ -20,6 +20,20 @@ const pagePx = "px-5 lg:px-[55px]";
 const ease = [0.22, 1, 0.36, 1] as const;
 const FILTER_LOAD_MS = 380;
 
+function sortByDisplayOrder(items: WorkItem[]) {
+  return [...items].sort((a, b) => {
+    const aOrder = a.sortOrder;
+    const bOrder = b.sortOrder;
+    if (aOrder !== undefined && bOrder !== undefined && aOrder !== bOrder) {
+      return aOrder - bOrder;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+}
+
+// Renders only the layout that matches the current viewport instead of
+// mounting both the mobile and desktop grids and CSS-hiding one — the old
+// approach loaded every work's media twice on every visit.
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
 
@@ -32,13 +46,6 @@ function useIsDesktop() {
   }, []);
 
   return isDesktop;
-}
-
-function sortNewestFirst(items: WorkItem[]) {
-  return [...items].sort(
-    (a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
 }
 
 function WorkCard({
@@ -59,8 +66,6 @@ function WorkCard({
     setCursorPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
-  const cardMedia = pickWorkCardMedia(item);
-
   return (
     <motion.div
       ref={ref}
@@ -79,17 +84,15 @@ function WorkCard({
         <div className="transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110">
           <div className="aspect-4/5 w-full overflow-hidden bg-zinc-100 md:aspect-3/4 lg:aspect-square">
             <WorkCardMedia
-              src={cardMedia.src}
-              poster={cardMedia.poster}
+              src={item.workImage}
+              poster={item.workThumbnail ?? undefined}
               alt={item.workName}
               className="h-full w-full"
               mediaClassName="h-full w-full object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
-              useNativeImg
               unoptimized={
-                cardMedia.src.includes("supabase.co") ||
-                cardMedia.src.includes("res.cloudinary.com") ||
-                cardMedia.src.includes("img.youtube.com")
+                item.workImage.includes("supabase.co") ||
+                item.workImage.includes("res.cloudinary.com")
               }
             />
           </div>
@@ -110,7 +113,7 @@ function WorkCard({
           </motion.div>
         </div>
 
-        <Link href={`/our-works/${item.id}`} className="absolute inset-0 z-20" scroll />
+        <Link href={workDetailPath(item)} className="absolute inset-0 z-20" scroll />
       </div>
 
       <div className="mt-3 flex items-center gap-2 font-custom text-[12px] tracking-tight lg:text-base">
@@ -125,7 +128,7 @@ function WorkCard({
   );
 }
 
-type OurWorksProps = { works?: WorkItem[] };
+type OurWorksProps = { works: WorkItem[] };
 
 function WorkCategoryFilters({
   categories,
@@ -250,11 +253,10 @@ function WorksGrid({
   col2Y?: MotionValue<number>;
   col3Y?: MotionValue<number>;
 }) {
+  const isDesktop = useIsDesktop();
   const col1 = works.filter((_, i) => i % 3 === 0);
   const col2 = works.filter((_, i) => i % 3 === 1);
   const col3 = works.filter((_, i) => i % 3 === 2);
-  // Hooks must run unconditionally (before any early return) per Rules of Hooks.
-  const isDesktop = useIsDesktop();
 
   if (works.length === 0) {
     return (
@@ -264,6 +266,9 @@ function WorksGrid({
     );
   }
 
+  // isDesktop is null on the very first render (before the media query can
+  // be read), so nothing renders for one tick rather than briefly mounting
+  // both layouts.
   return (
     <motion.div
       key={layoutKey}
@@ -271,9 +276,6 @@ function WorksGrid({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease }}
     >
-      {/* isDesktop is null until the viewport check runs on mount. We render
-          nothing for that one tick rather than mounting BOTH layouts, since
-          mounting both used to fetch every image/video twice. */}
       {isDesktop === false && (
         <div className="flex flex-col gap-12">
           {works.map((item, index) => (
@@ -321,47 +323,21 @@ function OurWorksPageLoader({ label = "Loading works" }: { label?: string }) {
   );
 }
 
-export default function OurWorks({ works: initialWorks }: OurWorksProps) {
-  const [works, setWorks] = useState<WorkItem[]>(initialWorks ?? []);
+export default function OurWorks({ works }: OurWorksProps) {
   const [selectedCategory, setSelectedCategory] = useState("All Work");
   const [isFiltering, setIsFiltering] = useState(false);
-  const [isPageReady, setIsPageReady] = useState(Boolean(initialWorks?.length));
+  const [isPageReady, setIsPageReady] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const skipFilterSpinner = useRef(true);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setIsPageReady(true);
     setIsMounted(true);
-
-    if (initialWorks?.length) {
-      setWorks(initialWorks);
-      setIsPageReady(true);
-      return;
-    }
-
-    let cancelled = false;
-    fetch("/api/works")
-      .then((res) => res.json())
-      .then((data) => {
-        if (cancelled) return;
-        setWorks(Array.isArray(data.works) ? data.works : []);
-        setIsPageReady(true);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setWorks([]);
-        setIsPageReady(true);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const scrollEnabled = isMounted && isPageReady;
   const { scrollYProgress } = useScroll({
-    target: scrollEnabled ? sectionRef : undefined,
+    target: isMounted ? sectionRef : undefined,
     offset: ["start end", "end start"],
   });
 
@@ -389,7 +365,7 @@ export default function OurWorks({ works: initialWorks }: OurWorksProps) {
   }, [selectedCategory, works]);
 
   const orderedWorks = useMemo(
-    () => sortNewestFirst(filteredWorks),
+    () => sortByDisplayOrder(filteredWorks),
     [filteredWorks]
   );
 

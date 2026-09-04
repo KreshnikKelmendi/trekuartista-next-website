@@ -3,16 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import SpinningTreMark from "./SpinningTreMark";
-
-// Hosted in Supabase Storage (works-media bucket) — Cloudinary is no longer used.
-// Same file for mobile and desktop; kept as two constants in case a distinct
-// mobile-optimized encode is added later.
-const SHOWREEL_URL =
-  "https://uzweyvxkwomywolhhdfp.supabase.co/storage/v1/object/public/works-media/showreel/desktop.mp4";
-
-const SHOWREEL_MOBILE_URL = SHOWREEL_URL;
-
-const SHOWREEL_DESKTOP_URL = SHOWREEL_URL;
+import {
+  DEFAULT_SHOWREEL_DESKTOP_URL,
+  DEFAULT_SHOWREEL_MOBILE_URL,
+} from "@/lib/showreel/defaults";
 
 const MOBILE_MEDIA = "(max-width: 1023px)";
 
@@ -71,7 +65,13 @@ function MuteButton({
   );
 }
 
-const VideoAnimation = () => {
+const VideoAnimation = ({
+  desktopUrl = DEFAULT_SHOWREEL_DESKTOP_URL,
+  mobileUrl = DEFAULT_SHOWREEL_MOBILE_URL,
+}: {
+  desktopUrl?: string;
+  mobileUrl?: string;
+}) => {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRefMobile = useRef<HTMLVideoElement>(null);
@@ -80,7 +80,7 @@ const VideoAnimation = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  const videoSrc = isMobile ? SHOWREEL_MOBILE_URL : SHOWREEL_DESKTOP_URL;
+  const videoSrc = isMobile ? mobileUrl : desktopUrl;
 
   useEffect(() => {
     setIsMounted(true);

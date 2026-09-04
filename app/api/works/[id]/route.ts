@@ -1,46 +1,27 @@
 import { NextResponse } from "next/server";
 import { parseDescriptionsFromFormData } from "@/lib/works/parse-descriptions";
-import { processWorkFile } from "@/lib/works/process-media";
 import {
-  deleteWork,
+  parseMediaOrder,
+  parseYoutubeFromFormData,
+} from "@/lib/works/parse-youtube-form";
+import {
+  deleteWorkById,
   deleteWorkMedia,
   getNextMediaSortOrder,
   getWorkById,
   syncWorkCover,
   syncWorkDescriptions,
+  syncWorkMediaOrder,
   updateWork,
   insertWorkMedia,
 } from "@/lib/works/queries";
+import { resolveUploadedWorkMedia } from "@/lib/works/resolve-upload-media";
+import { isYoutubeOnlyWork } from "@/lib/works/is-youtube-only-work";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
 type Props = { params: Promise<{ id: string }> };
-
-export async function GET(_request: Request, { params }: Props) {
-  try {
-    const { id } = await params;
-    const work = await getWorkById(id);
-    if (!work) {
-      return NextResponse.json({ error: "Project not found." }, { status: 404 });
-    }
-    return NextResponse.json({ work });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to load project";
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
-}
-
-function getFilesFromFormData(formData: FormData): File[] {
-  const fromFiles = formData
-    .getAll("files")
-    .filter((f): f is File => f instanceof File && f.size > 0);
-  if (fromFiles.length > 0) return fromFiles;
-
-  const single = formData.get("file");
-  if (single instanceof File && single.size > 0) return [single];
-  return [];
-}
 
 function parseRemoveMediaIds(formData: FormData): string[] {
   const raw = formData.get("removeMediaIds");
@@ -63,12 +44,17 @@ export async function PATCH(request: Request, { params }: Props) {
     const workNameRaw = formData.get("workName");
     const specialCategoryRaw = formData.get("specialCategory");
     const descriptionItems = parseDescriptionsFromFormData(formData);
-    const files = getFilesFromFormData(formData);
+    const { youtubeLink, youtubeVideos, youtubeOnly } = parseYoutubeFromFormData(formData);
+    const mediaOrder = parseMediaOrder(formData);
+    const newMedia = await resolveUploadedWorkMedia(formData);
     const removeIds = parseRemoveMediaIds(formData).filter((mid) => !mid.startsWith("legacy-"));
 
     const metaUpdates: {
       workName?: string;
       specialCategory?: string;
+      youtubeLink?: string | null;
+      youtubeVideos?: typeof youtubeVideos;
+      youtubeOnly?: boolean;
     } = {};
 
     let changed = false;
@@ -91,6 +77,13 @@ export async function PATCH(request: Request, { params }: Props) {
       changed = true;
     }
 
+    if (formData.has("youtubeLink") || formData.has("youtubeOnly") || formData.has("youtubeVideos")) {
+      metaUpdates.youtubeLink = youtubeLink;
+      metaUpdates.youtubeVideos = youtubeVideos;
+      metaUpdates.youtubeOnly = youtubeOnly;
+      changed = true;
+    }
+
     if (Object.keys(metaUpdates).length > 0) {
       await updateWork(id, metaUpdates);
     }
@@ -109,9 +102,13 @@ export async function PATCH(request: Request, { params }: Props) {
       await syncWorkCover(id);
     }
 
+    if (mediaOrder && mediaOrder.length > 0) {
+      await syncWorkMediaOrder(id, mediaOrder);
+      changed = true;
+    }
+
     let sortOrder = await getNextMediaSortOrder(id);
-    for (const file of files) {
-      const item = await processWorkFile(file);
+    for (const item of newMedia) {
       await insertWorkMedia({
         workId: id,
         url: item.url,
@@ -131,7 +128,8 @@ export async function PATCH(request: Request, { params }: Props) {
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
     }
 
-    if (work.media.length === 0) {
+    const youtubeOnlyProject = isYoutubeOnlyWork(work);
+    if (work.media.length === 0 && !youtubeOnlyProject) {
       return NextResponse.json(
         { error: "Project must have at least one image or video." },
         { status: 400 }
@@ -150,10 +148,11 @@ export async function PATCH(request: Request, { params }: Props) {
 export async function DELETE(_request: Request, { params }: Props) {
   try {
     const { id } = await params;
-    await deleteWork(id);
+    await deleteWorkById(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Delete failed";
+    const status = message === "Project not found." ? 404 : 500;
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

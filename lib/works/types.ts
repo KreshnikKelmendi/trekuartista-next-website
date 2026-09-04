@@ -1,3 +1,6 @@
+import { slugify } from "./slug";
+import { parseYoutubeVideos } from "./youtube";
+
 export type WorkMediaItem = {
   id: string;
   workId: string;
@@ -22,6 +25,7 @@ export type YoutubeVideoEntry = {
 
 export type WorkItem = {
   id: string;
+  slug?: string;
   workName: string;
   specialCategory: string;
   /** Combined text for search / legacy */
@@ -31,6 +35,7 @@ export type WorkItem = {
   workThumbnail?: string | null;
   media: WorkMediaItem[];
   createdAt: string;
+  sortOrder?: number;
   /** `static` = workData.ts; `db` = Supabase admin */
   source?: "static" | "db";
   category?: string;
@@ -57,6 +62,10 @@ export type WorkRow = {
   work_image: string;
   work_thumbnail: string | null;
   sort_order: number;
+  slug?: string | null;
+  youtube_link?: string | null;
+  youtube_videos?: unknown;
+  youtube_only?: boolean | null;
   created_at: string;
 };
 
@@ -119,6 +128,7 @@ export function rowToWork(
 
   return {
     id: row.id,
+    slug: row.slug ?? slugify(row.work_name),
     workName: row.work_name,
     specialCategory: row.special_category,
     description: combinedDescription || (row.description ?? ""),
@@ -127,7 +137,11 @@ export function rowToWork(
     workThumbnail: cover?.thumbnail ?? row.work_thumbnail,
     media: sortedMedia.length > 0 ? sortedMedia : legacyMediaFromRow(row),
     createdAt: row.created_at,
+    sortOrder: row.sort_order,
     source: "db",
+    youtubeLink: row.youtube_link?.trim() || undefined,
+    youtubeVideos: parseYoutubeVideos(row.youtube_videos),
+    youtubeOnly: row.youtube_only ?? false,
   };
 }
 

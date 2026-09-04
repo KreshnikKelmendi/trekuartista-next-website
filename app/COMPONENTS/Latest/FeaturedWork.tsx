@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -12,8 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import WorkCardMedia from "../Works/WorkCardMedia";
-import { pickFeaturedWorks } from "@/lib/works/merge-works";
-import { HOMEPAGE_FEATURED_WORK_IDS } from "@/lib/works/workData";
+import { workDetailPath } from "@/lib/works/slug";
 import type { WorkItem } from "@/lib/works/types";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -225,7 +224,7 @@ function FeaturedWorkSquareTile({
           </div>
 
           <Link
-            href={`/our-works/${work.id}`}
+            href={workDetailPath(work)}
             className="absolute inset-0 z-20"
             scroll
           />
@@ -317,7 +316,7 @@ function MobileFeaturedCard({
   return (
     <motion.div ref={cardRef} style={{ y }} className="space-y-3">
       <Link
-        href={`/our-works/${work.id}`}
+        href={workDetailPath(work)}
         className="block aspect-4/5 w-full overflow-hidden rounded-[8px] bg-zinc-100"
       >
         <WorkCardMedia
@@ -331,7 +330,7 @@ function MobileFeaturedCard({
       </Link>
       <div className="flex items-center justify-between">
         <h3 className="font-sfts text-[16px] uppercase">{work.workName}</h3>
-        <Link href={`/our-works/${work.id}`}>
+        <Link href={workDetailPath(work)}>
           <svg
             className="h-6 w-6 -rotate-45"
             width="40"
@@ -351,33 +350,10 @@ function MobileFeaturedCard({
   );
 }
 
-export default function FeaturedWork() {
+export default function FeaturedWork({ works }: { works: WorkItem[] }) {
   const router = useRouter();
-  const [works, setWorks] = useState<WorkItem[]>([]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const res = await fetch("/api/works");
-        const data = await res.json();
-        if (!cancelled && res.ok && Array.isArray(data.works)) {
-          setWorks(data.works);
-        }
-      } catch {
-        if (!cancelled) setWorks([]);
-      }
-    };
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const displayWorks = useMemo(
-    () => pickFeaturedWorks(works, HOMEPAGE_FEATURED_WORK_IDS).slice(0, 6),
-    [works]
-  );
+  const displayWorks = useMemo(() => works.slice(0, STRIP_COUNT), [works]);
 
   const goToAllWorks = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();

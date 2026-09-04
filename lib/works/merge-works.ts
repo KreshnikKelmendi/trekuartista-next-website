@@ -21,6 +21,28 @@ export function sortWorksNewestFirst(works: WorkItem[]): WorkItem[] {
   );
 }
 
+export function sortWorksByDisplayOrder(
+  works: WorkItem[],
+  orderMap: Map<string, number>
+): WorkItem[] {
+  if (orderMap.size === 0) return sortWorksNewestFirst(works);
+
+  return [...works].sort((a, b) => {
+    const aOrder = orderMap.get(a.id);
+    const bOrder = orderMap.get(b.id);
+
+    if (aOrder !== undefined && bOrder !== undefined) {
+      if (aOrder !== bOrder) return aOrder - bOrder;
+    } else if (aOrder !== undefined) {
+      return -1;
+    } else if (bOrder !== undefined) {
+      return 1;
+    }
+
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+}
+
 export function pickFeaturedWorks(
   works: WorkItem[],
   featuredIds: (string | number)[]
