@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -88,6 +88,23 @@ function SeeMoreLink({
       </svg>
     </Link>
   );
+}
+
+// Renders only the layout matching the current viewport instead of mounting
+// both the mobile cards and the desktop strip and CSS-hiding one — every
+// visit was loading each featured work's media twice.
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  return isDesktop;
 }
 
 function FeaturedWorkSquareTile({
@@ -280,16 +297,6 @@ function FeaturedWorkSquareStrip({ works }: { works: WorkItem[] }) {
   );
 }
 
-function DesktopFeaturedStrip({ works }: { works: WorkItem[] }) {
-  if (works.length === 0) return null;
-
-  return (
-    <div className="hidden w-full md:block">
-      <FeaturedWorkSquareStrip works={works} />
-    </div>
-  );
-}
-
 function MobileFeaturedCard({
   work,
   index,
@@ -352,6 +359,7 @@ function MobileFeaturedCard({
 
 export default function FeaturedWork({ works }: { works: WorkItem[] }) {
   const router = useRouter();
+  const isDesktop = useIsDesktop();
 
   const displayWorks = useMemo(() => works.slice(0, STRIP_COUNT), [works]);
 
@@ -374,19 +382,23 @@ export default function FeaturedWork({ works }: { works: WorkItem[] }) {
           </span>
         </div>
 
-        {/* Mobile Layout */}
-        <div className="flex flex-col space-y-16 md:hidden">
-          {displayWorks.map((work: WorkItem, index: number) => (
-            <MobileFeaturedCard
-              key={`mobile-${work.id}`}
-              work={work}
-              index={index}
-            />
-          ))}
-        </div>
+        {/* isDesktop is null on the very first render (before the media query
+            can be read), so nothing renders for one tick rather than briefly
+            mounting both layouts. */}
+        {isDesktop === false && (
+          <div className="flex flex-col space-y-16">
+            {displayWorks.map((work: WorkItem, index: number) => (
+              <MobileFeaturedCard
+                key={`mobile-${work.id}`}
+                work={work}
+                index={index}
+              />
+            ))}
+          </div>
+        )}
 
-        {displayWorks.length > 0 && (
-          <DesktopFeaturedStrip works={displayWorks} />
+        {isDesktop === true && displayWorks.length > 0 && (
+          <FeaturedWorkSquareStrip works={displayWorks} />
         )}
 
         <div className="flex items-center justify-end pb-10 pt-16 lg:pt-0">
